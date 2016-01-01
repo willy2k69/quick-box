@@ -1448,7 +1448,7 @@ _bashrc
 _intro
 _hostname
 # _denyhosts
-_update
+_updates
 _locale
 echo -n "Installing building tools and all dependancies and perl modules, please wait ... ";_depends
 _askffmpeg;if [[ ${ffmpeg} == "yes" ]]; then _ffmpeg; fi

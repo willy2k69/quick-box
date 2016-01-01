@@ -128,8 +128,8 @@ cd tmp/quick-box
 ```
 **Finally, run that funky script to unleash the goodies**
 ```
-chmod +x rutorrent-apache.sh
-./rutorrent-apache.sh
+chmod +x quickbox-apache.sh
+./quickbox-apache.sh
 
 ```
 
