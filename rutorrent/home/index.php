@@ -38,8 +38,6 @@ function processExists($processName, $username) {
 $rtorrent = processExists("\"main|rtorrent\"",$username);
 $irssi = processExists("irssi",$username);
 $deluged = processExists("deluged",$username);
-$btsync = processExists("btsync",$username);
-$subsonic = processExists("java",$username);
 $plex = processExists("Plex",$username);
 
 function isEnabled($search, $username){
@@ -121,20 +119,8 @@ if (file_exists('.plex')) {
 }
 }
 
-function chkSubsonic() {
-if (file_exists('.subsonic')) {
-   return " <div class=\"toggle-wrapper pull-right\"><div class=\"toggle-en toggle-light primary\" onclick=\"location.href='?id=55'\"></div></div>";
-} else {
-  return " <div class=\"toggle-wrapper pull-right\"><div class=\"toggle-dis toggle-light primary\" onclick=\"location.href='?id=55\"></div></div>";
-}
-
-}
-
 
 $plexURL = "http://" . $_SERVER['HTTP_HOST'] . ":32400/web/";
-$subsonicURL = "http://" . $_SERVER['HTTP_HOST'] . ":4040";
-$btsyncURL = "http://" . $_SERVER['HTTP_HOST'] . ":8888/gui/";
-$SonicURL = "http://" . $_SERVER['HTTP_HOST'] . ":4040/";
 
 $reload='';
 $service='';
@@ -148,14 +134,6 @@ if ($irssi == "1") { $ival = "iRSSi-Autodl <span class=\"label label-success pul
 
 if ($deluged == "1") { $dval = "DelugeD <span class=\"label label-success pull-right\">Enabled</span>"; 
 } else { $dval = "DelugeD <span class=\"label label-danger pull-right\">Disabled</span>";
-}
-
-if ($btsync == "1") { $bval = "BTSync <span class=\"label label-success pull-right\">Enabled</span>"; 
-} else { $bval = "BTSync <span class=\"label label-danger pull-right\">Disabled</span>";
-}
-
-if ($subsonic == "1") { $sval = "Subsonic <span class=\"label label-success pull-right\">Enabled</span>"; 
-} else { $sval = "Subsonic <span class=\"label label-danger pull-right\">Disabled</span>"; 
 }
 
 if (file_exists('.plex')) { $pval = "Plex Public Access <span class=\"label label-success pull-right\">Enabled</span>"; 
@@ -197,14 +175,10 @@ if (file_exists('/home/'.$username.'/.startup')) {
     $cbodyi .= "iRSSi-AutoDL ". $irssi;
   $deluge = isEnabled("DELUGED_CLIENT=yes", $username);
     $cbodyd .= "DelugeD ". $deluge;
-  $btsync = isEnabled("BTSYNC=yes", $username);
-    $cbodyb .= "BTSync ". $btsync;
-  $subsonic = isEnabled("SUBSONIC=yes", $username);
-    $cbodys .= "Subsonic ". $subsonic;
   $plexcheck = chkPlex();
     $cbodyp .= "Plex Public Access " .$plexcheck;
   } else {
-    $cbodyerr .= "error locating start up script .. contact KyneticWeb Support ASAP"; 
+    $cbodyerr .= "error locating start up script .. feel free to open a issue at the quick box repo"; 
 }
 
 if (file_exists('/usr/sbin/repquota')) {
@@ -243,43 +217,21 @@ if (file_exists('/home/'.$username.'/.config/deluge/state/torrents.state')) {
       $dtorrents = shell_exec("ls /home/".$username."/.config/deluge/state/*.torrent|wc -l");
 }
 break;
-/* subsonic enable/disable */
-
-case 55:
-//  $subvar = chkSubsonic();
-if (file_exists('.subsonic') == 1) {
-        writeMsg("Hello <b>$username</b>: Im going to disable <b>Subsonic ($pid)</b> ... </a><br>");
-        $message = "Hello <b>$username</b>: Im going to disable <b>Subsonic ($pid)</b> ... </a><br>";
-        shell_exec("sudo service subsonic stop >/dev/null 2>&1");
-        shell_exec("sudo systemctl disable subsonic >/dev/null 2>&1");
-        $pid = shell_exec("pgrep java");
-        echo $pid;
-        shell_exec("sudo pkill java");
-        unlink('.subsonic');
-} else {
-        writeMsg("Hello <b>$username</b>: Im going to enable <b>Subsonic</b> ($pid) $SonicURL ... </a><br>");
-        $message = "Hello <b>$username</b>: Im going to enable <b>Subsonic</b> ($pid) $SonicURL ... </a><br>";
-        shell_exec("sudo service subsonic start >/dev/null 2>&1");
-        shell_exec("sudo systemctl enable subsonic >/dev/null 2>&1");
-        shell_exec("touch .subsonic");
-}
-  header('Location: https://' . $_SERVER['HTTP_HOST'] . '/');
-break;
 
 /* start services */
 case 66:
   $name = $_GET['servicestart'];
   $thisname=str_replace(['yes', 'no', '!!~!!'], ['!!~!!', 'yes', 'no'], $name);
     if (file_exists('/home/'.$username.'/.startup')) {
-    if ($name == "BTSYNC=yes") { $servicename = "btsync"; } else { $output = substr($thisname, 0, strpos(strtolower($thisname), '_')); $servicename = strtolower($output); }
+    { $output = substr($thisname, 0, strpos(strtolower($thisname), '_')); $servicename = strtolower($output); }
 writeMsg("Hey <b>$username</b>: Im going to enable <b>$servicename</b> ... Please allow 5 minutes for it to start ... </a><br>");
 $message = "Hey <b>$username</b>: Im going to enable <b>$servicename</b> ... Please allow 5 minutes for it to start ... </a><br>";
     shell_exec("sudo sed -i 's/$thisname/$name/g' /home/$username/.startup");
   $output = substr($thisname, 0, strpos(strtolower($thisname), '_'));
 //writeMsg("Starting: <b> " . $servicename . "</b>");
   } else {
-writeMsg("error locating .startup .. contact KyneticWeb Support ASAP");
-$message = "error locating .startup .. contact KyneticWeb Support ASAP";
+writeMsg("error locating .startup .. feel free to open a issue at the quick box repo");
+$message = "error locating .startup .. feel free to open a issue at the quick box repo";
   }
   header('Location: https://' . $_SERVER['HTTP_HOST'] . '/');
 break;
@@ -289,15 +241,15 @@ case 77:
   $name = $_GET['serviceend'];
   $thisname=str_replace(['yes', 'no', '!!~!!'], ['!!~!!', 'yes', 'no'], $name);
     if (file_exists('/home/'.$username.'/.startup')) {
-    if ($name == "BTSYNC=yes") { $servicename = "btsync"; } else { $output = substr($thisname, 0, strpos(strtolower($thisname), '_')); $servicename = strtolower($output);
+    { $output = substr($thisname, 0, strpos(strtolower($thisname), '_')); $servicename = strtolower($output);
     if (strpos($servicename,'rtorrent') !== false) { $servicename="main"; } }
 writeMsg("Hello <b>$username</b>: Im going to disable <b>$servicename</b> ... </a><br>");
 $message = "Hello <b>$username</b>: Im going to disable <b>$servicename</b> ... </a><br>";
     shell_exec("sudo sed -i 's/$name/$thisname/g' /home/$username/.startup");
     shell_exec("sudo -u $username pkill -9 $servicename");
   } else {
-writeMsg("error locating .startup .. contact KyneticWeb Support ASAP");
-$message = "error locating .startup .. contact KyneticWeb Support ASAP";
+writeMsg("error locating .startup .. feel free to open a issue at the quick box repo");
+$message = "error locating .startup .. feel free to open a issue at the quick box repo";
   }
   header('Location: https://' . $_SERVER['HTTP_HOST'] . '/');
 break;
@@ -410,7 +362,7 @@ break;
       <ul class="nav nav-tabs nav-justified nav-sidebar">
         <li class="tooltips active" data-toggle="tooltip" title="Main Menu" data-placement="bottom"><a data-toggle="tab" data-target="#mainmenu"><i class="tooltips fa fa-ellipsis-h"></i></a></li>
         <li class="tooltips" data-toggle="tooltip" title="Help" data-placement="bottom"><a data-toggle="tab" data-target="#help"><i class="tooltips fa fa-question-circle"></i></a></li>
-        <li class="tooltips" data-toggle="tooltip" title="Got Issues? Report them here!" data-placement="bottom"><a href="https://github.com/JMSDOnline/quick-box/issues" target="_blank"><i class="fa fa-desktop"></i></a></li>
+        <li class="tooltips" data-toggle="tooltip" title="Found a bug? Report it here!" data-placement="bottom"><a href="https://github.com/JMSDOnline/quick-box/issues" target="_blank"><i class="fa fa-warning"></i></a></li>
       </ul>
 
       <div class="tab-content">
@@ -423,8 +375,6 @@ break;
           <ul class="nav nav-pills nav-stacked nav-quirk">
             <li class="active"><a href="index.php"><i class="fa fa-home"></i> <span>Dashboard</span></a></li>
             <li><a href="/rutorrent" target="_blank"><i class="fa fa-puzzle-piece"></i> <span>ruTorrent</span></a></li>
-            <?php if (processExists("btsync",$username)) { echo "<li><a href=\"$btsyncURL\" target=\"_blank\"><i class=\"fa fa-retweet\"></i> <span>BTSync</span></a></li>"; } ?>
-            <?php if (processExists("java",$username)) { echo "<li><a href=\"$subsonicURL\" target=\"_blank\"><i class=\"fa fa-video-camera\"></i> <span>Subsonic</span></a></li>"; } ?>
             <?php if (file_exists('.plex')) { echo "<li><a href=\"$plexURL\" target=\"_blank\"><i class=\"fa fa-play\"></i> <span>Plex</span></a></li>"; } ?>
             <li class="nav-parent nav-active">
               <a href=""><i class="fa fa-cube"></i> <span>Downloads</span></a>
@@ -466,17 +416,14 @@ break;
                   <li>
                     <?php echo "$rval"; ?>
                   </li>
-                  <li>
-                    <?php echo "$dval"; ?>
-                  </li>
+                  <?php if ($deluged == "1") { echo
+                  "<li>
+                    $dval
+                  </li>";
+                } else { echo "";}
+                  ?>
                   <li>
                     <?php echo "$ival"; ?>
-                  </li>
-                  <li>
-                    <?php echo "$bval"; ?>
-                  </li>
-                  <li>
-                    <?php echo "$sval"; ?>
                   </li>
                   <li>
                     <?php echo "$pval"; ?>
@@ -496,25 +443,14 @@ break;
                   <li>
                     <?php echo "$cbodyr"; ?>
                   </li>
-                  <li>
-                    <?php echo "$cbodyd"; ?>
-                  </li>
+                  <?php if ($deluged == "1") { echo
+                  "<li>
+                    $cbodyd
+                  </li>";
+                } else { echo "";}
+                  ?>
                   <li>
                     <?php echo "$cbodyi"; ?>
-                  </li>
-                  <li>
-                    <?php echo "$cbodyb"; ?>
-                  </li>
-                  <li>
-                   Subsonic
-                    <?php
-                    if (processExists("java",$username)) {
-                      echo " <div class=\"toggle-wrapper pull-right\"><div class=\"toggle-en toggle-light primary\" onclick=\"location.href='?id=55'\"></div></div>"; 
-                    } else {
-                      echo " <div class=\"toggle-wrapper pull-right\"><div class=\"toggle-dis toggle-light primary\" onclick=\"location.href='?id=55'\"></div></div>"; 
-                    }
-                    ?>
-
                   </li>
                   <li>
                     <?php echo "$cbodyp"; ?>
