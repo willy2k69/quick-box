@@ -27,9 +27,9 @@ This script has the following features
 * Plex
 * Deluge
 
-![Modern & Simple Seedbox Dashboard](https://github.com/JMSDOnline/vstacklet/blob/master/img/quick-box-dashboard.png "Quick Box Modern & Simple Seedbox Dashboard")
+![Modern & Simple Seedbox Dashboard](https://github.com/JMSDOnline/quick-box/blob/master/img/quick-box-dashboard.png "Quick Box Modern & Simple Seedbox Dashboard")
 
-![New and Custom Theme by JMSolo Designs](https://github.com/JMSDOnline/vstacklet/blob/master/img/quick-box-theme.png "Quick Box - New and Custom Theme by JMSolo Designs")
+![New and Custom Theme by JMSolo Designs](https://github.com/JMSDOnline/quick-box/blob/master/img/quick-box-theme.png "Quick Box - New and Custom Theme by JMSolo Designs")
 
 ## Main ruTorrent plugins
 autotoolscpuload, quotaspace, erasedata, extratio, extsearch, feeds, filedrop, filemanager, geoip, history, logoff, mediainfo, mediastream, ratiocolor, rss, scheduler, screenshots, theme, trafic and unpack
