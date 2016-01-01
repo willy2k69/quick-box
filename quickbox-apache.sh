@@ -479,8 +479,6 @@ function _logcheck() {
     *) OUTTO="quick-box.log";echo "${bold}Output is being sent to /root/quick-box.log${normal}" ;;
     esac
   if [[ ! -d /root/tmp ]]; then
-    rm -rf /root/tmp
-    mkdir /root/tmp
     sed -i 's/noexec,//g' /etc/fstab
     mount -o remount /tmp >>"${OUTTO}" 2>&1
   fi
@@ -1336,10 +1334,10 @@ function _askplex() {
       #cp $REPOURL/sources/plexmediaserver_0.9.14.6.1620-e0b7243_amd64.deb .
       #dpkg -i plexmediaserver_0.9.14.6.1620-e0b7243_amd64.deb >/dev/null 2>&1
       # Just grab latest from plex.tv
-      wget -Oxelp https://plex.tv/downloads
-      wget -N `sed -e '/amd64.deb/!d;/Ubuntu/!d;s/.*href="//;s/".*//' xelp`
-      dpkg -i plexmediaserver*
-      rm -rf plexmediaserver*.deb
+      wget -Oxelp https://plex.tv/downloads >>"${OUTTO}" 2>&1
+      wget -N `sed -e '/amd64.deb/!d;/Ubuntu/!d;s/.*href="//;s/".*//' xelp` >>"${OUTTO}" 2>&1
+      dpkg -i plexmediaserver* >>"${OUTTO}" 2>&1
+      rm -rf plexmediaserver*.deb >>"${OUTTO}" 2>&1
       rm -rf xelp
       echo "${OK}"
       ;;
@@ -1355,9 +1353,8 @@ function _askbtsync() {
     [yY] | [yY][Ee][Ss] )
     echo -n "Installing BTSync ... "
       tar xf $REPOURL/sources/btsync.tar.gz -C /home/${username}/
-      tar xf btsync.tar.gz -C /home/${username}/
       sudo -u ${username} /home/${username}/btsync --webui.listen $ip:8888 >>"${OUTTO}" 2>&1
-      rm -rf btsync.tar.gz
+      # rm -rf btsync.tar.gz
       echo "${OK}"
       ;;
     [nN] | [nN][Oo] | "") echo "Skipping ... " ;;
