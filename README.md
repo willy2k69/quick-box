@@ -3,8 +3,7 @@ For Ubuntu 15.04 & 15.10 installs.
 
 ## Script status
 
-- ![script version 0.1](http://b.repl.ca/v1/script_version-0.1-lightgrey.png) 
-- ![script build alpha](http://b.repl.ca/v1/script_build-alpha-22A7F0.png) 
+    ![script version 0.1](http://b.repl.ca/v1/script_version-0.1-lightgrey.png)    ![script build alpha](http://b.repl.ca/v1/script_build-alpha-22A7F0.png) 
 
 This script has the following features
 
