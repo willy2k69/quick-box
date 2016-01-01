@@ -1448,10 +1448,10 @@ _bashrc
 _intro
 _checkroot
 _logcheck
-_keys
-_repos
+echo -n "Installing signed keys ... ";_keys
+echo -n "Adding trusted repositories ... ";_repos
 # _denyhosts
-_updates
+echo -n "Applying Updates ... ";_updates
 _locale
 _hostname
 echo -n "Installing building tools and all dependancies and perl modules, please wait ... ";_depends
