@@ -637,7 +637,7 @@ function _ffmpeg() {
 function _askrtorrent() {
   echo -e "1) rtorrent ${green}0.9.6${normal}"
   echo -e "2) rtorrent ${green}0.9.4${normal}"
-  echo -e "2) rtorrent ${green}0.9.3${normal}"
+  echo -e "3) rtorrent ${green}0.9.3${normal}"
   echo -ne "${yellow}What version of rtorrent do you want?${normal} (Default ${green}1${normal}): "; read version
   case $version in
     1 | "") RTVERSION=0.9.6;LTORRENT=0.13.6  ;;
