@@ -382,13 +382,11 @@ break;
   <div class="headerpanel">
 
     <div class="logopanel">
-      <h2><a href="#"><img src="/img/logo.png" alt="Quick Box - Your Complete Seedbox Solution" class="logo-image" height="50" /></a></h2>
+      <h2><a href="#"><img src="/img/logo.png" alt="Quick Box - Seedbox" class="logo-image" height="50" /></a></h2>
     </div><!-- logopanel -->
 
     <div class="headerbar">
-
       <a id="menuToggle" class="menutoggle"><i class="fa fa-bars"></i></a>
-
       <div class="header-right">
         <ul class="headermenu">
           <li>
@@ -420,6 +418,7 @@ break;
         <!-- ################# MAIN MENU ################### -->
 
         <div class="tab-pane active" id="mainmenu">
+
           <h5 class="sidebar-title">Main Menu</h5>
           <ul class="nav nav-pills nav-stacked nav-quirk">
             <li class="active"><a href="index.php"><i class="fa fa-home"></i> <span>Dashboard</span></a></li>
@@ -438,22 +437,16 @@ break;
             </li>
             <li><a href="?reload=true"><i class="fa fa-refresh"></i> <span>Reload Services</span></a></li>
           </ul>
-        </div><!-- tab pane -->
 
+        </div><!-- tab pane -->
         <div class="tab-pane" id="help">
-          <!--div class="sidebar-btn-wrapper">
-            <a href="#" class="btn btn-danger btn-block">testing-I-Am-Hidden</a>
-          </div-->
 
           <h5 class="sidebar-title">More here soon...</h5>
         
         </div><!-- tab-pane -->
-
       </div><!-- tab-content -->
-
     </div><!-- leftpanelinner -->
   </div><!-- leftpanel -->
-
   <div class="mainpanel">
 
     <!--<div class="pageheader">
@@ -461,7 +454,6 @@ break;
     </div>-->
 
     <div class="contentpanel">
-
       <div class="row">
         <div class="col-sm-8 col-md-8 dash-left">
           <div class="col-sm-7 col-md-7">
@@ -532,23 +524,6 @@ break;
               <div class="panel-footer"></div>
             </div>
           </div>
-
-          <!--div class="row">
-            <div class="col-sm-12 col-md-12">
-              <div class="panel panel-default">
-                <div class="panel-heading">
-                  <h4 class="panel-title">Graph</h4>
-                </div>
-                <div class="panel-body text-center">
-                    <div id="snd_result"></div>
-                    <canvas id="snd_graph" height="100" width="500"></canvas>
-                    <br><br>
-                    <div id="rec_result"></div>
-                    <canvas id="rec_graph" height="100" width="500"></canvas>
-                    </div>
-              </div>
-            </div>
-          </div-->
         </div><!-- col-md-8 -->
 
         <div class="col-md-4 col-lg-4 dash-right">
@@ -573,10 +548,8 @@ break;
               </div>
             </div><!-- col-md-12 -->
           </div><!-- row -->
-
         </div><!-- col-md-4 -->
       </div><!-- row -->
-
 
       <div class="row">
         <div class="col-sm-8 col-md-8">
