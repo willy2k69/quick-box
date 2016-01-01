@@ -159,7 +159,7 @@ After installing you will have access to the following commands to be used direc
   * rarlinux-x64-5.1.0.tar.gz - rar for linux
   * rtorrent.sh - quick-box seedbox installer
   * rutorrent - rutorrent web folder
-  * rutorrent-clubKynetic-dark.zip - Custom quick-box ruTorrent Skin
+  * rutorrent-quickbox-dark.zip - Custom quick-box ruTorrent kkin
   * skel.tar - Default skel directory for the 'adduser' command
   * sources - Folder containing rtorrent/libtorrent
   * xmlrpc-c - xmlrpc-c source
@@ -178,5 +178,5 @@ After installing you will have access to the following commands to be used direc
 
 #### TIPS/TRICKS
   ``` 
-  apt-get update && apt-get install -yy screen && wget https://raw.githubusercontent.com/JMSDOnline/quick-box/master/rutorrent-apache.sh -q && screen bash rtorrent 
+  apt-get update && apt-get install -yy screen && wget https://raw.githubusercontent.com/JMSDOnline/quick-box/master/quickbox-apache.sh -q && screen bash quickbox-apache.sh 
   ```
