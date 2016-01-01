@@ -166,7 +166,7 @@ After installing you will have access to the following commands to be used direc
 
 #### Known Bugs/Fixes
   1. Fix the private flag when new torrent is made
-   * ``` 
+   ``` 
    sed -i 's/\$torrent->is_private(true);/\$torrent->is_private(false);/g' /var/www/rutorrent/plugins/create/createtorrent.php 
    ```
   2. ruTorrent Homepage failing to show running processes
