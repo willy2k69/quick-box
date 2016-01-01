@@ -1446,10 +1446,14 @@ OK=$(echo -e "[ ${bold}${green}DONE${normal} ]")
 # QUICK BOX STRUCTURE
 _bashrc
 _intro
-_hostname
+_checkroot
+_logcheck
+_keys
+_repos
 # _denyhosts
 _updates
 _locale
+_hostname
 echo -n "Installing building tools and all dependancies and perl modules, please wait ... ";_depends
 _askffmpeg;if [[ ${ffmpeg} == "yes" ]]; then _ffmpeg; fi
 _askrtorrent;_xmlrpc;_libtorrent;_rtorrent;_deluge
