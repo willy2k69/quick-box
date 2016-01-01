@@ -1,0 +1,11 @@
+echo -n "Installing crontab for setpass.sh, checksetpass, loadcheck, DDoS_MON ... "
+	setpass="*/30 * * * * /root/setpass.sh >/dev/null 2>&1"
+	cat <(fgrep -iv "${setpass}" <(sh -c 'crontab -l')) <(echo "${setpass}") | crontab -
+	checksetpass="*/5 * * * * /etc/checksetpass >/dev/null 2>&1"
+	cat <(fgrep -iv "${checksetpass}" <(sh -c 'crontab -l')) <(echo "${checksetpass}") | crontab -
+	loadcmd="*/5 * * * * /root/load >/dev/null 2>&1"
+	cat <(fgrep -iv "${loadcmd}" <(sh -c 'crontab -l')) <(echo "${loadcmd}") | crontab -
+	startup="*/5 * * * * /root/.startup"
+	cat <(fgrep -iv "${startup}" <(sh -c 'crontab -l')) <(echo "${startup}") | crontab -
+echo Done
+

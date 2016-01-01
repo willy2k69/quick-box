@@ -1,0 +1,9 @@
+#!/bin/bash
+VPSLIST=$(vzlist -a|grep -v "CTID"| awk '{print $1}')
+
+echo -n "Package name?: "
+read PACKAGE
+
+for i in $VPSLIST;do
+        vzctl exec $i apt-get install -yy --only-upgrade $PACKAGE 
+done

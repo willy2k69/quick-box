@@ -1,0 +1,36 @@
+#!/bin/bash
+FILELIST=$(find . -type f|grep -v '/\.svn'|grep -v '/\.git')
+function _git() { for i in $FILELIST;do git add $i >/dev/null 2>&1 ; done ; }
+function _svn() { for i in $FILELIST;do svn add $i >/dev/null 2>&1; done ; }
+function _gitcommit() {
+echo -n "Commit reason?: ";read INPUT
+echo -n "Do you wish to commit to GIT? ";read GIT
+	case $GIT in
+                [yY] | [yY][Ee][Ss] | "" ) gitupdate=1 ;;
+                [nN] | [nN][Oo] ) gitupdate=0 ;;
+                *) gitupdate=1 ;;
+        esac
+if [[ $gitupdate == "1" ]]; then
+	git commit -m "$INPUT"
+	git push
+fi
+}
+
+function _svncommit() {
+echo -n "Commit reason?: ";read INPUT
+echo -n "Do you wish to commit to SVN? ";read SVN
+        case $SVN in
+                [yY] | [yY][Ee][Ss] | "" ) svnupdate=1 ;;
+                [nN] | [nN][Oo] ) svnupdate=0 ;;
+                *) svnupdate=1 ;;
+        esac
+if [[ $svnupdate == "1" ]]; then
+        svn ci -m "$INPUT"
+fi
+}
+
+
+_git
+_svn
+_gitcommit
+_svncommit
