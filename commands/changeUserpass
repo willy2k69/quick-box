@@ -1,4 +1,11 @@
 #!/bin/bash
+#
+# [Quick Box]
+#
+# GitHub:   https://github.com/JMSDOnline/quick-box
+# Author:   Jason Matthews
+# URL:      https://jmsolodesigns.com
+#
 REALM=rutorrent
 HTPASSWD=/etc/htpasswd
 echo -n "Username: "; read user
