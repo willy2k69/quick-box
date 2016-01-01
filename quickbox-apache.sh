@@ -1346,40 +1346,6 @@ function _askplex() {
   esac
 }
 
-# function to ask for btsync (32)
-function _askbtsync() {
-  echo -ne "${yellow}Install BTSync${normal} (Y/n): (Default: ${red}N${normal}) "; read responce
-  case $responce in
-    [yY] | [yY][Ee][Ss] )
-    echo -n "Installing BTSync ... "
-      tar xf $REPOURL/sources/btsync.tar.gz -C /home/${username}/
-      sudo -u ${username} /home/${username}/btsync --webui.listen $ip:8888 >>"${OUTTO}" 2>&1
-      # rm -rf btsync.tar.gz
-      echo "${OK}"
-      ;;
-    [nN] | [nN][Oo] | "") echo "Skipping ... " ;;
-    *) echo "Skipping ... " ;;
-  esac
-}
-
-# function to ask for subsonic (33)
-function _asksubsonic() {
-  echo -ne "${yellow}Install Subsonic${normal} (Y/n): (Default: ${red}N${normal}) "; read responce
-  case $responce in
-    [yY] | [yY][Ee][Ss] )
-    echo -n "Installing Subsonic ... "
-      wget -4q http://sourceforge.net/projects/subsonic/files/subsonic/5.2.1/subsonic-5.2.1.deb
-      apt-get install openjdk-7-jre -yy -q >/dev/null 2>&1
-      dpkg -i subsonic-5.2.1.deb >/dev/null 2>&1
-      rm -rf subsonic-5.2.1.deb
-      echo "SUBSONIC_ARGS=\"--max-memory=150\"" >/etc/default/subsonic
-      echo "SUBSONIC_USER=quick-box" >>/etc/default/subsonic
-      echo "${OK}"
-      ;;
-    [nN] | [nN][Oo] | "") echo "Skipping ... " ;;
-  esac
-}
-
 # function to create ssl cert for pure-ftpd (34)
 function _pureftpcert() {
   /bin/true
@@ -1466,7 +1432,7 @@ echo -n "Writing ${username} rutorrent config.php file ... ";_ruconf;_askquota
 echo -n "Writing seedbox reload script ... ";_reloadscript
 echo -n "Installing VSFTPd ... ";_installpureftpd
 echo -n "Setting up VSFTPd ... ";_pureftpdconfig
-_askplex;_askbtsync;_asksubsonic
+_askplex;
 echo -n "Setting irssi/rtorrent to start on boot ... ";_boot
 echo -n "Setting permissions on ${username} ... ";_perms
 
