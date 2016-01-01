@@ -1,3 +1,6 @@
+| ![Quick Box - A Friendly, Fresh and Modernized Seedbox Script](https://github.com/JMSDOnline/quick-box/blob/master/img/quick-box.png "Quick Box") |
+|---|
+| **Quick Box - A Friendly, Fresh and Modernized Seedbox Script** |
 
 For Ubuntu 15.04 & 15.10 installs.
 
@@ -14,13 +17,19 @@ This script has the following features
 
 ## Installed software
 * ruTorrent 3.7 + official plugins
-* rTorrent 0.9.4
-* libTorrrent 0.13.4
+* rTorrent 0.9.6
+* libTorrrent 0.13.6
 * mktorrent
 * Linux Quota
 * SSH Server (for SSH terminal and sFTP connections)
-* pureftp
+* pureftp - vsftp (CuteFTP multi-segmented download friendly ya'll)
 * IRSSI
+* Plex
+* Deluge
+
+![Modern & Simple Seedbox Dashboard](https://github.com/JMSDOnline/vstacklet/blob/master/img/quick-box-dashboard.png "Quick Box Modern & Simple Seedbox Dashboard")
+
+![New and Custom Theme by JMSolo Designs](https://github.com/JMSDOnline/vstacklet/blob/master/img/quick-box-theme.png "Quick Box - New and Custom Theme by JMSolo Designs")
 
 ## Main ruTorrent plugins
 autotoolscpuload, quotaspace, erasedata, extratio, extsearch, feeds, filedrop, filemanager, geoip, history, logoff, mediainfo, mediastream, ratiocolor, rss, scheduler, screenshots, theme, trafic and unpack
@@ -31,10 +40,11 @@ autotoolscpuload, quotaspace, erasedata, extratio, extsearch, feeds, filedrop, f
 * Filemanager (modified to handle rar, zip, unzip, tar and bzip)
 * Fileupload
 * Fileshare Plugin (http://forums.rutorrent.org/index.php?topic=705.0)
-* MediaStream (to watch your videos right from your seedbox) ``Currently an issue (see issues)``
+* MediaStream (_No longer a valid plugin due to current browser limitations on inline java_)
 * Logoff 
 * Theme: QuickBox ``Dark rutorrent skin``
 * Colorful Ratios: Customized to match QuickBox Theme
+* __rutorrentMobile__: Mobile version of ruTorrent - seriously - toss TransDroid and the pain that it is... this is a new essential plugin (IMO) _Helps usher in a future version of the Quick Box script per Nginx - **as nginx via fastcgi sockets can break Transdroid funtionality**_
 
 ### Full List of Plugins
 
@@ -45,7 +55,7 @@ autotoolscpuload, quotaspace, erasedata, extratio, extsearch, feeds, filedrop, f
 **_Main ruTorrent Plugins_**
 
   1. **getdir**: This plug-in provides the possibility of comfortable navigation on a host file system.
-  2. **noty**: This plugin provides the notification functionality for other plugins.
+  2. **noty/noty2**: This plugin provides the notification functionality for other plugins.
   3. **task**: This plugin provides the possibility of running various scripts on the host system.
   4. **autodl-irssi**: GUI for autodl-irssi-community
   5. **check_port**: This plugin adds an incoming port status indicator to the bottom bar.
@@ -90,7 +100,6 @@ autotoolscpuload, quotaspace, erasedata, extratio, extsearch, feeds, filedrop, f
   44. **source**: This plugin allows to copy the source .torrent file from the host to the local machine.
   45. **trafic**: This plugin allows to monitor rTorrent system wide and per-tracker traffic totals.
   46. **unpack**: This plugin is designed to manually or automatically unrar/unzip torrent data.
-
 
 ---
 
@@ -161,7 +170,8 @@ After installing you will have access to the following commands to be used direc
   * rutorrent - rutorrent web folder
   * rutorrent-quickbox-dark.zip - Custom quick-box ruTorrent kkin
   * skel.tar - Default skel directory for the 'adduser' command
-  * sources - Folder containing rtorrent/libtorrent
+  * sources [directory] - Folder containing rtorrent/libtorrent
+  * commands [directory] - Folder containing various functions for user creation etc. _if you desire them_
   * xmlrpc-c - xmlrpc-c source
 
 #### Known Bugs/Fixes
