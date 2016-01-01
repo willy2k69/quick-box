@@ -6,7 +6,7 @@ For Ubuntu 15.04 & 15.10 installs.
 
 ## Script status
 
-![script version 0.2](http://b.repl.ca/v1/script_version-0.1-lightgrey.png)    [![GitHub release](https://img.shields.io/github/release/qubyte/rubidium.svg?style=flat-square)](https://github.com/JMSDOnline/quick-box/)    [![GitHub license](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)](https://github.com/JMSDOnline/quick-box/LICENSE)    [![Scrutinizer Build](https://img.shields.io/scrutinizer/build/g/filp/whoops.svg?style=flat-square)](https://github.com/JMSDOnline/quick-box/)
+[![GitHub release](https://img.shields.io/github/release/qubyte/rubidium.svg?style=flat-square)](https://github.com/JMSDOnline/quick-box/)    [![GitHub license](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)](https://github.com/JMSDOnline/quick-box/blob/master/LICENSE)    [![Scrutinizer Build](https://img.shields.io/scrutinizer/build/g/filp/whoops.svg?style=flat-square)](https://github.com/JMSDOnline/quick-box/)
 
 This script has the following features
 
