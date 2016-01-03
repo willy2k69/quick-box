@@ -297,6 +297,10 @@ cat >/home/${username}/.startup<<SU
 export USER=\$(id -un)
 IRSSI_CLIENT=yes
 RTORRENT_CLIENT=yes
+DELUGED_CLIENT=no
+DELUGED_PORT=19560
+DELUGEWEB_CLIENT=no
+DELUGEWEB_PORT=
 ADDRESS=\$(/sbin/ifconfig | grep "inet addr" | awk -F: '{print \$2}' | awk '{print \$1}'|grep -v "^127"|head -n1)
 
 # NO NEED TO EDIT PAST HERE!
@@ -306,6 +310,14 @@ fi
 
 if [ "\$RTORRENT_CLIENT" == "yes" ]; then 
   (screen -ls|grep rtorrent >/dev/null || (screen -fa -dmS rtorrent rtorrent && false))
+fi
+
+if [ "\$DELUGED_CLIENT" == "yes" ]; then 
+  (pgrep -u \$USER deluged >/dev/null || (deluged -i \$ADDRESS -p \$DELUGED_PORT && false))
+fi
+
+if [ "\$DELUGEWEB_CLIENT" == "yes" ]; then 
+  (pgrep -u \$USER deluge-web >/dev/null || (deluge-web -p \$DELUGEWEB_PORT -f && false))
 fi
 
 SU
@@ -487,24 +499,41 @@ function _logcheck() {
   echo
 }
 
-# package and repo addition (4) _add signed keys_
-function _keys() {
+# package and repo addition (4) _update and upgrade_
+function _updates() {
+  echo "Which country do you want for apt-get"
+  echo "1) USA"
+  echo "2) NL"
+  echo "3) FR"
+  echo "4) DE"
+  read input
+  case $input in
+    1) echo "Selecting USA ... "; country=us ;;
+    2) echo "Selecting NL ... "; country=nl ;;
+    3) echo "Selecting FR ... "; country=fr ;;
+    4) echo "Selecting DR ... "; country=us ;;
+    *) echo "Defaulting to USA ... "; country=us ;;
+  esac
+  if lsb_release >>"${OUTTO}" 2>&1; then ver=$(lsb_release -c|awk '{print $2}')
+  else
+    apt-get -yq install lsb-release >>"${OUTTO}" 2>&1
+    if [[ -e /usr/bin/lsb_release ]]; then ver=$(lsb_release -c|awk '{print $2}')
+    else echo "failed to install lsb-release from apt-get, please install manually and re-run script"; exit
+    fi
+  fi
+  echo -n "Updating system ... "
   apt-get -y --force-yes install deb-multimedia-keyring > /dev/null 2>&1;
-  echo "${OK}"
-}
 
-# package and repo addition (5) _add respo sources_
-function _repos() {
 cat >/etc/apt/sources.list<<EOF
 ###### Ubuntu Main Repos
-deb http://nl.archive.ubuntu.com/ubuntu/ $(lsb_release -sc) main restricted universe multiverse 
-deb-src http://nl.archive.ubuntu.com/ubuntu/ $(lsb_release -sc) main restricted universe multiverse 
+deb http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc) main restricted universe multiverse 
+deb-src http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc) main restricted universe multiverse 
 
 ###### Ubuntu Update Repos
-deb http://nl.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-security main restricted universe multiverse 
-deb http://nl.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-updates main restricted universe multiverse 
-deb-src http://nl.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-security main restricted universe multiverse 
-deb-src http://nl.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-updates main restricted universe multiverse 
+deb http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-security main restricted universe multiverse 
+deb http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-updates main restricted universe multiverse 
+deb-src http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-security main restricted universe multiverse 
+deb-src http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-updates main restricted universe multiverse 
 
 ###### Ubuntu Partner Repo
 deb http://archive.canonical.com/ubuntu $(lsb_release -sc) partner
@@ -512,18 +541,18 @@ deb-src http://archive.canonical.com/ubuntu $(lsb_release -sc) partner
 deb http://www.deb-multimedia.org testing main
 EOF
 
-  echo "${OK}"
+  apt-get update
+  apt-get -y purge samba samba-common >>"${OUTTO}" 2>&1
+  apt-get -y upgrade
+  if [[ -e /etc/ssh/sshd_config ]]; then
+    echo "Port 4747" /etc/ssh/sshd_config
+    sed -i 's/Port 22/Port 4747/g' /etc/ssh/sshd_config
+    service sshd restart >>"${OUTTO}" 2>&1
+  fi
+  clear
 }
 
-# package and repo addition (6) _update and upgrade_
-function _updates() {
-  export DEBIAN_FRONTEND=noninteractive &&
-  apt-get -y update >>"${OUTTO}" 2>&1;
-  apt-get -y upgrade >>"${OUTTO}" 2>&1;
-  echo "${OK}"
-}
-
-# setting locale function (6.1)
+# setting locale function (5)
 function _locale() {
 echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
 echo "LANG=en_US.UTF-8" > /etc/default/locale
@@ -540,7 +569,7 @@ echo "LC_ALL=en_US.UTF-8" >>/etc/default/locale
   fi
 }
 
-# setting system hostname function (7)
+# setting system hostname function (6)
 function _hostname() {
 echo -ne "Please enter a hostname for this server (${bold}Hit enter to make no changes${normal}): " ; read input
 if [[ -z $input ]]; then
@@ -553,7 +582,7 @@ else
 fi
 }
 
-# package and repo addition (8) _install softwares and packages_
+# package and repo addition (7) _install softwares and packages_
 function _depends() {
   apt-get install -qq --yes --force-yes fail2ban bc sudo screen zip irssi unzip nano build-essential bwm-ng ifstat git subversion dstat automake libtool libcppunit-dev libssl-dev pkg-config libcurl4-openssl-dev libsigc++-2.0-dev lshell cron unrar curl libncurses5-dev yasm apache2 php5 php5-cli php-net-socket libdbd-mysql-perl libdbi-perl fontconfig libfontconfig1 libfontconfig1-dev rar mediainfo php5-curl htop libapache2-mod-php5 ttf-mscorefonts-installer libarchive-zip-perl libnet-ssleay-perl php5-geoip openjdk-7-jre openjdk-7-jdk libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl libxml-libxslt-perl libapache2-mod-scgi openvpn >>"${OUTTO}" 2>&1;
   cd
@@ -599,7 +628,7 @@ LS
 echo "${OK}"
 }
 
-# install ffmpeg question (9)
+# install ffmpeg question (8)
 function _askffmpeg() {
   echo -ne "${yellow}Install ffmpeg? (Used for screenshots)${normal} (Default: ${green}Y${normal}): "; read responce
   case $responce in
@@ -609,7 +638,7 @@ function _askffmpeg() {
   esac
 }
 
-# build function for ffmpeg (9.1)
+# build function for ffmpeg (8.1)
 function _ffmpeg() {
   if [[ ${ffmpeg} == "yes" ]]; then
     echo -n "Building ffmpeg from source for screenshots ... "
@@ -631,7 +660,7 @@ function _ffmpeg() {
   fi
 }
 
-# ask what rtorrent version (10)
+# ask what rtorrent version (9)
 function _askrtorrent() {
   echo -e "1) rtorrent ${green}0.9.6${normal}"
   echo -e "2) rtorrent ${green}0.9.4${normal}"
@@ -646,7 +675,7 @@ function _askrtorrent() {
   echo "Using rtorrent-$RTVERSION/libtorrent-$LTORRENT" 
 }
 
-# xmlrpc-c function (11)
+# xmlrpc-c function (10)
 function _xmlrpc() {
   cd /root/tmp
   echo -ne "Installing xmlrpc-c-${green}1.33.12${normal} ... "
@@ -661,7 +690,7 @@ function _xmlrpc() {
   echo "${OK}"
 }
 
-# libtorent function (12)
+# libtorent function (11)
 function _libtorrent() {
   cd /root/tmp
   MAXCPUS=$(echo "$(nproc) / 2"|bc)
@@ -678,7 +707,7 @@ function _libtorrent() {
   echo "${OK}"
 }
 
-# rtorrent function (10.1)
+# rtorrent function (9.1)
 function _rtorrent() {
   cd /root/tmp
   MAXCPUS=$(echo "$(nproc) / 2"|bc)
@@ -698,7 +727,10 @@ function _rtorrent() {
   echo "${OK}"
 }
 
-# function to install deluge (13)
+# scgi enable function (12)
+function _scgi() { ln -s /etc/apache2/mods-available/scgi.load /etc/apache2/mods-enabled/scgi.load >>"${OUTTO}" 2>&1 ; }
+
+# function to install deluge (12)
 function _deluge() {
 VERSION=1.3.6
   echo -ne "${yellow}Install Deluge?${normal} (at the moment, this is bugged. I am working on a fix.) (Default: ${red}N${normal}): "; read responce
@@ -733,7 +765,7 @@ libboost-date-time-dev libboost-filesystem-dev build-essential python-libtorrent
   fi
 }
 
-# function to install rutorrent (14)
+# function to install rutorrent (13)
 function _rutorrent() {
   mkdir -p /srv/
   cd /srv
@@ -1128,7 +1160,7 @@ DELUGED_PORT=
 DELUGEWEB_CLIENT=
 DELUGEWEB_PORT=
 WIPEDEAD=yes
-BTSYNC=
+BTSYNC=no
 ADDRESS=$(/sbin/ifconfig | grep "inet addr" | awk -F: '{print $2}' | awk '{print $1}'|grep -v "^127"|head -n1)
 
 if [ "$WIPEDEAD" == "yes" ]; then screen -wipe >/dev/null 2>&1; fi
@@ -1153,15 +1185,20 @@ if [ "$DELUGEWEB_CLIENT" == "yes" ]; then
   (pgrep -u $USER deluge-web >/dev/null || (deluge-web -f --port=$DELUGEWEB_PORT --fork && false))
 fi
 
+if [ "$BTSYNC" == "yes" ]; then
+        (pgrep -u $USER btsync >/dev/null || /home/$USER/btsync --webui.listen ${ADDRESS}:8888 >/dev/null 2>&1 && false)
+fi
+
+
 EOF
 if [[ $deluge == "yes" ]];then
   sed -i 's/DELUGED_PORT=$/DELUGED_PORT=19596/g' /home/${username}/.startup
-  sed -i 's/DELUGED_CLIENT=$/DELUGED=yes/g' /home/${username}/.startup
+  sed -i 's/DELUGED_CLIENT=$/DELUGED_CLIENT=yes/g' /home/${username}/.startup
 fi
 if [[ $btsync == "yes" ]]; then
-  sed -is 's/BTSYNC=$/BTSYNC=yes/g' /home/${username}/.startup
+  sed -is 's/BTSYNC=no/BTSYNC=yes/g' /home/${username}/.startup
 fi
-  echo "${OK}"
+echo "${OK}"
 }
 
 # function to set permissions on first user (24)
@@ -1343,6 +1380,41 @@ function _askplex() {
   esac
 }
 
+# function to ask for btsync (32)
+function _askbtsync() {
+  echo -ne "Install BTSync (Y/n): (Default: \033[1mN\033[0m) "; read responce
+  case $responce in
+    [yY] | [yY][Ee][Ss] )
+    echo -n "Installing BTSync ... "
+    tar xf $REPOURL/source/btsync.tar.gz -C /home/${username}/
+    tar xf btsync.tar.gz -C /home/${username}/
+    sudo -u ${username} /home/${username}/btsync --webui.listen $ip:8888 >>"${OUTTO}" 2>&1
+    rm -rf btsync.tar.gz
+    echo "${OK}"
+    ;;
+    [nN] | [nN][Oo] | "") echo "Skipping ... " ;;
+    *) echo "Skipping ... " ;;
+  esac
+}
+
+# function to ask for subsonic (33)
+function _asksubsonic() {
+  echo -ne "Install Subsonic (Y/n): (Default: \033[1mN\033[0m) "; read responce
+  case $responce in
+    [yY] | [yY][Ee][Ss] )
+    echo -n "Installing Subsonic ... "
+    wget -4q http://sourceforge.net/projects/subsonic/files/subsonic/5.2.1/subsonic-5.2.1.deb
+    apt-get install openjdk-7-jre -yy -q >/dev/null 2>&1
+    dpkg -i subsonic-5.2.1.deb >/dev/null 2>&1
+    rm -rf subsonic-5.2.1.deb
+    echo "SUBSONIC_ARGS=\"--max-memory=150\"" >/etc/default/subsonic
+    echo "SUBSONIC_USER=quickbox" >>/etc/default/subsonic
+    echo "${OK}"
+    ;;
+    [nN] | [nN][Oo] | "") echo "Skipping ... " ;;
+  esac
+}
+
 # function to create ssl cert for pure-ftpd (34)
 function _pureftpcert() {
   /bin/true
@@ -1371,6 +1443,10 @@ cat >/root/information.info<<EOF
   http://${username}:${passwd}@$ip (Also works for FTP:5757/SSH:4747/Deluge:19596)
 EOF
 
+  if ! $(ifconfig venet0 >/dev/null 2>&1);then
+  sed -i 's/venet0/eth0/g' /srv/rutorrent/home/stat.php
+  sed -i 's/venet0/eth0/g' /srv/rutorrent/home/data.php
+  fi
   rm -rf "$0" >>"${OUTTO}" 2>&1
   for i in sshd apache2 pure-ftpd fail2ban quota plexmediaserver vsftpd; do
     service $i restart >>"${OUTTO}" 2>&1
@@ -1389,7 +1465,7 @@ clear
 PORT=$(shuf -i 2000-61000 -n 1)
 PORTEND=$((${PORT} + 1500))
 S=$(date +%s)
-OK=$(echo -e "[ \e[0;32mDONE\e[00m ]")
+OK=$(echo -e "[ ${bold}${green}DONE${normal} ]")
 genpass=$(_string)
 HTPASSWD="/etc/htpasswd"
 rutorrent="/srv/rutorrent/"
@@ -1400,18 +1476,13 @@ ip=$(/sbin/ifconfig | grep "inet addr" | awk -F: '{print $2}' | awk '{print $1}'
 export DEBIAN_FRONTEND=noninteractive
 cd
 
-S=$(date +%s)
-OK=$(echo -e "[ ${bold}${green}DONE${normal} ]")
-
 # QUICK BOX STRUCTURE
 _bashrc
 _intro
 _checkroot
 _logcheck
-echo -n "Installing signed keys ... ";_keys
-echo -n "Adding trusted repositories ... ";_repos
 # _denyhosts
-echo -n "Applying Updates ... ";_updates
+_updates
 _locale
 _hostname
 echo -n "Installing building tools and all dependancies and perl modules, please wait ... ";_depends
