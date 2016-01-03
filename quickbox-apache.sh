@@ -541,9 +541,9 @@ deb-src http://archive.canonical.com/ubuntu $(lsb_release -sc) partner
 deb http://www.deb-multimedia.org testing main
 EOF
 
-  apt-get update
-  apt-get -y purge samba samba-common >>"${OUTTO}" 2>&1
-  apt-get -y upgrade
+  apt-get -y --force-yes update
+  apt-get -y --force-yes purge samba samba-common >>"${OUTTO}" 2>&1
+  apt-get -y --force-yes upgrade
   if [[ -e /etc/ssh/sshd_config ]]; then
     echo "Port 4747" /etc/ssh/sshd_config
     sed -i 's/Port 22/Port 4747/g' /etc/ssh/sshd_config
@@ -561,7 +561,7 @@ echo "LC_ALL=en_US.UTF-8" >>/etc/default/locale
   if [[ -e /usr/sbin/locale-gen ]]; then locale-gen >>"${OUTTO}" 2>&1
   else
     apt-get update >>"${OUTTO}" 2>&1
-    apt-get install locales locale-gen --yes --force-yes >>"${OUTTO}" 2>&1
+    apt-get install locales locale-gen -y --force-yes >>"${OUTTO}" 2>&1
     locale-gen >>"${OUTTO}" 2>&1
     export LANG="en_US.UTF-8"
     export LC_ALL="en_US.UTF-8"
