@@ -297,10 +297,6 @@ cat >/home/${username}/.startup<<SU
 export USER=\$(id -un)
 IRSSI_CLIENT=yes
 RTORRENT_CLIENT=yes
-DELUGED_CLIENT=no
-DELUGED_PORT=19560
-DELUGEWEB_CLIENT=no
-DELUGEWEB_PORT=
 ADDRESS=\$(/sbin/ifconfig | grep "inet addr" | awk -F: '{print \$2}' | awk '{print \$1}'|grep -v "^127"|head -n1)
 
 # NO NEED TO EDIT PAST HERE!
@@ -311,15 +307,6 @@ fi
 if [ "\$RTORRENT_CLIENT" == "yes" ]; then 
   (screen -ls|grep rtorrent >/dev/null || (screen -fa -dmS rtorrent rtorrent && false))
 fi
-
-if [ "\$DELUGED_CLIENT" == "yes" ]; then 
-  (pgrep -u \$USER deluged >/dev/null || (deluged -i \$ADDRESS -p \$DELUGED_PORT && false))
-fi
-
-if [ "\$DELUGEWEB_CLIENT" == "yes" ]; then 
-  (pgrep -u \$USER deluge-web >/dev/null || (deluge-web -p \$DELUGEWEB_PORT -f && false))
-fi
-
 SU
   chown ${username}.${username} /home/${username}/.startup >/dev/null 2>&1
   chmod +x /home/${username}/.startup >/dev/null 2>&1
@@ -393,20 +380,6 @@ Alias /${username}.downloads "/home/${username}/torrents/"
   </Directory>
 AS
 
-cat >/etc/apache2/sites-enabled/${username}.deluge.downloads.conf<<DL
-Alias /${username}.deluge "/home/${username}/downloads/"
-  <Directory "/home/${username}/downloads">
-    Options +Indexes +FollowSymLinks +MultiViews
-    AuthType Digest
-    AuthName "rutorrent"
-    AuthUserFile '/etc/htpasswd'
-    Require valid-user
-    AllowOverride None
-    Order allow,deny
-    allow from all
-  </Directory>
-DL
-
 cat >>/etc/apache2/sites-enabled/scgimount.conf<<SC
 SCGIMount /${username} 127.0.0.1:$RPORT
 SC
@@ -427,7 +400,6 @@ echo -n "Deleting ${username} /home and rutorrent data ... "
 userdel -rf ${username} >/dev/null 2>&1
 groupdel ${username} >/dev/null 2>&1
 sed -i '/^$username/d' ${htpasswd}
-rm -rf /etc/apache2/sites-enabled/${username}.deluge.deluge.downloads.conf >/dev/null 2>&1
 rm -rf /etc/apache2/sites-enabled/alias.${username}.download.conf  >/dev/null 2>&1
 rm -rf ${rutorrent}/conf/users/${username} >/dev/null 2>&1
 rm -rf ${rutorrent}/share/users/${username} >/dev/null 2>&1
@@ -590,7 +562,6 @@ function _depends() {
   if [[ -e skel.tar ]]; then rm -rf skel.tar;fi 
   tar xf $REPOURL/sources/skel.tar -C /etc
   tar xzf $REPOURL/sources/rarlinux-x64-5.2.1.tar.gz -C ./
-  mkdir -p /etc/skel/.config/deluge >/dev/null 2>&1
   cp ./rar/*rar /usr/bin
   cp ./rar/*rar /usr/sbin
   rm -rf rarlinux*.tar.gz
@@ -730,41 +701,6 @@ function _rtorrent() {
 # scgi enable function (12)
 function _scgi() { ln -s /etc/apache2/mods-available/scgi.load /etc/apache2/mods-enabled/scgi.load >>"${OUTTO}" 2>&1 ; }
 
-# function to install deluge (12)
-function _deluge() {
-VERSION=1.3.6
-  echo -ne "${yellow}Install Deluge?${normal} (at the moment, this is bugged. I am working on a fix.) (Default: ${red}N${normal}): "; read responce
-  case $responce in
-    [yY] | [yY][Ee][Ss] ) deluge=yes ;;
-    [nN] | [nN][Oo] | "") deluge=no ;;
-    *) deluge=no ;;
-  esac
-  if [[ $deluge == "yes" ]]; then
-    echo -ne "Installing deluge-${green}$VERSION${normal} ... "
-    LIST='dstat g++ python-all-dev python-all python-openssl python-simplejson python-setuptools
-python-chardet libssl-dev zlib1g-dev libboost-dev libasio-dev libboost-python-dev
-libboost-thread-dev python-twisted python-twisted-bin python-twisted-bin-dbg
-python-twisted-core python-twisted-conch python-twisted-lore python-twisted-mail
-python-twisted-names python-twisted-news python-twisted-runner python-twisted-runner-dbg
-python-twisted-web python-twisted-web2 python-twisted-words python-twisted-libravatar python-mako python-xdg
-libboost-date-time-dev libboost-filesystem-dev build-essential python-libtorrent'
-    for depend in $LIST; do
-    apt-get -q -y install $depend >/dev/null 2>&1
-    done
-    wget -q http://download.deluge-torrent.org/source/deluge-$VERSION.tar.gz >/dev/null 2>&1
-    tar xzf deluge-$VERSION.tar.gz
-    cd deluge-$VERSION >/dev/null 2>&1; 
-    python setup.py build >/dev/null 2>&1; 
-    python setup.py install >/dev/null 2>&1; 
-    ldconfig >/dev/null 2>&1
-    cd ..
-    rm -rf deluge-*
-    echo "${OK}"
-  else
-    echo "${cyan}Skipping deluge install...${normal}"
-  fi
-}
-
 # function to install rutorrent (13)
 function _rutorrent() {
   mkdir -p /srv/
@@ -788,7 +724,7 @@ EOF
   echo "${OK}"
 }
 
-# ask for bash or lshell function (15)
+# ask for bash or lshell function (14)
 function _askshell() {
   echo -ne "${yellow}Set user shell to lshell?${normal} (Default: ${red}N${normal}): "; read responce
   case $responce in
@@ -804,7 +740,7 @@ function _askshell() {
   esac
 }
 
-# adduser function (16)
+# adduser function (15)
 function _adduser() {
   echo -n "Username: "; read user
   username=$(echo "$user"|sed 's/.*/\L&/')
@@ -815,30 +751,24 @@ function _adduser() {
     passwd=${password}
     echo "${username}:${passwd}" | chpasswd >>"${OUTTO}" 2>&1
     (echo -n "${username}:${REALM}:" && echo -n "${username}:${REALM}:${passwd}" | md5sum | awk '{print $1}' ) >> "${HTPASSWD}"
-    if [[ $deluge == "yes" ]];then
-    echo "${username}:${passwd}:10" >/home/${username}/.config/deluge/auth
-    fi
   else
     echo "setting password to ${genpass}"
     passwd=${genpass}
     echo "${username}:${passwd}" | chpasswd >>"${OUTTO}" 2>&1
     (echo -n "${username}:${REALM}:" && echo -n "${username}:${REALM}:${passwd}" | md5sum | awk '{print $1}' ) >> "${HTPASSWD}"
-    if [[ $deluge == "yes" ]];then
-    echo "${username}:${passwd}:10" >/home/${username}/.config/deluge/auth
-    fi
   fi
   if [[ $sudoers == "yes" ]]; then
   awk -v username=${username} '/^root/ && !x {print username    " ALL=(ALL:ALL) NOPASSWD: ALL"; x=1} 1' /etc/sudoers > /tmp/sudoers;mv /tmp/sudoers /etc
   fi
 }
 
-# function to enable sudo for www-data function (17)
+# function to enable sudo for www-data function (16)
 function _apachesudo() {
 awk '/^root/ && !x {print "www-data     ALL=(ALL:ALL) NOPASSWD: /usr/bin/quota, /usr/sbin/repquota, /usr/bin/reload, /bin/sed, /usr/bin/pkill, /usr/bin/killall"; x=1} 1' /etc/sudoers > /tmp/sudoers;mv /tmp/sudoers /etc
 awk '/^%sudo/ && !x {print "%www-data     ALL=(ALL:ALL) NOPASSWD: /usr/bin/quota, /usr/sbin/repquota, /usr/bin/reload, /bin/sed, /usr/bin/pkill, /usr/bin/killall"; x=1} 1' /etc/sudoers > /tmp/sudoers;mv /tmp/sudoers /etc
 }
 
-# function to configure apache (18)
+# function to configure apache (17)
 function _apacheconf() {
 cat >/etc/apache2/sites-enabled/aliases-seedbox.conf<<EOF
 Alias /rutorrent "/srv/rutorrent"
@@ -854,17 +784,6 @@ Alias /rutorrent "/srv/rutorrent"
 </Directory>
 Alias /${username}.downloads "/home/${username}/torrents/"
 <Directory "/home/${username}/torrents/">
-  Options Indexes FollowSymLinks MultiViews
-  AuthType Digest
-  AuthName "rutorrent"
-  AuthUserFile '/etc/htpasswd'
-  Require valid-user
-  AllowOverride None
-  Order allow,deny
-  allow from all
-</Directory>
-Alias /${username}.deluge "/home/${username}/downloads/"
-<Directory "/home/${username}/downloads">
   Options Indexes FollowSymLinks MultiViews
   AuthType Digest
   AuthName "rutorrent"
@@ -939,7 +858,7 @@ DOE
   echo "${OK}"
 }
 
-# function to configure first user config (19)
+# function to configure first user config (18)
 function _rconf() {
 cat >"/home/${username}/.rtorrent.rc"<<EOF
 # -- START HERE --
@@ -967,116 +886,11 @@ execute_nothrow=chmod,777,/home/${username}/.sessions/
 check_hash = no
 # -- END HERE --
 EOF
-
-if [[ $deluge == "yes" ]]; then
-cat >/home/${username}/.config/deluge/core.conf<<EOF
-{
-  "file": 1, 
-  "format": 1
-}{
-  "info_sent": 0.0, 
-  "lsd": true, 
-  "max_download_speed": -1.0, 
-  "send_info": false, 
-  "natpmp": true, 
-  "move_completed_path": "/home/${username}/torrents", 
-  "peer_tos": "0x00", 
-  "enc_in_policy": 1, 
-  "queue_new_to_top": false, 
-  "ignore_limits_on_local_network": true, 
-  "rate_limit_ip_overhead": true, 
-  "daemon_port": 19596, 
-  "torrentfiles_location": "/home/${username}/dwatch", 
-  "max_active_limit": -1, 
-  "geoip_db_location": "/usr/share/GeoIP/GeoIP.dat", 
-  "upnp": true, 
-  "utpex": true, 
-  "max_active_downloading": 3, 
-  "max_active_seeding": 5, 
-  "allow_remote": true, 
-  "outgoing_ports": [
-    0, 
-    0
-  ], 
-  "enabled_plugins": [], 
-  "max_half_open_connections": 50, 
-  "download_location": "/home/${username}/downloads", 
-  "compact_allocation": false, 
-  "max_upload_speed": -1.0, 
-  "plugins_location": "/home/${username}/.config/deluge/plugins", 
-  "max_connections_global": -1, 
-  "enc_prefer_rc4": true, 
-  "cache_expiry": 60, 
-  "dht": true, 
-  "stop_seed_at_ratio": false, 
-  "stop_seed_ratio": 2.0, 
-  "max_download_speed_per_torrent": -1, 
-  "prioritize_first_last_pieces": true, 
-  "max_upload_speed_per_torrent": -1, 
-  "auto_managed": true, 
-  "enc_level": 2, 
-  "copy_torrent_file": false, 
-  "max_connections_per_second": 50, 
-  "listen_ports": [
-    6881, 
-    6891
-  ], 
-  "max_connections_per_torrent": -1, 
-  "del_copy_torrent_file": false, 
-  "move_completed": false, 
-  "autoadd_enable": false, 
-  "proxies": {
-    "peer": {
-      "username": "", 
-      "password": "", 
-      "hostname": "", 
-      "type": 0, 
-      "port": 8080
-    }, 
-    "web_seed": {
-      "username": "", 
-      "password": "", 
-      "hostname": "", 
-      "type": 0, 
-      "port": 8080
-    }, 
-    "tracker": {
-      "username": "", 
-      "password": "", 
-      "hostname": "", 
-      "type": 0, 
-      "port": 8080
-    }, 
-    "dht": {
-      "username": "", 
-      "password": "", 
-      "hostname": "", 
-      "type": 0, 
-      "port": 8080
-    }
-  }, 
-  "dont_count_slow_torrents": false, 
-  "add_paused": false, 
-  "random_outgoing_ports": true, 
-  "max_upload_slots_per_torrent": -1, 
-  "new_release_check": false, 
-  "enc_out_policy": 1, 
-  "seed_time_ratio_limit": 7.0, 
-  "remove_seed_at_ratio": false, 
-  "autoadd_location": "/home/${username}/dwatch/", 
-  "max_upload_slots_global": 4, 
-  "seed_time_limit": 180, 
-  "cache_size": 512, 
-  "share_ratio_limit": 2.0, 
-  "random_port": true, 
-  "listen_interface": "${ip}"
-}
-EOF
 fi
   echo "${OK}"
 }
 
-# function to install rutorrent plugins (20)
+# function to install rutorrent plugins (19)
 function _plugins() {
   mkdir -p "${rutorrent}plugins"; cd "${rutorrent}plugins"
   LIST="autodl-irssi autotools check_port chunks cookies create data datadir diskspace edit erasedata extratio extsearch feeds filedrop filemanager fileshare geoip _getdir history httprpc loginmgr logoff lookat mediainfo _noty ratio ratiocolor retrackers rss rssurlrewrite rutorrentMobile rutracker_check scheduler seedingtime screenshots show_peers_like_wtorrent source _task theme throttle tracklabels trafic unpack"
@@ -1117,7 +931,7 @@ EOF
   rm -rf /srv/rutorrent/plugins/tracklabels/labels/nlb.png
 }
 
-# function autodl to install autodl irssi scripts (21)
+# function autodl to install autodl irssi scripts (20)
 function _autodl() {
   mkdir -p "/home/${username}/.irssi/scripts/autorun/" >>"${OUTTO}" 2>&1
   cd "/home/${username}/.irssi/scripts/"
@@ -1139,7 +953,7 @@ ADC
   echo "${OK}"
 }
 
-# function to make dirs for first user (22)
+# function to make dirs for first user (21)
 function _makedirs() {
   mkdir /home/"${username}"/{torrents,.sessions,watch} >>"${OUTTO}" 2>&1
   chown "${username}".www-data /home/"${username}"/{torrents,.sessions,watch,.rtorrent.rc,.config} >>"${OUTTO}" 2>&1
@@ -1148,17 +962,13 @@ function _makedirs() {
   echo "${OK}"
 }
 
-# function to make crontab .statup file (23)
+# function to make crontab .statup file (22)
 function _cronfile() { 
 cat >"/home/${username}/.startup"<<'EOF'
 #!/bin/bash
 export USER=`id -un`
 IRSSI_CLIENT=yes
 RTORRENT_CLIENT=yes
-DELUGED_CLIENT=
-DELUGED_PORT=
-DELUGEWEB_CLIENT=
-DELUGEWEB_PORT=
 WIPEDEAD=yes
 BTSYNC=no
 ADDRESS=$(/sbin/ifconfig | grep "inet addr" | awk -F: '{print $2}' | awk '{print $1}'|grep -v "^127"|head -n1)
@@ -1173,35 +983,17 @@ if [ "$RTORRENT_CLIENT" == "yes" ]; then
   (screen -ls|grep rtorrent >/dev/null || (screen -fa -dmS rtorrent rtorrent && false))
 fi
 
-if [ "$DELUGED_CLIENT" == "yes" ]; then
-  if [ -z $DELUGED_PORT ]; then exit; fi 
-  if [ $DELUGED_PORT -lt 1024 ]; then exit; fi
-  (pgrep -u $USER deluged >/dev/null || (deluged -i $ADDRESS -p $DELUGED_PORT && false))
-fi
-
-if [ "$DELUGEWEB_CLIENT" == "yes" ]; then
-  if [ -z $DELUGEWEB_PORT ]; then exit; fi
-  if [ $DELUGEWEB_PORT -lt 1024 ]; then exit; fi
-  (pgrep -u $USER deluge-web >/dev/null || (deluge-web -f --port=$DELUGEWEB_PORT --fork && false))
-fi
-
 if [ "$BTSYNC" == "yes" ]; then
         (pgrep -u $USER btsync >/dev/null || /home/$USER/btsync --webui.listen ${ADDRESS}:8888 >/dev/null 2>&1 && false)
 fi
-
-
 EOF
-if [[ $deluge == "yes" ]];then
-  sed -i 's/DELUGED_PORT=$/DELUGED_PORT=19596/g' /home/${username}/.startup
-  sed -i 's/DELUGED_CLIENT=$/DELUGED_CLIENT=yes/g' /home/${username}/.startup
-fi
 if [[ $btsync == "yes" ]]; then
   sed -is 's/BTSYNC=no/BTSYNC=yes/g' /home/${username}/.startup
 fi
 echo "${OK}"
 }
 
-# function to set permissions on first user (24)
+# function to set permissions on first user (23)
 function _perms() {
   chown -R ${username}.${username} /home/${username}/ >>"${OUTTO}" 2>&1
   chown ${username}.${username} /home/${username}/.startup
@@ -1213,7 +1005,7 @@ function _perms() {
   echo "${OK}"
 }
 
-# function to configure first user config.php (25)
+# function to configure first user config.php (24)
 function _ruconf() {
   mkdir -p ${rutorrent}conf/users/${username}/
 
@@ -1252,9 +1044,9 @@ EOF
   echo "${OK}"
 }
 
-# function to set first user quota (26)
+# function to set first user quota (25)
 function _askquota() {
-echo -ne "If your going to use a quota disk system, you must hit Y (If your unsure, hit N) (Default: ${red}N${normal}) "; read responce
+echo -ne "${yellow}Are you going to use a quota disk system?${normal} (If your unsure, hit N) (Default: ${red}N${normal}) "; read responce
   case $responce in
     [yY] | [yY][Ee][Ss] )
     apt-get -yy -q install quota >/dev/null 2>&1
@@ -1267,14 +1059,12 @@ echo -ne "If your going to use a quota disk system, you must hit Y (If your unsu
   esac
 }
 
-# create reload script (27) 
+# create reload script (26) 
 function _reloadscript() {
 cat >/usr/bin/reload<<'EOF'
 #!/bin/bash
 export USER=$(id -un)
 killall -u $USER irssi >/dev/null 2>&1
-killall -u $USER deluged >/dev/null 2>&1
-killall -u $USER deluge-web >/dev/null 2>&1
 killall -u $USER rtorrent >/dev/null 2>&1
 killall -u $USER main >/dev/null 2>&1
 rm -rf ~/.sessions/rtorrent.lock
@@ -1284,21 +1074,21 @@ chmod +x /usr/bin/reload
 echo "${OK}"
 }
 
-# seedbox boot for first user (28)
+# seedbox boot for first user (27)
 function _boot() {
         command1="*/1 * * * * /home/${username}/.startup"
         cat <(fgrep -iv "${command1}" <(sh -c 'sudo -u ${username} crontab -l' >/dev/null 2>&1)) <(echo "${command1}") | sudo -u ${username} crontab -
   echo "${OK}"
 }
 
-# function to install pure-ftpd (29)
+# function to install pure-ftpd (28)
 function _installpureftpd() {
   apt-get purge -y -q --force-yes vsftpd pure-ftpd >>"${OUTTO}" 2>&1
   apt-get install -q -y --force-yes vsftpd >>"${OUTTO}" 2>&1
   echo "${OK}"
 }
 
-# function to configure pure-ftpd (30)
+# function to configure pure-ftpd (29)
 function _pureftpdconfig() {
 cat >/root/.openssl.cnf <<EOF
 [ req ]
@@ -1359,12 +1149,12 @@ VSD
   echo "${OK}"
 }
 
-# function to ask for plexmediaserver (31)
+# function to ask for plexmediaserver (30)
 function _askplex() {
-  echo -ne "${yellow}Install plexmediaserver${normal} (Y/n): (Default: ${red}N${normal}) "; read responce
+  echo -ne "${yellow}Would you like to install Plex Media Server${normal} (Y/n): (Default: ${red}N${normal}) "; read responce
   case $responce in
     [yY] | [yY][Ee][Ss] )
-    echo -n "Installing plex ... "
+    echo -n "Installing Plex ... "
       #cp $REPOURL/sources/plexmediaserver_0.9.14.6.1620-e0b7243_amd64.deb .
       #dpkg -i plexmediaserver_0.9.14.6.1620-e0b7243_amd64.deb >/dev/null 2>&1
       # Just grab latest from plex.tv
@@ -1375,14 +1165,14 @@ function _askplex() {
       rm -rf xelp
       echo "${OK}"
       ;;
-    [nN] | [nN][Oo] | "") echo "Skipping ... " ;;
-    *) echo "Skipping ... " ;;
+    [nN] | [nN][Oo] | "") echo "${cyan}Skipping Plex install${normal} ... " ;;
+    *) echo "${cyan}Skipping Plex install${normal} ... " ;;
   esac
 }
 
-# function to ask for btsync (32)
+# function to ask for btsync (31)
 function _askbtsync() {
-  echo -ne "Install BTSync (Y/n): (Default: \033[1mN\033[0m) "; read responce
+  echo -ne "${yellow}Would you like to install BTSync?${normal} (Y/n): (Default: ${red}N${normal}) "; read responce
   case $responce in
     [yY] | [yY][Ee][Ss] )
     echo -n "Installing BTSync ... "
@@ -1393,34 +1183,16 @@ function _askbtsync() {
     echo "${OK}"
     ;;
     [nN] | [nN][Oo] | "") echo "Skipping ... " ;;
-    *) echo "Skipping ... " ;;
+    *) echo "${cyan}Skipping BTSync install${normal} ... " ;;
   esac
 }
 
-# function to ask for subsonic (33)
-function _asksubsonic() {
-  echo -ne "Install Subsonic (Y/n): (Default: \033[1mN\033[0m) "; read responce
-  case $responce in
-    [yY] | [yY][Ee][Ss] )
-    echo -n "Installing Subsonic ... "
-    wget -4q http://subsonic.org/download/subsonic-5.3.deb
-    apt-get install openjdk-7-jre -yy -q >/dev/null 2>&1
-    dpkg -i subsonic-5.3.deb >/dev/null 2>&1
-    rm -rf subsonic-5.3.deb
-    echo "SUBSONIC_ARGS=\"--max-memory=150\"" >/etc/default/subsonic
-    echo "SUBSONIC_USER=quickbox" >>/etc/default/subsonic
-    echo "${OK}"
-    ;;
-    [nN] | [nN][Oo] | "") echo "Skipping ... " ;;
-  esac
-}
-
-# function to create ssl cert for pure-ftpd (34)
+# function to create ssl cert for pure-ftpd (32)
 function _pureftpcert() {
   /bin/true
 }
 
-# function to show finished data (35)
+# function to show finished data (33)
 function _finished() {
   echo -e "\033[0mCOMPLETED in ${FIN}/min\033[0m"
   echo "Valid Commands: "
@@ -1433,14 +1205,14 @@ function _finished() {
   echo -e "\033[1msetdisk\033[0m (change the quota mount of a user) ... "
   echo;echo;echo
   echo "Seedbox can be found at http://${username}:${passwd}@$ip (Also works for FTP:5757/SSH:4747)"
-  echo "If you need to restart rtorrent/irssi/deluge, you can type 'reload'"
-  echo "http://${username}:${passwd}@$ip (Also works for FTP:5757/SSH:4747/Deluge:19596)" > ${username}.info
+  echo "If you need to restart rtorrent/irssi, you can type 'reload'"
+  echo "http://${username}:${passwd}@$ip (Also works for FTP:5757/SSH:4747)" > ${username}.info
   echo "Reloading: sshd, apache, vsftpd, fail2ban and quota"
 
 cat >/root/information.info<<EOF
   Seedbox can be found at http://${username}:${passwd}@$ip (Also works for FTP:5757/SSH:4747)
-  If you need to restart rtorrent/irssi/deluge, you can type 'reload'
-  http://${username}:${passwd}@$ip (Also works for FTP:5757/SSH:4747/Deluge:19596)
+  If you need to restart rtorrent/irssi, you can type 'reload'
+  http://${username}:${passwd}@$ip (Also works for FTP:5757/SSH:4747)
 EOF
 
   if ! $(ifconfig venet0 >/dev/null 2>&1);then
@@ -1481,14 +1253,12 @@ _bashrc
 _intro
 _checkroot
 _logcheck
-# _denyhosts
 _updates
 _locale
 _hostname
 echo -n "Installing building tools and all dependancies and perl modules, please wait ... ";_depends
 _askffmpeg;if [[ ${ffmpeg} == "yes" ]]; then _ffmpeg; fi
-_askrtorrent;_xmlrpc;_libtorrent;_rtorrent;_scgi;_deluge
-# echo -n "Setting sysctl.conf ... "; _sysctl
+_askrtorrent;_xmlrpc;_libtorrent;_rtorrent;_scgi;
 echo -n "Installing rutorrent into /srv ... ";_rutorrent;_askshell;_adduser;_apachesudo
 echo -n "Setting up seedbox.conf for apache ... ";_apacheconf
 echo -n "Installing .rtorrent.rc for ${username} ... ";_rconf
@@ -1500,7 +1270,7 @@ echo -n "Writing ${username} rutorrent config.php file ... ";_ruconf;_askquota
 echo -n "Writing seedbox reload script ... ";_reloadscript
 echo -n "Installing VSFTPd ... ";_installpureftpd
 echo -n "Setting up VSFTPd ... ";_pureftpdconfig
-_askplex;_askbtsync;_asksubsonic
+_askplex;_askbtsync
 echo -n "Setting irssi/rtorrent to start on boot ... ";_boot
 echo -n "Setting permissions on ${username} ... ";_perms
 
