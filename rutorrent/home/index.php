@@ -6,40 +6,38 @@ $interface = "eth0";
 error_reporting(E_ALL);
 $username = getUser();
 function session_start_timeout($timeout=5, $probability=100, $cookie_domain='/') {
-    ini_set("session.gc_maxlifetime", $timeout);
-    ini_set("session.cookie_lifetime", $timeout);
-    $seperator = strstr(strtoupper(substr(PHP_OS, 0, 3)), "WIN") ? "\\" : "/";
-    $path = ini_get("session.save_path") . $seperator . "session_" . $timeout . "sec";
-    if(!file_exists($path)) {
-        if(!mkdir($path, 600)) {
-            trigger_error("Failed to create session save path directory '$path'. Check permissions.", E_USER_ERROR);
-        }
+  ini_set("session.gc_maxlifetime", $timeout);
+  ini_set("session.cookie_lifetime", $timeout);
+  $seperator = strstr(strtoupper(substr(PHP_OS, 0, 3)), "WIN") ? "\\" : "/";
+  $path = ini_get("session.save_path") . $seperator . "session_" . $timeout . "sec";
+  if(!file_exists($path)) {
+    if(!mkdir($path, 600)) {
+      trigger_error("Failed to create session save path directory '$path'. Check permissions.", E_USER_ERROR);
     }
-    ini_set("session.save_path", $path);
-    ini_set("session.gc_probability", $probability);
-    ini_set("session.gc_divisor", 100);
-    session_start();
-    if(isset($_COOKIE[session_name()])) {
-        setcookie(session_name(), $_COOKIE[session_name()], time() + $timeout, $cookie_domain);
-    }
+  }
+  ini_set("session.save_path", $path);
+  ini_set("session.gc_probability", $probability);
+  ini_set("session.gc_divisor", 100);
+  session_start();
+  if(isset($_COOKIE[session_name()])) {
+    setcookie(session_name(), $_COOKIE[session_name()], time() + $timeout, $cookie_domain);
+  }
 }
 
 session_start_timeout(5);
 $MSGFILE = session_id();
 
 function processExists($processName, $username) {
-    $exists= false;
-    exec("ps axo user:20,pid,pcpu,pmem,vsz,rss,tty,stat,start,time,comm|grep $username | grep -iE $processName | grep -v grep", $pids);
-    if (count($pids) > 0) {
-        $exists = true;
-    }
-    return $exists;
+  $exists= false;
+  exec("ps axo user:20,pid,pcpu,pmem,vsz,rss,tty,stat,start,time,comm|grep $username | grep -iE $processName | grep -v grep", $pids);
+  if (count($pids) > 0) {
+    $exists = true;
+  }
+  return $exists;
 }
 $rtorrent = processExists("\"main|rtorrent\"",$username);
 $irssi = processExists("irssi",$username);
-$deluged = processExists("deluged",$username);
 $btsync = processExists("btsync",$username);
-$subsonic = processExists("java",$username);
 $plex = processExists("Plex",$username);
 
 function isEnabled($search, $username){
@@ -53,88 +51,77 @@ function isEnabled($search, $username){
 }
 
 function writePlex($ip) {
-if (file_exists('.plex')) {
-  $myFile = "/etc/plex.conf";
-  $fh = fopen($myFile, 'w') or die("can't open file");
-  $stringData = "";
-  fwrite($fh, $stringData);
-  fclose($fh);
-  unlink('.plex');
-  shell_exec('sudo service apache2 reload &');
-  return 'Disabling inital setup connection for plex ... ';
-} else {
-  $myFile = "/etc/plex.conf";
-  $fh = fopen($myFile, 'w') or die("can't open file");
-  $stringData = "";
-  $stringData .= "LoadModule proxy_module /usr/lib/apache2/modules/mod_proxy.so\n";
-  $stringData .= "LoadModule proxy_http_module /usr/lib/apache2/modules/mod_proxy_http.so\n";
-  $stringData .= "<VirtualHost *:31400>\n";
-  $stringData .= "ProxyRequests Off\n";
-  $stringData .= "ProxyPreserveHost On\n";
-  $stringData .= "<Proxy *>\n";
-  $stringData .= " AddDefaultCharset Off\n";
-  $stringData .= " Order deny,allow\n";
-  $stringData .= " Allow from all\n";
-  $stringData .= "</Proxy>\n";
-  $stringData .= "ProxyPass / http://$ip:32400/\n";
-  $stringData .= "ProxyPassReverse / http://$ip:32400/\n";
-  $stringData .= "</VirtualHost>\n";
-  $stringData .= "<IfModule mod_proxy.c>\n";
-  $stringData .= "        Listen 31400\n";
-  $stringData .= "</IfModule>\n";
-  fwrite($fh, $stringData);
-  fclose($fh);
-  $myFile = ".plex";
-        $fh = fopen($myFile, 'w') or die("can't open file");
-        $stringData = "";
-        fwrite($fh, $stringData);
-        fclose($fh);
-        shell_exec('sudo service apache2 reload & ');
-        return 'Enabling inital setup connection for plex ... ';
+  if (file_exists('.plex')) {
+    $myFile = "/etc/plex.conf";
+    $fh = fopen($myFile, 'w') or die("can't open file");
+    $stringData = "";
+    fwrite($fh, $stringData);
+    fclose($fh);
+    unlink('.plex');
+    shell_exec('sudo service apache2 reload &');
+    return 'Disabling inital setup connection for plex ... ';
+  } else {
+    $myFile = "/etc/plex.conf";
+    $fh = fopen($myFile, 'w') or die("can't open file");
+    $stringData = "";
+    $stringData .= "LoadModule proxy_module /usr/lib/apache2/modules/mod_proxy.so\n";
+    $stringData .= "LoadModule proxy_http_module /usr/lib/apache2/modules/mod_proxy_http.so\n";
+    $stringData .= "<VirtualHost *:32400>\n";
+    $stringData .= "ProxyRequests Off\n";
+    $stringData .= "ProxyPreserveHost On\n";
+    $stringData .= "<Proxy *>\n";
+    $stringData .= " AddDefaultCharset Off\n";
+    $stringData .= " Order deny,allow\n";
+    $stringData .= " Allow from all\n";
+    $stringData .= "</Proxy>\n";
+    $stringData .= "ProxyPass / http://$ip:32400/\n";
+    $stringData .= "ProxyPassReverse / http://$ip:32400/\n";
+    $stringData .= "</VirtualHost>\n";
+    $stringData .= "<IfModule mod_proxy.c>\n";
+    $stringData .= "        Listen 32400\n";
+    $stringData .= "</IfModule>\n";
+    fwrite($fh, $stringData);
+    fclose($fh);
+    $myFile = ".plex";
+    $fh = fopen($myFile, 'w') or die("can't open file");
+    $stringData = "";
+    fwrite($fh, $stringData);
+    fclose($fh);
+    shell_exec('sudo service apache2 reload & ');
+    return 'Enabling inital setup connection for plex ... ';
   }
 }
 
 function writeMsg($message) {
-$file = $GLOBALS['MSGFILE'];
-$Handle = fopen("/tmp/" . $file, 'w');
-fwrite($Handle, $message);
-fclose($Handle);
+  $file = $GLOBALS['MSGFILE'];
+  $Handle = fopen("/tmp/" . $file, 'w');
+  fwrite($Handle, $message);
+  fclose($Handle);
 }
 
 function readMsg() {
-$file = $GLOBALS['MSGFILE'];
-$Handle = fopen("/tmp/" . $file, 'r');
-$output = fgets($Handle);
-fclose($Handle);
-if (isset($output)) {
-  $data = $output;
-  echo $data;
-} else {
-  echo "error";
+  $file = $GLOBALS['MSGFILE'];
+  $Handle = fopen("/tmp/" . $file, 'r');
+  $output = fgets($Handle);
+  fclose($Handle);
+  if (isset($output)) {
+    $data = $output;
+    echo $data;
+  } else {
+    echo "error";
+  }
 }
-}
+
 function chkPlex() {
-if (file_exists('.plex')) {
-   return " <div class=\"toggle-wrapper pull-right\"><div class=\"toggle-en toggle-light primary\" onclick=\"location.href='?id=88'\"></div></div>";
-} else {
-  return " <div class=\"toggle-wrapper pull-right\"><div class=\"toggle-dis toggle-light primary\" onclick=\"location.href='?id=88'\"></div></div>";
-}
-}
-
-function chkSubsonic() {
-if (file_exists('.subsonic')) {
-   return " <div class=\"toggle-wrapper pull-right\"><div class=\"toggle-en toggle-light primary\" onclick=\"location.href='?id=55'\"></div></div>";
-} else {
-  return " <div class=\"toggle-wrapper pull-right\"><div class=\"toggle-dis toggle-light primary\" onclick=\"location.href='?id=55\"></div></div>";
+  if (file_exists('.plex')) {
+    return " <div class=\"toggle-wrapper pull-right\"><div class=\"toggle-en toggle-light primary\" onclick=\"location.href='?id=88'\"></div></div>";
+  } else {
+    return " <div class=\"toggle-wrapper pull-right\"><div class=\"toggle-dis toggle-light primary\" onclick=\"location.href='?id=88'\"></div></div>";
+  }
 }
 
-}
-
-
-$plexURL = "http://" . $_SERVER['HTTP_HOST'] . ":31400/web/";
-$subsonicURL = "http://" . $_SERVER['HTTP_HOST'] . ":4040";
+$plexURL = "http://" . $_SERVER['HTTP_HOST'] . ":32400/web/";
 $btsyncURL = "http://" . $_SERVER['HTTP_HOST'] . ":8888/gui/";
-$SonicURL = "http://" . $_SERVER['HTTP_HOST'] . ":4040/";
 
 $reload='';
 $service='';
@@ -146,16 +133,8 @@ if ($irssi == "1") { $ival = "iRSSi-Autodl <span class=\"label label-success pul
 } else { $ival = "iRSSi-Autodl <span class=\"label label-danger pull-right\">Disabled</span>";
 }
 
-if ($deluged == "1") { $dval = "DelugeD <span class=\"label label-success pull-right\">Enabled</span>"; 
-} else { $dval = "DelugeD <span class=\"label label-danger pull-right\">Disabled</span>";
-}
-
 if ($btsync == "1") { $bval = "BTSync <span class=\"label label-success pull-right\">Enabled</span>"; 
 } else { $bval = "BTSync <span class=\"label label-danger pull-right\">Disabled</span>";
-}
-
-if ($subsonic == "1") { $sval = "Subsonic <span class=\"label label-success pull-right\">Enabled</span>"; 
-} else { $sval = "Subsonic <span class=\"label label-danger pull-right\">Disabled</span>"; 
 }
 
 if (file_exists('.plex')) { $pval = "Plex Public Access <span class=\"label label-success pull-right\">Enabled</span>"; 
@@ -195,12 +174,8 @@ if (file_exists('/home/'.$username.'/.startup')) {
     $cbodyr .= "RTorrent ". $rtorrent;
   $irssi = isEnabled("IRSSI_CLIENT=yes", $username);
     $cbodyi .= "iRSSi-AutoDL ". $irssi;
-  $deluge = isEnabled("DELUGED_CLIENT=yes", $username);
-    $cbodyd .= "DelugeD ". $deluge;
   $btsync = isEnabled("BTSYNC=yes", $username);
     $cbodyb .= "BTSync ". $btsync;
-  $subsonic = isEnabled("SUBSONIC=yes", $username);
-    $cbodys .= "Subsonic ". $subsonic;
   $plexcheck = chkPlex();
     $cbodyp .= "Plex Public Access " .$plexcheck;
   } else {
@@ -236,31 +211,6 @@ if (file_exists('/usr/sbin/repquota')) {
 if (file_exists('/home/'.$username.'/.sessions/rtorrent.lock')) {
       $rtorrents = shell_exec("ls /home/".$username."/.sessions/*.torrent|wc -l");
 }
-if (file_exists('/home/'.$username.'/.config/deluge/state/torrents.state')) {
-      $dtorrents = shell_exec("ls /home/".$username."/.config/deluge/state/*.torrent|wc -l");
-}
-break;
-/* subsonic enable/disable */
-
-case 55:
-//  $subvar = chkSubsonic();
-if (file_exists('.subsonic') == 1) {
-        writeMsg("Hello <b>$username</b>: Im going to disable <b>Subsonic ($pid)</b> ... </a><br>");
-        $message = "Hello <b>$username</b>: Im going to disable <b>Subsonic ($pid)</b> ... </a><br>";
-        shell_exec("sudo service subsonic stop >/dev/null 2>&1");
-        shell_exec("sudo systemctl disable subsonic >/dev/null 2>&1");
-        $pid = shell_exec("pgrep java");
-        echo $pid;
-        shell_exec("sudo pkill java");
-        unlink('.subsonic');
-} else {
-        writeMsg("Hello <b>$username</b>: Im going to enable <b>Subsonic</b> ($pid) $SonicURL ... </a><br>");
-        $message = "Hello <b>$username</b>: Im going to enable <b>Subsonic</b> ($pid) $SonicURL ... </a><br>";
-        shell_exec("sudo service subsonic start >/dev/null 2>&1");
-        shell_exec("sudo systemctl enable subsonic >/dev/null 2>&1");
-        shell_exec("touch .subsonic");
-}
-  header('Location: https://' . $_SERVER['HTTP_HOST'] . '/');
 break;
 
 /* start services */
@@ -423,13 +373,11 @@ break;
             <li class="active"><a href="index.php"><i class="fa fa-home"></i> <span>Dashboard</span></a></li>
             <li><a href="/rutorrent" target="_blank"><i class="fa fa-puzzle-piece"></i> <span>ruTorrent</span></a></li>
             <?php if (processExists("btsync",$username)) { echo "<li><a href=\"$btsyncURL\" target=\"_blank\"><i class=\"fa fa-retweet\"></i> <span>BTSync</span></a></li>"; } ?>
-            <?php if (processExists("java",$username)) { echo "<li><a href=\"$subsonicURL\" target=\"_blank\"><i class=\"fa fa-video-camera\"></i> <span>Subsonic</span></a></li>"; } ?>
             <?php if (file_exists('.plex')) { echo "<li><a href=\"$plexURL\" target=\"_blank\"><i class=\"fa fa-play\"></i> <span>Plex</span></a></li>"; } ?>
             <li class="nav-parent nav-active">
               <a href=""><i class="fa fa-cube"></i> <span>Downloads</span></a>
               <ul class="children">
                 <li><a href="/<?php echo "$username"; ?>.downloads" target="_blank">ruTorrent</a></a></li>
-                <li><a href="/<?php echo "$username"; ?>.deluge" target="_blank">Deluge</a></li>
               </ul>
             </li>
             <li><a href="?reload=true"><i class="fa fa-refresh"></i> <span>Reload Services</span></a></li>
@@ -510,17 +458,6 @@ break;
                   </li>
                   <li>
                     <?php echo "$cbodyb"; ?>
-                  </li>
-                  <li>
-                   Subsonic
-                    <?php
-                    if (processExists("java",$username)) {
-                      echo " <div class=\"toggle-wrapper pull-right\"><div class=\"toggle-en toggle-light primary\" onclick=\"location.href='?id=55'\"></div></div>"; 
-                    } else {
-                      echo " <div class=\"toggle-wrapper pull-right\"><div class=\"toggle-dis toggle-light primary\" onclick=\"location.href='?id=55'\"></div></div>"; 
-                    }
-                    ?>
-
                   </li>
                   <li>
                     <?php echo "$cbodyp"; ?>
@@ -663,8 +600,6 @@ break;
                   <hr />
                   <h4>Torrents in rtorrent</h4>
                   <p class="nomargin">There are <b><?php echo "$rtorrents"; ?></b> torrents loaded.</p>
-                  <h4>Torrents in deluge</h4>
-                  <p class="nomargin">There are <b><?php echo "$dtorrents"; ?></b> torrents loaded.</p>
                 </div>
               </div><!-- col-md-12 -->
             
