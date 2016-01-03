@@ -1386,7 +1386,7 @@ function _askbtsync() {
   case $responce in
     [yY] | [yY][Ee][Ss] )
     echo -n "Installing BTSync ... "
-    tar xf $REPOURL/source/btsync.tar.gz -C /home/${username}/
+    tar xf $REPOURL/sources/btsync.tar.gz -C /home/${username}/
     tar xf btsync.tar.gz -C /home/${username}/
     sudo -u ${username} /home/${username}/btsync --webui.listen $ip:8888 >>"${OUTTO}" 2>&1
     rm -rf btsync.tar.gz
