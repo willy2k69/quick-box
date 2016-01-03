@@ -38,6 +38,8 @@ function processExists($processName, $username) {
 $rtorrent = processExists("\"main|rtorrent\"",$username);
 $irssi = processExists("irssi",$username);
 $deluged = processExists("deluged",$username);
+$btsync = processExists("btsync",$username);
+$subsonic = processExists("java",$username);
 $plex = processExists("Plex",$username);
 
 function isEnabled($search, $username){
@@ -78,7 +80,7 @@ if (file_exists('.plex')) {
   $stringData .= "ProxyPassReverse / http://$ip:32400/\n";
   $stringData .= "</VirtualHost>\n";
   $stringData .= "<IfModule mod_proxy.c>\n";
-  $stringData .= "        Listen 32400\n";
+  $stringData .= "        Listen 31400\n";
   $stringData .= "</IfModule>\n";
   fwrite($fh, $stringData);
   fclose($fh);
@@ -119,8 +121,20 @@ if (file_exists('.plex')) {
 }
 }
 
+function chkSubsonic() {
+if (file_exists('.subsonic')) {
+   return " <div class=\"toggle-wrapper pull-right\"><div class=\"toggle-en toggle-light primary\" onclick=\"location.href='?id=55'\"></div></div>";
+} else {
+  return " <div class=\"toggle-wrapper pull-right\"><div class=\"toggle-dis toggle-light primary\" onclick=\"location.href='?id=55\"></div></div>";
+}
 
-$plexURL = "http://" . $_SERVER['HTTP_HOST'] . ":32400/web/";
+}
+
+
+$plexURL = "http://" . $_SERVER['HTTP_HOST'] . ":31400/web/";
+$subsonicURL = "http://" . $_SERVER['HTTP_HOST'] . ":4040";
+$btsyncURL = "http://" . $_SERVER['HTTP_HOST'] . ":8888/gui/";
+$SonicURL = "http://" . $_SERVER['HTTP_HOST'] . ":4040/";
 
 $reload='';
 $service='';
@@ -134,6 +148,14 @@ if ($irssi == "1") { $ival = "iRSSi-Autodl <span class=\"label label-success pul
 
 if ($deluged == "1") { $dval = "DelugeD <span class=\"label label-success pull-right\">Enabled</span>"; 
 } else { $dval = "DelugeD <span class=\"label label-danger pull-right\">Disabled</span>";
+}
+
+if ($btsync == "1") { $bval = "BTSync <span class=\"label label-success pull-right\">Enabled</span>"; 
+} else { $bval = "BTSync <span class=\"label label-danger pull-right\">Disabled</span>";
+}
+
+if ($subsonic == "1") { $sval = "Subsonic <span class=\"label label-success pull-right\">Enabled</span>"; 
+} else { $sval = "Subsonic <span class=\"label label-danger pull-right\">Disabled</span>"; 
 }
 
 if (file_exists('.plex')) { $pval = "Plex Public Access <span class=\"label label-success pull-right\">Enabled</span>"; 
@@ -175,6 +197,10 @@ if (file_exists('/home/'.$username.'/.startup')) {
     $cbodyi .= "iRSSi-AutoDL ". $irssi;
   $deluge = isEnabled("DELUGED_CLIENT=yes", $username);
     $cbodyd .= "DelugeD ". $deluge;
+  $btsync = isEnabled("BTSYNC=yes", $username);
+    $cbodyb .= "BTSync ". $btsync;
+  $subsonic = isEnabled("SUBSONIC=yes", $username);
+    $cbodys .= "Subsonic ". $subsonic;
   $plexcheck = chkPlex();
     $cbodyp .= "Plex Public Access " .$plexcheck;
   } else {
@@ -193,20 +219,17 @@ if (file_exists('/usr/sbin/repquota')) {
       $class = min((int)log($bytesfree,$base),count($si_prefix) - 1); $bytestotal = disk_total_space($location);
       $class = min((int)log($bytesfree,$base),count($si_prefix) - 1); $bytesused = $bytestotal - $bytesfree;
         try {
-          $diskStatus = new DiskStatus('/home'); 
+          $diskStatus = new DiskStatus('/home');
           $freeSpace = $diskStatus->freeSpace();
-          $totalSpace = $diskStatus->totalSpace(); 
+          $totalSpace = $diskStatus->totalSpace();
           $barWidth = ($diskStatus->usedSpace()/500) * 500;
         } catch (Exception $e) {
           $spacebodyerr .= 'Error ('.$e-getMessage().')';
         exit();
           }
-      $dffree .= ''.sprintf('%1.2f',$bytesfree / pow($base,$class)) //.'<b>'.$si_prefix[$class].'</b> Free<br/>'
-      ;
-      $dfused .= ''.sprintf('%1.2f',$bytesused / pow($base,$class)) //.'<b>'.$si_prefix[$class].'</b> Used<br/>'
-      ;
-      $dftotal .= ''.sprintf('%1.2f',$bytestotal / pow($base,$class)) //.'<b>'.$si_prefix[$class].'</b> Total<br/>'
-      ;
+      $dffree .= ''.sprintf('%1.2f',$bytesfree / pow($base,$class)) .'<b>'.$si_prefix[$class].'</b> Free<br/>';
+      $dfused .= ''.sprintf('%1.2f',$bytesused / pow($base,$class)) .'<b>'.$si_prefix[$class].'</b> Used<br/>';
+      $dftotal .= ''.sprintf('%1.2f',$bytestotal / pow($base,$class)) .'<b>'.$si_prefix[$class].'</b> Total<br/>';
       $perused = sprintf('%1.0f', $bytesused / $bytestotal * 100);
 }
 
@@ -217,13 +240,35 @@ if (file_exists('/home/'.$username.'/.config/deluge/state/torrents.state')) {
       $dtorrents = shell_exec("ls /home/".$username."/.config/deluge/state/*.torrent|wc -l");
 }
 break;
+/* subsonic enable/disable */
+
+case 55:
+//  $subvar = chkSubsonic();
+if (file_exists('.subsonic') == 1) {
+        writeMsg("Hello <b>$username</b>: Im going to disable <b>Subsonic ($pid)</b> ... </a><br>");
+        $message = "Hello <b>$username</b>: Im going to disable <b>Subsonic ($pid)</b> ... </a><br>";
+        shell_exec("sudo service subsonic stop >/dev/null 2>&1");
+        shell_exec("sudo systemctl disable subsonic >/dev/null 2>&1");
+        $pid = shell_exec("pgrep java");
+        echo $pid;
+        shell_exec("sudo pkill java");
+        unlink('.subsonic');
+} else {
+        writeMsg("Hello <b>$username</b>: Im going to enable <b>Subsonic</b> ($pid) $SonicURL ... </a><br>");
+        $message = "Hello <b>$username</b>: Im going to enable <b>Subsonic</b> ($pid) $SonicURL ... </a><br>";
+        shell_exec("sudo service subsonic start >/dev/null 2>&1");
+        shell_exec("sudo systemctl enable subsonic >/dev/null 2>&1");
+        shell_exec("touch .subsonic");
+}
+  header('Location: https://' . $_SERVER['HTTP_HOST'] . '/');
+break;
 
 /* start services */
 case 66:
   $name = $_GET['servicestart'];
   $thisname=str_replace(['yes', 'no', '!!~!!'], ['!!~!!', 'yes', 'no'], $name);
     if (file_exists('/home/'.$username.'/.startup')) {
-    { $output = substr($thisname, 0, strpos(strtolower($thisname), '_')); $servicename = strtolower($output); }
+    if ($name == "BTSYNC=yes") { $servicename = "btsync"; } else { $output = substr($thisname, 0, strpos(strtolower($thisname), '_')); $servicename = strtolower($output); }
 writeMsg("Hey <b>$username</b>: Im going to enable <b>$servicename</b> ... Please allow 5 minutes for it to start ... </a><br>");
 $message = "Hey <b>$username</b>: Im going to enable <b>$servicename</b> ... Please allow 5 minutes for it to start ... </a><br>";
     shell_exec("sudo sed -i 's/$thisname/$name/g' /home/$username/.startup");
@@ -241,7 +286,7 @@ case 77:
   $name = $_GET['serviceend'];
   $thisname=str_replace(['yes', 'no', '!!~!!'], ['!!~!!', 'yes', 'no'], $name);
     if (file_exists('/home/'.$username.'/.startup')) {
-    { $output = substr($thisname, 0, strpos(strtolower($thisname), '_')); $servicename = strtolower($output);
+    if ($name == "BTSYNC=yes") { $servicename = "btsync"; } else { $output = substr($thisname, 0, strpos(strtolower($thisname), '_')); $servicename = strtolower($output);
     if (strpos($servicename,'rtorrent') !== false) { $servicename="main"; } }
 writeMsg("Hello <b>$username</b>: Im going to disable <b>$servicename</b> ... </a><br>");
 $message = "Hello <b>$username</b>: Im going to disable <b>$servicename</b> ... </a><br>";
@@ -256,7 +301,8 @@ break;
 
 /* disable plex */
 case 88:
-  $myip = getHostByName(getHostName());
+//  $myip = getHostByName(getHostName());
+  $myip = $_SERVER['HTTP_HOST'];
   $pbody .= writePlex($myip);
   header('Location: https://' . $_SERVER['HTTP_HOST'] . '/');
 break;
@@ -334,11 +380,13 @@ break;
   <div class="headerpanel">
 
     <div class="logopanel">
-      <h2><a href="#"><img src="/img/logo.png" alt="Quick Box - Seedbox" class="logo-image" height="50" /></a></h2>
+      <h2><a href="#"><img src="/img/logo.png" alt="Quick Box Seedbox" class="logo-image" height="50" /></a></h2>
     </div><!-- logopanel -->
 
     <div class="headerbar">
+
       <a id="menuToggle" class="menutoggle"><i class="fa fa-bars"></i></a>
+
       <div class="header-right">
         <ul class="headermenu">
           <li>
@@ -370,33 +418,40 @@ break;
         <!-- ################# MAIN MENU ################### -->
 
         <div class="tab-pane active" id="mainmenu">
-
           <h5 class="sidebar-title">Main Menu</h5>
           <ul class="nav nav-pills nav-stacked nav-quirk">
             <li class="active"><a href="index.php"><i class="fa fa-home"></i> <span>Dashboard</span></a></li>
             <li><a href="/rutorrent" target="_blank"><i class="fa fa-puzzle-piece"></i> <span>ruTorrent</span></a></li>
+            <?php if (processExists("btsync",$username)) { echo "<li><a href=\"$btsyncURL\" target=\"_blank\"><i class=\"fa fa-retweet\"></i> <span>BTSync</span></a></li>"; } ?>
+            <?php if (processExists("java",$username)) { echo "<li><a href=\"$subsonicURL\" target=\"_blank\"><i class=\"fa fa-video-camera\"></i> <span>Subsonic</span></a></li>"; } ?>
             <?php if (file_exists('.plex')) { echo "<li><a href=\"$plexURL\" target=\"_blank\"><i class=\"fa fa-play\"></i> <span>Plex</span></a></li>"; } ?>
             <li class="nav-parent nav-active">
               <a href=""><i class="fa fa-cube"></i> <span>Downloads</span></a>
               <ul class="children">
                 <li><a href="/<?php echo "$username"; ?>.downloads" target="_blank">ruTorrent</a></a></li>
-                <?php if ($deluged == "1") {
-                    echo " <li><a href=\"/$username.deluge\" target=\"_blank\">Deluge</a></li> ";
-                    } else { echo ""; } ?>
+                <li><a href="/<?php echo "$username"; ?>.deluge" target="_blank">Deluge</a></li>
               </ul>
             </li>
             <li><a href="?reload=true"><i class="fa fa-refresh"></i> <span>Reload Services</span></a></li>
           </ul>
-
         </div><!-- tab pane -->
-        <div class="tab-pane" id="help">
 
-          <h5 class="sidebar-title">More here soon...</h5>
-        
+        <div class="tab-pane" id="help">
+          <!--div class="sidebar-btn-wrapper">
+            <a href="#" class="btn btn-danger btn-block">testing-I-Am-Hidden</a>
+          </div-->
+
+          <h5 class="sidebar-title">Quick Tips</h5>
+          <ul class="nav nav-pills nav-stacked nav-quirk nav-mail">
+            <li style="padding: 7px"><span style="font-size: 12px; color:#eee">Coming Soon...</span></li>
+          </ul>
         </div><!-- tab-pane -->
+
       </div><!-- tab-content -->
+
     </div><!-- leftpanelinner -->
   </div><!-- leftpanel -->
+
   <div class="mainpanel">
 
     <!--<div class="pageheader">
@@ -404,6 +459,7 @@ break;
     </div>-->
 
     <div class="contentpanel">
+
       <div class="row">
         <div class="col-sm-8 col-md-8 dash-left">
           <div class="col-sm-7 col-md-7">
@@ -416,14 +472,17 @@ break;
                   <li>
                     <?php echo "$rval"; ?>
                   </li>
-                  <?php if ($deluged == "1") { echo
-                  "<li>
-                    $dval
-                  </li>";
-                } else { echo "";}
-                  ?>
+                  <li>
+                    <?php echo "$dval"; ?>
+                  </li>
                   <li>
                     <?php echo "$ival"; ?>
+                  </li>
+                  <li>
+                    <?php echo "$bval"; ?>
+                  </li>
+                  <li>
+                    <?php echo "$sval"; ?>
                   </li>
                   <li>
                     <?php echo "$pval"; ?>
@@ -443,14 +502,25 @@ break;
                   <li>
                     <?php echo "$cbodyr"; ?>
                   </li>
-                  <?php if ($deluged == "1") { echo
-                  "<li>
-                    $cbodyd
-                  </li>";
-                } else { echo "";}
-                  ?>
+                  <li>
+                    <?php echo "$cbodyd"; ?>
+                  </li>
                   <li>
                     <?php echo "$cbodyi"; ?>
+                  </li>
+                  <li>
+                    <?php echo "$cbodyb"; ?>
+                  </li>
+                  <li>
+                   Subsonic
+                    <?php
+                    if (processExists("java",$username)) {
+                      echo " <div class=\"toggle-wrapper pull-right\"><div class=\"toggle-en toggle-light primary\" onclick=\"location.href='?id=55'\"></div></div>"; 
+                    } else {
+                      echo " <div class=\"toggle-wrapper pull-right\"><div class=\"toggle-dis toggle-light primary\" onclick=\"location.href='?id=55'\"></div></div>"; 
+                    }
+                    ?>
+
                   </li>
                   <li>
                     <?php echo "$cbodyp"; ?>
@@ -460,6 +530,23 @@ break;
               <div class="panel-footer"></div>
             </div>
           </div>
+
+          <!--div class="row">
+            <div class="col-sm-12 col-md-12">
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h4 class="panel-title">Graph</h4>
+                </div>
+                <div class="panel-body text-center">
+                    <div id="snd_result"></div>
+                    <canvas id="snd_graph" height="100" width="500"></canvas>
+                    <br><br>
+                    <div id="rec_result"></div>
+                    <canvas id="rec_graph" height="100" width="500"></canvas>
+                    </div>
+              </div>
+            </div>
+          </div-->
         </div><!-- col-md-8 -->
 
         <div class="col-md-4 col-lg-4 dash-right">
@@ -484,8 +571,10 @@ break;
               </div>
             </div><!-- col-md-12 -->
           </div><!-- row -->
+
         </div><!-- col-md-4 -->
       </div><!-- row -->
+
 
       <div class="row">
         <div class="col-sm-8 col-md-8">
@@ -543,9 +632,9 @@ break;
                   <h4 class="panel-title">Your Disk Status</h4>
                 </div>
                 <div class="panel-body">
-                  <p class="nomargin">Free: <span style="font-weight: 700; position: absolute; left: 70px;"><?php echo "$dffree"; ?>GB</span></p>
-                  <p class="nomargin">Used: <span style="font-weight: 700; position: absolute; left: 70px;"><?php echo "$dfused"; ?>GB</span></p>
-                  <p class="nomargin">Size: <span style="font-weight: 700; position: absolute; left: 70px;"><?php echo "$dftotal"; ?>GB</span></p>
+                  <p class="nomargin">Free: <span style="font-weight: 700; position: absolute; left: 70px;"><?php echo "$dffree"; ?></span></p>
+                  <p class="nomargin">Used: <span style="font-weight: 700; position: absolute; left: 70px;"><?php echo "$dfused"; ?></span></p>
+                  <p class="nomargin">Size: <span style="font-weight: 700; position: absolute; left: 70px;"><?php echo "$dftotal"; ?></span></p>
                   <div class="row">
                     <div class="col-xs-7 col-lg-8">
                       <!--h4 class="panel-title text-success">Disk Space</h4-->
@@ -574,13 +663,8 @@ break;
                   <hr />
                   <h4>Torrents in rtorrent</h4>
                   <p class="nomargin">There are <b><?php echo "$rtorrents"; ?></b> torrents loaded.</p>
-                  <?php
-                  if ($deluged == "1") {
-                    echo " <h4>Torrents in deluge</h4>
-                    <p class=\"nomargin\">There are <b>$dtorrents</b> torrents loaded.</p> ";
-                  } else { echo ""; }
-                  ?>
-
+                  <h4>Torrents in deluge</h4>
+                  <p class="nomargin">There are <b><?php echo "$dtorrents"; ?></b> torrents loaded.</p>
                 </div>
               </div><!-- col-md-12 -->
             
