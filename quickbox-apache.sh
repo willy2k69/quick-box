@@ -709,7 +709,7 @@ VERSION=1.3.6
   esac
   if [[ $deluge == "yes" ]]; then
     echo -ne "Installing deluge-${green}$VERSION${normal} ... "
-    LIST='dstat g++ python-all-dev python-all python-pyopenssl python-simplejson python-setuptools
+    LIST='dstat g++ python-all-dev python-all python-openssl python-simplejson python-setuptools
     python-chardet libssl-dev zlib1g-dev libboost-dev libasio-dev libboost-python-dev
     libboost-thread-dev python-twisted python-twisted-bin python-twisted-bin-dbg
     python-twisted-core python-twisted-conch python-twisted-lore python-twisted-mail
@@ -717,7 +717,7 @@ VERSION=1.3.6
     python-twisted-web python-twisted-web2 python-twisted-words python-twisted-libravatar python-mako python-xdg
     libboost-date-time-dev libboost-filesystem-dev build-essential python-libtorrent'
     for depend in $LIST; do
-    apt-get -q --yes --force-yes install $depend >/dev/null 2>&1
+    apt-get -q -y install $depend >/dev/null 2>&1
     done
     wget -q http://download.deluge-torrent.org/source/deluge-$VERSION.tar.gz >/dev/null 2>&1
     tar xzf deluge-$VERSION.tar.gz

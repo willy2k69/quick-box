@@ -1,0 +1,200 @@
+clear
+function _string() { perl -le 'print map {(a..z,A..Z,0..9)[rand 62] } 0..pop' 15 ; }
+genpass=$(_string)
+OK=$(echo -e "[ \e[0;32mDONE\e[00m ]")
+dPORT=$((RANDOM%64025+1024))
+
+function _cronfile() { 
+echo -n "Writing ${username} system crontab script ... "
+if [[ ! -e /home/${username}/.startup ]];then
+cat >/home/${username}/.startup<<EOF
+#!/bin/bash
+export USER=\$(id -un)
+IRSSI_CLIENT=no
+RTORRENT_CLIENT=no
+DELUGED_CLIENT=yes
+DELUGED_PORT=$dPORT
+DELUGEWEB_CLIENT=
+DELUGEWEB_PORT=
+ADDRESS=\$(/sbin/ifconfig | grep "inet addr" | awk -F: '{print \$2}' | awk '{print \$1}'|grep -v "^127"|head -n1)
+# NO NEED TO EDIT PAST HERE!
+if [ "\$IRSSI_CLIENT" == "yes" ]; then 
+	(screen -ls|grep irssi > /dev/null || (screen -S irssi -d -t irssi -m irssi -h \${ADDRESS} && false))
+fi
+
+if [ "\$RTORRENT_CLIENT" == "yes" ]; then 
+	(screen -ls|grep rtorrent >/dev/null || (screen -fa -dmS rtorrent rtorrent && false))
+fi
+
+if [ "\$DELUGED_CLIENT" == "yes" ]; then 
+	(pgrep -u \$USER deluged >/dev/null || (deluged -i \$ADDRESS -p \$DELUGED_PORT && false))
+fi
+
+if [ "\$DELUGEWEB_CLIENT" == "yes" ]; then 
+	(pgrep -u \$USER deluge-web >/dev/null || (deluged --ssl --port=\$DELUGEWEB_PORT --fork && false))
+fi
+EOF
+else
+sed -i 's/DELUGED_CLIENT=$/DELUGED_CLIENT=yes/g' /home/${username}/.startup
+sed -i "s/DELUGED_PORT=$/DELUGED_PORT=${dPORT}/" /home/${username}/.startup
+fi
+	chown ${username}.${username} /home/${username}/.startup >/dev/null 2>&1
+	chmod +x ${username}.${username} /home/${username}/.startup >/dev/null 2>&1
+        command1="*/1 * * * * /home/${username}/.startup"
+       	cat <(fgrep -iv "${command1}" <(sh -c 'sudo -u ${username} crontab -l' >/dev/null 2>&1)) <(echo "${command1}") | sudo -u ${username} crontab -
+echo ${OK}
+}
+
+function _addduser() {
+	echo -n "Do you wish to add a user? (Y/n) "
+	read answer
+	case ${answer} in
+	        [yY] | [yY][Ee][Ss] | "" )
+	user=yes
+		;;
+		[nN] | [nN][Oo] )
+	user=no
+		;;
+		*)
+		echo "you selected the wrong one, im going to assume yes"
+		user=yes
+		;;
+	esac	
+	if [[ ${user} == "no" ]]; then echo -n "Run deluge as who? (THERE MUST BE A USERNAME HERE) "
+		read username
+	fi
+	if [[ ${user} == "yes" ]]; then
+		echo -n "Username: "; read user
+		username=$(echo $user|sed 's/.*/\L&/') && useradd ${username} -m -G www-data
+		echo -n "Password: (hit enter to generate a password) "; read password; echo ""
+		if [[ ! -z "${password}" ]]; then
+		        echo "Setting password to: ${password}"; passwd=${password} && echo "${username}:${passwd}"|chpasswd >/dev/null 2>&1
+		else
+	        	echo "Setting password to: ${genpass}"; passwd=${genpass} && echo "${username}:${passwd}"|chpasswd >/dev/null 2>&1
+		fi
+	fi
+	if [[ ! -d /home/$username/.config/deluge/ ]];then
+		mkdir -p /home/${username}/.config/deluge/
+		chown -R ${username}.${username} /home/${username}/.config/
+	fi
+}
+function _delugeconf() {
+mkdir -p /home/${username}/{downloads,dwatch}
+if [[ ! -e /home/${username}/.config/deluge/core.conf ]];then
+cat >/home/$username/.config/deluge/core.conf<<EOF
+{
+  "file": 1, 
+  "format": 1
+}{
+  "info_sent": 0.0, 
+  "lsd": true, 
+  "max_download_speed": -1.0, 
+  "send_info": false, 
+  "natpmp": true, 
+  "move_completed_path": "/home/${username}/downloads", 
+  "peer_tos": "0x00", 
+  "enc_in_policy": 1, 
+  "queue_new_to_top": false, 
+  "ignore_limits_on_local_network": true, 
+  "rate_limit_ip_overhead": true, 
+  "daemon_port": ${dPORT}, 
+  "torrentfiles_location": "/home/${username}/dwatch", 
+  "max_active_limit": -1, 
+  "geoip_db_location": "/usr/share/GeoIP/GeoIP.dat", 
+  "upnp": true, 
+  "utpex": true, 
+  "max_active_downloading": 3, 
+  "max_active_seeding": 5, 
+  "allow_remote": true, 
+  "outgoing_ports": [
+    0, 
+    0
+  ], 
+  "enabled_plugins": [], 
+  "max_half_open_connections": 50, 
+  "download_location": "/home/${username}/downloads", 
+  "compact_allocation": false, 
+  "max_upload_speed": -1.0, 
+  "plugins_location": "/home/${username}/.config/deluge/plugins", 
+  "max_connections_global": -1, 
+  "enc_prefer_rc4": true, 
+  "cache_expiry": 60, 
+  "dht": true, 
+  "stop_seed_at_ratio": false, 
+  "stop_seed_ratio": 2.0, 
+  "max_download_speed_per_torrent": -1, 
+  "prioritize_first_last_pieces": true, 
+  "max_upload_speed_per_torrent": -1, 
+  "auto_managed": true, 
+  "enc_level": 2, 
+  "copy_torrent_file": false, 
+  "max_connections_per_second": 50, 
+  "listen_ports": [
+    6881, 
+    6891
+  ], 
+  "max_connections_per_torrent": -1, 
+  "del_copy_torrent_file": false, 
+  "move_completed": false, 
+  "autoadd_enable": false, 
+  "proxies": {
+    "peer": {
+      "username": "", 
+      "password": "", 
+      "hostname": "", 
+      "type": 0, 
+      "port": 8080
+    }, 
+    "web_seed": {
+      "username": "", 
+      "password": "", 
+      "hostname": "", 
+      "type": 0, 
+      "port": 8080
+    }, 
+    "tracker": {
+      "username": "", 
+      "password": "", 
+      "hostname": "", 
+      "type": 0, 
+      "port": 8080
+    }, 
+    "dht": {
+      "username": "", 
+      "password": "", 
+      "hostname": "", 
+      "type": 0, 
+      "port": 8080
+    }
+  }, 
+  "dont_count_slow_torrents": false, 
+  "add_paused": false, 
+  "random_outgoing_ports": true, 
+  "max_upload_slots_per_torrent": -1, 
+  "new_release_check": false, 
+  "enc_out_policy": 1, 
+  "seed_time_ratio_limit": 7.0, 
+  "remove_seed_at_ratio": false, 
+  "autoadd_location": "/home/${username}/dwatch/", 
+  "max_upload_slots_global": 4, 
+  "seed_time_limit": 180, 
+  "cache_size": 512, 
+  "share_ratio_limit": 2.0, 
+  "random_port": true, 
+  "listen_interface": "${ip}"
+}
+EOF
+fi
+}
+function _finished() { 
+	echo ""; 
+	echo "deluged info: user: ${username} pass:${passwd} port: ${dPORT}" > /root/deluge-${username}.info
+	chown -R ${username}.${username} /home/${username} >/dev/null 2>&1
+	service apache2 restart >/dev/null 2>&1
+}
+
+function _delugeauth() { 
+	echo "${username}:${passwd}:10" > /home/${username}/.config/deluge/auth 
+}
+echo -n "Ready to add the user ... Press ENTER to continue ... "; read nothing ;echo ""; _addduser;_delugeconf;_delugeauth
+echo -n "Adding deluge to crontab for ${username} ... "; _cronfile ;echo ${OK}; _finished
