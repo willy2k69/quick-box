@@ -1500,7 +1500,7 @@ echo -n "Writing ${username} rutorrent config.php file ... ";_ruconf;_askquota
 echo -n "Writing seedbox reload script ... ";_reloadscript
 echo -n "Installing VSFTPd ... ";_installpureftpd
 echo -n "Setting up VSFTPd ... ";_pureftpdconfig
-_askplex;
+_askplex;_askbtsync;_asksubsonic
 echo -n "Setting irssi/rtorrent to start on boot ... ";_boot
 echo -n "Setting permissions on ${username} ... ";_perms
 
