@@ -701,7 +701,7 @@ function _rtorrent() {
 # function to install deluge (13)
 function _deluge() {
 VERSION=1.3.6
-  echo -ne "${yellow}Install Deluge?${normal} (Default: ${red}N${normal}): "; read responce
+  echo -ne "${yellow}Install Deluge?${normal} (at the moment, this is bugged. I am working on a fix.) (Default: ${red}N${normal}): "; read responce
   case $responce in
     [yY] | [yY][Ee][Ss] ) deluge=yes ;;
     [nN] | [nN][Oo] | "") deluge=no ;;
@@ -710,12 +710,12 @@ VERSION=1.3.6
   if [[ $deluge == "yes" ]]; then
     echo -ne "Installing deluge-${green}$VERSION${normal} ... "
     LIST='dstat g++ python-all-dev python-all python-openssl python-simplejson python-setuptools
-    python-chardet libssl-dev zlib1g-dev libboost-dev libasio-dev libboost-python-dev
-    libboost-thread-dev python-twisted python-twisted-bin python-twisted-bin-dbg
-    python-twisted-core python-twisted-conch python-twisted-lore python-twisted-mail
-    python-twisted-names python-twisted-news python-twisted-runner python-twisted-runner-dbg
-    python-twisted-web python-twisted-web2 python-twisted-words python-twisted-libravatar python-mako python-xdg
-    libboost-date-time-dev libboost-filesystem-dev build-essential python-libtorrent'
+python-chardet libssl-dev zlib1g-dev libboost-dev libasio-dev libboost-python-dev
+libboost-thread-dev python-twisted python-twisted-bin python-twisted-bin-dbg
+python-twisted-core python-twisted-conch python-twisted-lore python-twisted-mail
+python-twisted-names python-twisted-news python-twisted-runner python-twisted-runner-dbg
+python-twisted-web python-twisted-web2 python-twisted-words python-twisted-libravatar python-mako python-xdg
+libboost-date-time-dev libboost-filesystem-dev build-essential python-libtorrent'
     for depend in $LIST; do
     apt-get -q -y install $depend >/dev/null 2>&1
     done
@@ -1153,10 +1153,6 @@ if [ "$DELUGEWEB_CLIENT" == "yes" ]; then
   (pgrep -u $USER deluge-web >/dev/null || (deluge-web -f --port=$DELUGEWEB_PORT --fork && false))
 fi
 
-if [ "$BTSYNC" == "yes" ]; then
-        (pgrep -u $USER btsync >/dev/null || /home/$USER/btsync --webui.listen ${ADDRESS}:8888 >/dev/null 2>&1 && false)
-fi
-
 EOF
 if [[ $deluge == "yes" ]];then
   sed -i 's/DELUGED_PORT=$/DELUGED_PORT=19596/g' /home/${username}/.startup
@@ -1246,6 +1242,7 @@ killall -u $USER rtorrent >/dev/null 2>&1
 killall -u $USER main >/dev/null 2>&1
 rm -rf ~/.sessions/rtorrent.lock
 EOF
+chmod +x /usr/bin/reload
 
 echo "${OK}"
 }
