@@ -216,7 +216,7 @@ function _finished() {
 }
 function _sysctl() { wget -q4 https://raw.githubusercontent.com/JMSDOnline/quick-box/master/sysctl.conf -O/etc/sysctl.conf; sysctl -p >/dev/null 2>&1 ; echo ${OK} ;}
 function _depends() { 
-LIST='dstat g++ python-all-dev python-all python-openssl python-simplejson python-setuptools
+LIST='dstat g++ python-all-dev python-all python-pyopenssl python-simplejson python-setuptools
 python-chardet libssl-dev zlib1g-dev libboost-dev libasio-dev libboost-python-dev
 libboost-thread-dev python-twisted python-twisted-bin python-twisted-bin-dbg
 python-twisted-core python-twisted-conch python-twisted-lore python-twisted-mail
