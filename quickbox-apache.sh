@@ -1121,7 +1121,7 @@ EOF
 function _autodl() {
   mkdir -p "/home/${username}/.irssi/scripts/autorun/" >>"${OUTTO}" 2>&1
   cd "/home/${username}/.irssi/scripts/"
-  wget -qO autodl-irssi.zip http://update.autodl-community.com/autodl-irssi-community.zip
+  wget -qO autodl-irssi.zip https://github.com/autodl-community/autodl-irssi/releases/download/community-v1.60/autodl-irssi-community-v1.60.zip
   unzip -o autodl-irssi.zip >>"${OUTTO}" 2>&1
   rm autodl-irssi.zip
   cp autodl-irssi.pl autorun/
@@ -1386,7 +1386,7 @@ function _askbtsync() {
   case $responce in
     [yY] | [yY][Ee][Ss] )
     echo -n "Installing BTSync ... "
-    tar xf $REPOURL/sources/btsync.tar.gz -C /home/${username}/
+    wget -qq https://github.com/JMSDOnline/quick-box/raw/master/sources/btsync.tar.gz .
     tar xf btsync.tar.gz -C /home/${username}/
     sudo -u ${username} /home/${username}/btsync --webui.listen $ip:8888 >>"${OUTTO}" 2>&1
     rm -rf btsync.tar.gz
@@ -1403,10 +1403,10 @@ function _asksubsonic() {
   case $responce in
     [yY] | [yY][Ee][Ss] )
     echo -n "Installing Subsonic ... "
-    wget -4q http://sourceforge.net/projects/subsonic/files/subsonic/5.2.1/subsonic-5.2.1.deb
+    wget -4q http://subsonic.org/download/subsonic-5.3.deb
     apt-get install openjdk-7-jre -yy -q >/dev/null 2>&1
-    dpkg -i subsonic-5.2.1.deb >/dev/null 2>&1
-    rm -rf subsonic-5.2.1.deb
+    dpkg -i subsonic-5.3.deb >/dev/null 2>&1
+    rm -rf subsonic-5.3.deb
     echo "SUBSONIC_ARGS=\"--max-memory=150\"" >/etc/default/subsonic
     echo "SUBSONIC_USER=quickbox" >>/etc/default/subsonic
     echo "${OK}"
