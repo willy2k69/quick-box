@@ -34,8 +34,8 @@ if(typeof(EventSource) !== "undefined")
 			else
 				old_rate_snd = rate_snd;
 
-			document.getElementById("rec_result").innerHTML="" + Math.round(rate_rec*100)/100 + " MBs";
-			document.getElementById("snd_result").innerHTML=""    + Math.round(rate_snd*100)/100 + " MBs";
+			document.getElementById("rec_result").innerHTML="" + Math.round(rate_rec*100)/100 + " Mbs";
+			document.getElementById("snd_result").innerHTML=""    + Math.round(rate_snd*100)/100 + " Mbs";
 		}
 		old_rec = new_rec;
 		old_snd = new_snd;
