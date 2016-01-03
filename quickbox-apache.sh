@@ -886,7 +886,6 @@ execute_nothrow=chmod,777,/home/${username}/.sessions/
 check_hash = no
 # -- END HERE --
 EOF
-fi
   echo "${OK}"
 }
 
