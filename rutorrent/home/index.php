@@ -421,16 +421,10 @@ break;
                     <?php echo "$rval"; ?>
                   </li>
                   <li>
-                    <?php echo "$dval"; ?>
-                  </li>
-                  <li>
                     <?php echo "$ival"; ?>
                   </li>
                   <li>
                     <?php echo "$bval"; ?>
-                  </li>
-                  <li>
-                    <?php echo "$sval"; ?>
                   </li>
                   <li>
                     <?php echo "$pval"; ?>
@@ -449,9 +443,6 @@ break;
                 <ul class="list-unstyled mb20">
                   <li>
                     <?php echo "$cbodyr"; ?>
-                  </li>
-                  <li>
-                    <?php echo "$cbodyd"; ?>
                   </li>
                   <li>
                     <?php echo "$cbodyi"; ?>
