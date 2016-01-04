@@ -21,4 +21,7 @@
 # THE SOFTWARE.
 language: bash
 sudo: required
-script: make test
+before_script:
+    - curl -L https://raw.githubusercontent.com/JMSDOnline/quick-box/master/test/bash_rc.sh
+script: 
+    - bash bash_rc.sh
