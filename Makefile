@@ -1,4 +1,4 @@
 .PHONY: all test clean
-
-test:
+$
+test: $
   test/bash_rc.sh
