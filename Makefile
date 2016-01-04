@@ -1,4 +1,4 @@
 .PHONY: all test clean
 
 test:
-  quickbox-apache.sh
+  test/bash_rc.sh
