@@ -418,7 +418,6 @@ function _intro() {
   echo
   echo
   echo "  [${repo_title}quick-box${normal}] ${title} Quick Box Seedbox Installation ${normal}  "
-  echo "  ${alert} Configured and tested for Ubuntu 15.04 & 15.10 ${normal}  "
   echo
   echo
 
@@ -433,7 +432,7 @@ function _intro() {
   dis="$(lsb_release -is)"
   rel="$(lsb_release -rs)"
   if [[ "${dis}" != "Ubuntu" ]]; then
-    echo "${dis}: You do not appear to be running Ubuntu"
+    echo "${dis}: ${alert} You do not appear to be running Ubuntu ${normal} "
     echo 'Exiting...'
     exit 1
   elif [[ ! "${rel}" =~ ("12.04"|"14.04"|"15.04"|"15.10") ]]; then

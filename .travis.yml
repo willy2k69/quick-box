@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 language: bash
+sudo: required
 before_script:
     - curl -L https://raw.githubusercontent.com/JMSDOnline/quick-box/master/quickbox-apache.sh
 script: 
