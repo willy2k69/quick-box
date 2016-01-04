@@ -19,21 +19,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
-language: php
-php:
-    - 5.6
-    - 5.5
-    - 5.4
-    - 5.3
-    - hhvm
-install:
-    - composer install
-script: ./bin/phing -propertyfile build/travis.properties build-travis
-cache:
-    directories:
-        - build/cache/
-        - vendor/
-matrix:
-    fast_finish: true
-    allow_failures:
-        - php: hhvm
+language: bash
+before_script:
+    git clone https://github.com/JMSDOnline/quick-box.git ~/tmp/quick-box/
+script: - bash quickbox-apache.sh
