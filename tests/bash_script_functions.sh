@@ -88,8 +88,54 @@ echo "LC_ALL=en_US.UTF-8" >>/etc/default/locale
   fi
 }
 
+# package and repo addition (7) _install softwares and packages_
+function _depends() {
+  apt-get install -qq -y --force-yes fail2ban bc sudo screen zip irssi unzip nano build-essential bwm-ng ifstat git subversion dstat automake libtool libcppunit-dev libssl-dev pkg-config libcurl4-openssl-dev libsigc++-2.0-dev lshell cron unrar curl libncurses5-dev yasm apache2 php5 php5-cli php-net-socket libdbd-mysql-perl libdbi-perl fontconfig libfontconfig1 libfontconfig1-dev rar mediainfo php5-curl htop libapache2-mod-php5 ttf-mscorefonts-installer libarchive-zip-perl libnet-ssleay-perl php5-geoip openjdk-7-jre openjdk-7-jdk libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl libxml-libxslt-perl libapache2-mod-scgi openvpn >>"${OUTTO}" 2>&1;
+  cd
+  rm -rf /etc/skel
+  if [[ -e skel.tar ]]; then rm -rf skel.tar;fi 
+  tar xf $REPOURL/sources/skel.tar -C /etc
+  tar xzf $REPOURL/sources/rarlinux-x64-5.2.1.tar.gz -C ./
+  cp ./rar/*rar /usr/bin
+  cp ./rar/*rar /usr/sbin
+  rm -rf rarlinux*.tar.gz
+  rm -rf ./rar
+  wget -q http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz
+  gunzip GeoLiteCity.dat.gz>>"${OUTTO}" 2>&1
+  mkdir -p /usr/share/GeoIP>>"${OUTTO}" 2>&1
+  rm -rf GeoLiteCity.dat.gz
+  mv GeoLiteCity.dat /usr/share/GeoIP/GeoIPCity.dat>>"${OUTTO}" 2>&1
+  (echo y;echo o conf prerequisites_policy follow;echo o conf commit)|cpan Digest::SHA1 >>"${OUTTO}" 2>&1
+  (echo y;echo o conf prerequisites_policy follow;echo o conf commit)|cpan Digest::SHA >>"${OUTTO}" 2>&1
+  sed -i 's/errors=remount-ro/usrquota,errors=remount-ro/g' /etc/fstab
+  mount -o remount / >>"${OUTTO}" 2>&1 || mount -o remount /home >>"${OUTTO}" 2>&1
+  quotacheck -auMF vfsv1 >>"${OUTTO}" 2>&1
+  quotaon -uv / >>"${OUTTO}" 2>&1
+  service quota start >>"${OUTTO}" 2>&1
+cat >/etc/lshell.conf<<'LS'
+[global]
+logpath         : /var/log/lshell/
+loglevel        : 2
+
+[default]
+allowed         : ['cd','cp','-d','-dmS','git','irssi','ll','ls','-m','mkdir','mv','nano','pwd','-R','rm','rtorrent','rsync','-S','scp','screen','tar','unrar','unzip','nano','wget']
+forbidden       : [';', '&', '|','`','>','<', '$(', '${','sudo','vi','vim','./']
+warning_counter : 2
+aliases         : {'ls':'ls --color=auto','ll':'ls -l'}
+intro           : "== Seedbox Shell ==\nWelcome To Your Quick Box Seedbox Shell\nType '?' or 'help' to get the list of allowed commands"
+home_path       : '/home/%u'
+env_path        : ':/usr/local/bin:/usr/sbin'
+allowed_cmd_path: ['/home/']
+scp             : 1
+sftp            : 1
+overssh         : ['ls', 'rsync','scp']
+LS
+echo "${OK}"
+}
+
 _intro
 _updates
+_depends
 
 }
 . shunit2-2.1.6/src/shunit2
