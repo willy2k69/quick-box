@@ -20,8 +20,5 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 language: bash
-sudo: required
-before_script:
-    - wget https://raw.githubusercontent.com/JMSDOnline/quick-box/master/test/bash_rc.sh
-script: 
-    - bash bash_rc.sh
+# sudo: required
+script: bash test.sh
