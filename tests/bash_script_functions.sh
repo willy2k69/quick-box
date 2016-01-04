@@ -31,7 +31,19 @@ function _intro() {
   fi
 }
 
+# check if root function (2)
+function _checkroot() {
+  if [[ $EUID != 0 ]]; then
+    echo 'This script must be run with root privileges.'
+    echo 'Exiting...'
+    exit 1
+  fi
+  echo "${green}Congrats! You're running as root. Let's continue${normal} ... "
+  echo
+}
+
 _intro
+_checkroot
 
 }
 . shunit2-2.1.6/src/shunit2
