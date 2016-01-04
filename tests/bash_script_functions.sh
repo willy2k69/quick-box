@@ -30,20 +30,78 @@ function _intro() {
     exit 1
   fi
 }
-
-# check if root function (2)
-function _checkroot() {
-  if [[ $EUID != 0 ]]; then
-    echo 'This script must be run with root privileges.'
-    echo 'Exiting...'
-    exit 1
+# package and repo addition (4) _update and upgrade_
+function _updates() {
+  echo "Which country do you want for apt-get"
+  echo "1) USA"
+  echo "2) NL"
+  echo "3) FR"
+  echo "4) DE"
+  read input
+  case $input in
+    1) echo "Selecting USA ... "; country=us ;;
+    2) echo "Selecting NL ... "; country=nl ;;
+    3) echo "Selecting FR ... "; country=fr ;;
+    4) echo "Selecting DR ... "; country=us ;;
+    *) echo "Defaulting to USA ... "; country=us ;;
+  esac
+  if lsb_release >>"${OUTTO}" 2>&1; then ver=$(lsb_release -c|awk '{print $2}')
+  else
+    apt-get -yq install lsb-release >>"${OUTTO}" 2>&1
+    if [[ -e /usr/bin/lsb_release ]]; then ver=$(lsb_release -c|awk '{print $2}')
+    else echo "failed to install lsb-release from apt-get, please install manually and re-run script"; exit
+    fi
   fi
-  echo "${green}Congrats! You're running as root. Let's continue${normal} ... "
-  echo
+  echo -n "Updating system ... "
+  apt-get -y --force-yes install deb-multimedia-keyring > /dev/null 2>&1;
+
+cat >/etc/apt/sources.list<<EOF
+###### Ubuntu Main Repos
+deb http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc) main restricted universe multiverse 
+deb-src http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc) main restricted universe multiverse 
+
+###### Ubuntu Update Repos
+deb http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-security main restricted universe multiverse 
+deb http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-updates main restricted universe multiverse 
+deb-src http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-security main restricted universe multiverse 
+deb-src http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-updates main restricted universe multiverse 
+
+###### Ubuntu Partner Repo
+deb http://archive.canonical.com/ubuntu $(lsb_release -sc) partner
+deb-src http://archive.canonical.com/ubuntu $(lsb_release -sc) partner
+deb http://www.deb-multimedia.org testing main
+EOF
+
+  apt-get -y --force-yes update
+  apt-get -y --force-yes purge samba samba-common >>"${OUTTO}" 2>&1
+  apt-get -y --force-yes upgrade
+  if [[ -e /etc/ssh/sshd_config ]]; then
+    echo "Port 4747" /etc/ssh/sshd_config
+    sed -i 's/Port 22/Port 4747/g' /etc/ssh/sshd_config
+    service sshd restart >>"${OUTTO}" 2>&1
+  fi
+  clear
+}
+
+# setting locale function (5)
+function _locale() {
+echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
+echo "LANG=en_US.UTF-8" > /etc/default/locale
+echo "LANGUAGE=en_US.UTF-8">>/etc/default/locale
+echo "LC_ALL=en_US.UTF-8" >>/etc/default/locale
+  if [[ -e /usr/sbin/locale-gen ]]; then locale-gen >>"${OUTTO}" 2>&1
+  else
+    apt-get update >>"${OUTTO}" 2>&1
+    apt-get install locales locale-gen -y --force-yes >>"${OUTTO}" 2>&1
+    locale-gen >>"${OUTTO}" 2>&1
+    export LANG="en_US.UTF-8"
+    export LC_ALL="en_US.UTF-8"
+    export LANGUAGE="en_US.UTF-8"
+  fi
 }
 
 _intro
-_checkroot
+_updates
 
 }
 . shunit2-2.1.6/src/shunit2
