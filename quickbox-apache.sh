@@ -436,7 +436,7 @@ function _intro() {
     echo "${dis}: You do not appear to be running Ubuntu"
     echo 'Exiting...'
     exit 1
-  elif [[ ! "${rel}" =~ ("15.04"|"15.10") ]]; then
+  elif [[ ! "${rel}" =~ ("12.04"|"14.04"|"15.04"|"15.10") ]]; then
     echo "${bold}${rel}:${normal} You do not appear to be running a supported Ubuntu release."
     echo 'Exiting...'
     exit 1
