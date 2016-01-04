@@ -20,7 +20,4 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 language: bash
-before_script:
-    - git clone https://github.com/JMSDOnline/quick-box.git ~/tmp/quick-box/
-    - curl -L https://raw.githubusercontent.com/JMSDOnline/quick-box/master/quickbox-apache.sh
-script: - bash quickbox-apache.sh
+script: make test
