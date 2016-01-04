@@ -2,4 +2,4 @@
 
 
 test:
-	test/test.sh
+	test/tests.sh
