@@ -32,19 +32,7 @@ function _intro() {
 }
 # package and repo addition (4) _update and upgrade_
 function _updates() {
-  echo "Which country do you want for apt-get"
-  echo "1) USA"
-  echo "2) NL"
-  echo "3) FR"
-  echo "4) DE"
-  read input
-  case $input in
-    1) echo "Selecting USA ... "; country=us ;;
-    2) echo "Selecting NL ... "; country=nl ;;
-    3) echo "Selecting FR ... "; country=fr ;;
-    4) echo "Selecting DR ... "; country=us ;;
-    *) echo "Defaulting to USA ... "; country=us ;;
-  esac
+  country=us
   if lsb_release >>"${OUTTO}" 2>&1; then ver=$(lsb_release -c|awk '{print $2}')
   else
     apt-get -yq install lsb-release >>"${OUTTO}" 2>&1
