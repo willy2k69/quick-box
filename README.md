@@ -6,7 +6,7 @@ For Ubuntu 15.04 & 15.10 installs.
 
 ## Script status
 
-[![GitHub release](https://img.shields.io/github/release/qubyte/rubidium.svg?style=flat-square)](https://github.com/JMSDOnline/quick-box/)    [![GitHub license](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)](https://github.com/JMSDOnline/quick-box/blob/master/LICENSE)    [![Scrutinizer Build](https://img.shields.io/scrutinizer/build/g/filp/whoops.svg?style=flat-square)](https://github.com/JMSDOnline/quick-box/)
+[![Version 1.0.1-production](https://img.shields.io/badge/version-1.0.1p-674172.svg?style=flat-square)](https://github.com/JMSDOnline/quick-box/)    [![MIT License](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)](https://github.com/JMSDOnline/quick-box/blob/master/LICENSE)    [![Buid Passing](https://img.shields.io/badge/build-passing-brightgreen.svg?style=flat-square)](https://github.com/JMSDOnline/quick-box/)
 
 This script has the following features
 
@@ -25,10 +25,12 @@ This script has the following features
 * pureftp - vsftp (CuteFTP multi-segmented download friendly ya'll)
 * IRSSI
 * Plex
-* Deluge
+* BTSync
 
+### Quick Box Seedbox Dashboard
 ![Modern & Simple Seedbox Dashboard](https://github.com/JMSDOnline/quick-box/blob/master/img/quick-box-dashboard.png "Quick Box Modern & Simple Seedbox Dashboard")
 
+### Quick Box Seedbox Custom ruTorrent Theme by JMSolo Designs
 ![New and Custom Theme by JMSolo Designs](https://github.com/JMSDOnline/quick-box/blob/master/img/quick-box-theme.png "Quick Box - New and Custom Theme by JMSolo Designs")
 
 ## Main ruTorrent plugins
