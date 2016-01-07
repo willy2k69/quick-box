@@ -6,16 +6,39 @@ For Ubuntu 15.04 & 15.10 installs.
 
 ## Script status
 
-[![Version 1.0.1-production](https://img.shields.io/badge/version-1.0.1p-674172.svg?style=flat-square)](https://github.com/JMSDOnline/quick-box/)    [![MIT License](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)](https://github.com/JMSDOnline/quick-box/blob/master/LICENSE)    
+[![Version 1.0.1-development](https://img.shields.io/badge/version-1.0.1%20dev-674172.svg?style=flat-square)](https://github.com/JMSDOnline/quick-box/)    [![MIT License](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)](https://github.com/JMSDOnline/quick-box/blob/master/LICENSE)    
 
 [![Ubuntu 15.10 Passing](https://img.shields.io/badge/Ubuntu%2015.10-passing-brightgreen.svg?style=flat-square)](https://github.com/JMSDOnline/quick-box/)
 [![Ubuntu 15.04 Passing](https://img.shields.io/badge/Ubuntu%2015.04-passing-brightgreen.svg?style=flat-square)](https://github.com/JMSDOnline/quick-box/)
 [![Ubuntu 14.04 Passing](https://img.shields.io/badge/Ubuntu%2014.04-fails-F22613.svg?style=flat-square)](https://github.com/JMSDOnline/quick-box/)
 [![Ubuntu 12.04 Fails](https://img.shields.io/badge/Ubuntu%2012.04-fails-F22613.svg?style=flat-square)](https://github.com/JMSDOnline/quick-box/)
 
+---
+
+## UPDATE as of 01/07/2016
+
+> I am going to place all release versions of this script in development mode. You may download the repo and install, but please do so at your own risk. I will outline some changes as well as why I am making the decision to label this development.
+
+  1) Updating jquery for rutorrent. The included (already) addition jquery.browser.js has been updated, thus, I am running tests against this new js for any screw ups that may occur...
+  2) A couple of really good requests have been made. Placing the repo into a development status (no - I don't want to use a development branch) ensures that future downloads receive full functionality... and it adds full transparency to what has been committed as additions to the script.
+  3) Lesser repos have a hard time with the libcurl4-openssl-dev dependency. I am still trying to figure out why this is occurring. Although, this dependency shouldn't have any ill effects on the initial success... I do believe all should be in tact and in stable working order... something other seedbox repos are focusing on so much.
+  4) I have additional time in the next couple of days to really hammer out some trials on the script. If anyone wants to join me... spin up a vm and run some tests to see what you find, open a issue or push over some fixes and I'll add them and throw all the credit your way.
+
+### Additional notes on status::
+
+  15.10 is successfully built. However, there is an issue where rtorrent is failing to start. This is priority and it first on the list of things to fix... asap.
+
+  15.04 same as 15.10
+
+  14.04 libcurl dependency stops the rest of the build from happening... in this way apache fails to install etc etc. This is priority and up next on the list of fix it now.
+
+  12.04 same as 14.04
+
+---
+
 This script has the following features
 
-* A multi-user enviroment, complete with scripts to add and delete users.
+* A multi-user environment, complete with scripts to add and delete users.
 * Linux Quota, to control how much space every user can use in the box.
 * Customized Seedbox Dashboard located at http://SERVER_IP/
 * HTTPs Downloads directory (https://SERVER_IP/private/Downloads)
