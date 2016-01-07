@@ -495,22 +495,42 @@ function _updates() {
   echo -n "Updating system ... "
 
 cat >/etc/apt/sources.list<<EOF
+#------------------------------------------------------------------------------#
+#                            OFFICIAL UBUNTU REPOS                             #
+#------------------------------------------------------------------------------#
+
+
 ###### Ubuntu Main Repos
-deb http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc) main universe multiverse 
-deb-src http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc) main universe multiverse 
+deb http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc) main restricted universe multiverse 
+deb-src http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc) main restricted universe multiverse 
 
 ###### Ubuntu Update Repos
-deb http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-security main universe multiverse 
-deb http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-updates main universe multiverse 
-deb http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-backports main universe multiverse 
-deb-src http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-security main universe multiverse 
-deb-src http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-updates main universe multiverse 
-deb-src http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-backports main universe multiverse 
-deb http://security.ubuntu.com/ubuntu $(lsb_release -sc)-security main
-deb-src http://security.ubuntu.com/ubuntu $(lsb_release -sc)-security main
+deb http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-security main restricted universe multiverse 
+deb http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-updates main restricted universe multiverse 
+deb http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-backports main restricted universe multiverse 
+deb-src http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-security main restricted universe multiverse 
+deb-src http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-updates main restricted universe multiverse 
+deb-src http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-backports main restricted universe multiverse 
 
 ###### Ubuntu Partner Repo
+deb http://archive.canonical.com/ubuntu $(lsb_release -sc) partner
+deb-src http://archive.canonical.com/ubuntu $(lsb_release -sc) partner
 deb http://www.deb-multimedia.org testing main
+
+#------------------------------------------------------------------------------#
+#                           UNOFFICIAL UBUNTU REPOS                            #
+#------------------------------------------------------------------------------#
+
+
+###### 3rd Party Binary Repos
+
+#### BitTorrent Sync - http://www.bittorrent.com/sync
+## Run this command: sudo apt-key adv --keyserver keys.gnupg.net --recv-keys 6BF18B15
+#deb http://debian.yeasoft.net/btsync $(lsb_release -sc) main
+
+#### Plex Media Center - http://www.plexapp.com
+## Run this command: wget -q http://plexapp.com/plex_pub_key.pub -O- | sudo apt-key add -
+#deb http://plex.r.worldssl.net/PlexMediaServer/ubuntu-repo lucid main
 EOF
 
   apt-get -y --force-yes update
