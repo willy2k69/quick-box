@@ -670,10 +670,10 @@ function _askrtorrent() {
 # xmlrpc-c function (10)
 function _xmlrpc() {
   cd /root/tmp
-  echo -ne "Installing xmlrpc-c-${green}1.39.07${normal} ... "
+  echo -ne "Installing xmlrpc-c-${green}1.33.12${normal} ... "
   if [[ -d /root/tmp/xmlrpc-c ]]; then rm -rf xmlrpc-c;fi
-  cp -R "$REPOURL/xmlrpc-c" .
-  cd xmlrpc-c
+  cp -R "$REPOURL/xmlrpc-c_1-33-12/" .
+  cd xmlrpc-c_1-33-12
   chmod +x configure
   ./configure --prefix=/usr --disable-cplusplus >>"${OUTTO}" 2>&1
   make >>"${OUTTO}" 2>&1
