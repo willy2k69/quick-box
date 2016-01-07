@@ -496,29 +496,16 @@ function _updates() {
 
 cat >/etc/apt/sources.list<<EOF
 ###### Ubuntu Main Repos
-deb http://${country}.archive.ubuntu.com/ubuntu $(lsb_release -sc) main restricted
-deb-src http://${country}.archive.ubuntu.com/ubuntu $(lsb_release -sc) main restricted
-
-deb http://${country}.archive.ubuntu.com/ubuntu $(lsb_release -sc) universe
-deb-src http://${country}.archive.ubuntu.com/ubuntu $(lsb_release -sc) universe
-deb http://${country}.archive.ubuntu.com/ubuntu $(lsb_release -sc)-updates universe
-deb-src http://${country}.archive.ubuntu.com/ubuntu $(lsb_release -sc)-updates universe
+deb http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc) main universe multiverse 
+deb-src http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc) main universe multiverse 
 
 ###### Ubuntu Update Repos
-deb http://${country}.archive.ubuntu.com/ubuntu $(lsb_release -sc) multiverse
-deb-src http://${country}.archive.ubuntu.com/ubuntu $(lsb_release -sc) multiverse
-deb http://${country}.archive.ubuntu.com/ubuntu $(lsb_release -sc)-updates multiverse
-deb-src http://${country}.archive.ubuntu.com/ubuntu $(lsb_release -sc)-updates multiverse
-
-###### Ubuntu Backport Repos
-deb http://${country}.archive.ubuntu.com/ubuntu $(lsb_release -sc)-backports main restricted universe multiverse
-deb-src http://${country}.archive.ubuntu.com/ubuntu $(lsb_release -sc)-backports main restricted universe multiverse
-
-###### Ubuntu Security Repos
-deb http://security.ubuntu.com/ubuntu $(lsb_release -sc)-security main
-deb-src http://security.ubuntu.com/ubuntu $(lsb_release -sc)-security main
-deb http://security.ubuntu.com/ubuntu $(lsb_release -sc)-security universe
-deb-src http://security.ubuntu.com/ubuntu $(lsb_release -sc)-security universe
+deb http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-security main universe multiverse 
+deb http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-updates main universe multiverse 
+deb http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-backports main universe multiverse 
+deb-src http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-security main universe multiverse 
+deb-src http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-updates main universe multiverse 
+deb-src http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-backports main universe multiverse 
 
 ###### Ubuntu Partner Repo
 deb http://www.deb-multimedia.org testing main
