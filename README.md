@@ -128,7 +128,7 @@ DO NOT try to reconfigure packages using other tutorials - this script (AS IS) i
 
 **First, let's install git & curl**
 ```
-apt-get --yes install git curl
+apt-get -y install git curl
 
 ```
 **Next, we clone the repo to the server and create a ~/tmp/quick-box/ directory _the script does this for you_**
