@@ -493,31 +493,46 @@ function _updates() {
     fi
   fi
   echo -n "Updating system ... "
-  apt-get -y --force-yes install deb-multimedia-keyring > /dev/null 2>&1;
 
 cat >/etc/apt/sources.list<<EOF
 ###### Ubuntu Main Repos
-deb http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc) main restricted universe multiverse 
-deb-src http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc) main restricted universe multiverse 
+deb http://${country}.archive.ubuntu.com/ubuntu $(lsb_release -sc) main restricted
+deb-src http://${country}.archive.ubuntu.com/ubuntu $(lsb_release -sc) main restricted
+
+deb http://${country}.archive.ubuntu.com/ubuntu $(lsb_release -sc) universe
+deb-src http://${country}.archive.ubuntu.com/ubuntu $(lsb_release -sc) universe
+deb http://${country}.archive.ubuntu.com/ubuntu $(lsb_release -sc)-updates universe
+deb-src http://${country}.archive.ubuntu.com/ubuntu $(lsb_release -sc)-updates universe
 
 ###### Ubuntu Update Repos
-deb http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-security main restricted universe multiverse 
-deb http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-updates main restricted universe multiverse 
-deb-src http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-security main restricted universe multiverse 
-deb-src http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-updates main restricted universe multiverse 
+deb http://${country}.archive.ubuntu.com/ubuntu $(lsb_release -sc) multiverse
+deb-src http://${country}.archive.ubuntu.com/ubuntu $(lsb_release -sc) multiverse
+deb http://${country}.archive.ubuntu.com/ubuntu $(lsb_release -sc)-updates multiverse
+deb-src http://${country}.archive.ubuntu.com/ubuntu $(lsb_release -sc)-updates multiverse
+
+###### Ubuntu Backport Repos
+deb http://${country}.archive.ubuntu.com/ubuntu $(lsb_release -sc)-backports main restricted universe multiverse
+deb-src http://${country}.archive.ubuntu.com/ubuntu $(lsb_release -sc)-backports main restricted universe multiverse
+
+###### Ubuntu Security Repos
+deb http://security.ubuntu.com/ubuntu $(lsb_release -sc)-security main
+deb-src http://security.ubuntu.com/ubuntu $(lsb_release -sc)-security main
+deb http://security.ubuntu.com/ubuntu $(lsb_release -sc)-security universe
+deb-src http://security.ubuntu.com/ubuntu $(lsb_release -sc)-security universe
 
 ###### Ubuntu Partner Repo
 deb http://www.deb-multimedia.org testing main
 EOF
 
   apt-get -y --force-yes update
-  #apt-get -y --force-yes purge samba samba-common >>"${OUTTO}" 2>&1
+  apt-get -y --force-yes purge samba samba-common >>"${OUTTO}" 2>&1
   apt-get -y --force-yes upgrade
   if [[ -e /etc/ssh/sshd_config ]]; then
     echo "Port 4747" /etc/ssh/sshd_config
     sed -i 's/Port 22/Port 4747/g' /etc/ssh/sshd_config
     service sshd restart >>"${OUTTO}" 2>&1
   fi
+  apt-get -y --force-yes install deb-multimedia-keyring > /dev/null 2>&1;
   clear
 }
 
