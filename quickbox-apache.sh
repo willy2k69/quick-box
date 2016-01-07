@@ -720,7 +720,7 @@ function _rtorrent() {
 }
 
 # scgi enable function (12)
-function _scgi() { ln -s /etc/apache2/mods-available/scgi.load /etc/apache2/mods-enabled/scgi.load >>"${OUTTO}" 2>&1 ; }
+# function _scgi() { ln -s /etc/apache2/mods-available/scgi.load /etc/apache2/mods-enabled/scgi.load >>"${OUTTO}" 2>&1 ; }
 
 # function to install rutorrent (13)
 function _rutorrent() {
