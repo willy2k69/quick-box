@@ -9,9 +9,12 @@ include $(BLDDIR)/config.mk
 
 # Build up SUBDIRS:
 SUBDIRS = 
-SUBDIRS += util libutil
+SUBDIRS += util libutil libutil++
 ifeq ($(ENABLE_ABYSS_SERVER),yes)
   SUBDIRS += abyss
+  ifeq ($(ENABLE_CPLUSPLUS),yes)
+    SUBDIRS += abyss++
+  endif
 endif
 ifeq ($(MUST_BUILD_WININET_CLIENT),yes)
   SUBDIRS += wininet_transport
@@ -35,7 +38,8 @@ all: $(SUBDIRS:%=%/all)
 # Extra dependencies to make parallel make work in spite of all the submakes
 # (See top level make file for details)
 abyss/all curl_transport/all: $(BLDDIR)/version.h
-abyss/all expat/all: $(LIBXMLRPC_UTIL)
+abyss++/all: abyss/all
+abyss/all expat/all: libutil/all
 
 clean: $(SUBDIRS:%=%/clean) clean-common
 
