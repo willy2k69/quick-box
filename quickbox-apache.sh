@@ -705,7 +705,7 @@ function _rtorrent() {
   MAXCPUS=$(echo "$(nproc) / 2"|bc)
   echo -ne "Installing rtorrent-${green}$RTVERSION${normal} ... "
   rm -rf libtorrent-${LTORRENT}* >>"${OUTTO}" 2>&1
-  if [[ -e /root/tmp/libtorrent-${RTVERSION}.tar.gz ]]; then rm -rf libtorrent-${RTVERSION}.tar.gz;fi
+  if [[ -e /root/tmp/libtorrent-${LTORRENT}.tar.gz ]]; then rm -rf libtorrent-${LTORRENT}.tar.gz;fi
   cp $REPOURL/sources/rtorrent-${RTVERSION}.tar.gz .
   tar -xzvf rtorrent-${RTVERSION}.tar.gz >>"${OUTTO}" 2>&1
   cd rtorrent-${RTVERSION}
@@ -715,7 +715,7 @@ function _rtorrent() {
   make install >>"${OUTTO}" 2>&1 
   cd /root/tmp
   ldconfig >>"${OUTTO}" 2>&1 
-  rm -rf /root/tmp/rtorrent-${LTORRENT}* >>"${OUTTO}" 2>&1
+  rm -rf /root/tmp/rtorrent-${RTVERSION}* >>"${OUTTO}" 2>&1
   echo "${OK}"
 }
 
