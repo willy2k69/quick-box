@@ -8,10 +8,10 @@ For Ubuntu 15.04 & 15.10 installs.
 
 [![Version 1.0.1-production](https://img.shields.io/badge/version-1.0.1p-674172.svg?style=flat-square)](https://github.com/JMSDOnline/quick-box/)    [![MIT License](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)](https://github.com/JMSDOnline/quick-box/blob/master/LICENSE)    
 
-[![Ubuntu 15.10 Passing](https://img.shields.io/badge/build-passing-brightgreen.svg?style=flat-square)](https://github.com/JMSDOnline/quick-box/)
-[![Ubuntu 15.04 Passing](https://img.shields.io/badge/build-passing-brightgreen.svg?style=flat-square)](https://github.com/JMSDOnline/quick-box/)
-[![Ubuntu 14.04 Passing](https://img.shields.io/badge/build-passing-brightgreen.svg?style=flat-square)](https://github.com/JMSDOnline/quick-box/)
-[![Ubuntu 12.04 Fails](https://img.shields.io/badge/build-passing-242, 38, 19.svg?style=flat-square)](https://github.com/JMSDOnline/quick-box/)
+[![Ubuntu 15.10 Passing](https://img.shields.io/badge/Ubuntu%2015.10-passing-brightgreen.svg?style=flat-square)](https://github.com/JMSDOnline/quick-box/)
+[![Ubuntu 15.04 Passing](https://img.shields.io/badge/Ubuntu%2015.04-passing-brightgreen.svg?style=flat-square)](https://github.com/JMSDOnline/quick-box/)
+[![Ubuntu 14.04 Passing](https://img.shields.io/badge/Ubuntu%2014.04-passing-brightgreen.svg?style=flat-square)](https://github.com/JMSDOnline/quick-box/)
+[![Ubuntu 12.04 Fails](https://img.shields.io/badge/Ubuntu%2012.04-fails-F22613.svg?style=flat-square)](https://github.com/JMSDOnline/quick-box/)
 
 This script has the following features
 
