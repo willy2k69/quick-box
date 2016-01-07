@@ -1278,7 +1278,8 @@ _locale
 _hostname
 echo -n "Installing building tools and all dependancies and perl modules, please wait ... ";_depends
 _askffmpeg;if [[ ${ffmpeg} == "yes" ]]; then _ffmpeg; fi
-_askrtorrent;_xmlrpc;_libtorrent;_rtorrent;_scgi;
+_askrtorrent;_xmlrpc;_libtorrent;_rtorrent
+#;_scgi;
 echo -n "Installing rutorrent into /srv ... ";_rutorrent;_askshell;_adduser;_apachesudo
 echo -n "Setting up seedbox.conf for apache ... ";_apacheconf
 echo -n "Installing .rtorrent.rc for ${username} ... ";_rconf
