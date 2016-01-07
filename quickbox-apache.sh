@@ -534,6 +534,8 @@ deb http://www.deb-multimedia.org testing main
 #deb http://plex.r.worldssl.net/PlexMediaServer/ubuntu-repo lucid main
 EOF
 
+  echo -n "Updating system ... "
+
   apt-get -y --force-yes update >>"${OUTTO}" 2>&1
   apt-get -y --force-yes purge samba samba-common >>"${OUTTO}" 2>&1
   apt-get -y --force-yes upgrade >>"${OUTTO}" 2>&1
@@ -542,8 +544,6 @@ EOF
     sed -i 's/Port 22/Port 4747/g' /etc/ssh/sshd_config
     service sshd restart >>"${OUTTO}" 2>&1
   fi
-
-  echo -n "Updating system ... "
 
   clear
 }
