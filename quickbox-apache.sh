@@ -4,7 +4,7 @@
 #
 # GitHub:   https://github.com/JMSDOnline/quick-box
 # Author:   Jason Matthews
-# URL:      https://jmsolodesigns.com
+# URL:      https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer
 #
 # find server IP and server hostname for nginx configuration
 HOSTNAME1=$(hostname -s);
@@ -492,7 +492,8 @@ function _updates() {
     else echo "failed to install lsb-release from apt-get, please install manually and re-run script"; exit
     fi
   fi
-  echo -n "Updating system ... "
+
+  apt-get -y --force-yes install deb-multimedia-keyring > /dev/null 2>&1;
 
 cat >/etc/apt/sources.list<<EOF
 #------------------------------------------------------------------------------#
@@ -501,16 +502,16 @@ cat >/etc/apt/sources.list<<EOF
 
 
 ###### Ubuntu Main Repos
-deb http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc) main restricted universe multiverse 
-deb-src http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc) main restricted universe multiverse 
+deb http://archive.ubuntu.com/ubuntu/ $(lsb_release -sc) main restricted universe multiverse 
+deb-src http://archive.ubuntu.com/ubuntu/ $(lsb_release -sc) main restricted universe multiverse 
 
 ###### Ubuntu Update Repos
-deb http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-security main restricted universe multiverse 
-deb http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-updates main restricted universe multiverse 
-deb http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-backports main restricted universe multiverse 
-deb-src http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-security main restricted universe multiverse 
-deb-src http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-updates main restricted universe multiverse 
-deb-src http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-backports main restricted universe multiverse 
+deb http://archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-security main restricted universe multiverse 
+deb http://archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-updates main restricted universe multiverse 
+deb http://archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-backports main restricted universe multiverse 
+deb-src http://archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-security main restricted universe multiverse 
+deb-src http://archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-updates main restricted universe multiverse 
+deb-src http://archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-backports main restricted universe multiverse 
 
 ###### Ubuntu Partner Repo
 deb http://archive.canonical.com/ubuntu $(lsb_release -sc) partner
@@ -533,15 +534,17 @@ deb http://www.deb-multimedia.org testing main
 #deb http://plex.r.worldssl.net/PlexMediaServer/ubuntu-repo lucid main
 EOF
 
-  apt-get -y --force-yes update
+  apt-get -y --force-yes update >>"${OUTTO}" 2>&1
   apt-get -y --force-yes purge samba samba-common >>"${OUTTO}" 2>&1
-  apt-get -y --force-yes upgrade
+  apt-get -y --force-yes upgrade >>"${OUTTO}" 2>&1
   if [[ -e /etc/ssh/sshd_config ]]; then
     echo "Port 4747" /etc/ssh/sshd_config
     sed -i 's/Port 22/Port 4747/g' /etc/ssh/sshd_config
     service sshd restart >>"${OUTTO}" 2>&1
   fi
-  apt-get -y --force-yes install deb-multimedia-keyring > /dev/null 2>&1;
+
+  echo -n "Updating system ... "
+
   clear
 }
 
@@ -577,10 +580,12 @@ fi
 
 # package and repo addition (7) _install softwares and packages_
 function _depends() {
-  if [[ ! "${rel}" =~ ("12.04"|"14.04") ]]; then
-    apt-get install -qq --yes --force-yes fail2ban bc sudo screen zip irssi unzip nano build-essential bwm-ng ifstat git subversion dstat automake libtool libcppunit-dev libssl-dev pkg-config libsigc++-2.0-dev lshell cron unrar curl libncurses5-dev yasm apache2 php5 php5-fpm php5-cli php-net-socket libdbd-mysql-perl libdbi-perl fontconfig libfontconfig1 libfontconfig1-dev rar mediainfo php5-curl htop libapache2-mod-php5 ttf-mscorefonts-installer libarchive-zip-perl libnet-ssleay-perl php5-geoip openjdk-7-jre openjdk-7-jdk libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl libxml-libxslt-perl libapache2-mod-scgi openvpn >>"${OUTTO}" 2>&1;
-  elif [[ ! "${rel}" =~ ("15.04"|"15.10") ]]; then
-    apt-get install -qq --yes --force-yes fail2ban bc sudo screen zip irssi unzip nano build-essential bwm-ng ifstat git subversion dstat automake libtool libcppunit-dev libssl-dev pkg-config libcurl4-openssl-dev libsigc++-2.0-dev lshell cron unrar curl libncurses5-dev yasm apache2 php5 php5-fpm php5-cli php-net-socket libdbd-mysql-perl libdbi-perl fontconfig libfontconfig1 libfontconfig1-dev rar mediainfo php5-curl htop libapache2-mod-php5 ttf-mscorefonts-installer libarchive-zip-perl libnet-ssleay-perl php5-geoip openjdk-7-jre openjdk-7-jdk libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl libxml-libxslt-perl libapache2-mod-scgi openvpn >>"${OUTTO}" 2>&1;
+  if [[ "${rel}" =~ "12.04" ]];then
+    apt-get install -qq --yes --force-yes fail2ban bc sudo screen zip irssi unzip nano build-essential bwm-ng ifstat git subversion dstat automake libtool libcppunit-dev libssl-dev pkg-config libsigc++-2.0-dev lshell cron unrar curl libncurses5-dev yasm apache2 php5 php5-fpm php5-cli php-net-socket libdbd-mysql-perl libdbi-perl fontconfig libfontconfig1 libfontconfig1-dev rar mediainfo php5-curl htop libapache2-mod-php5 ttf-mscorefonts-installer libarchive-zip-perl libnet-ssleay-perl php5-geoip openjdk-7-jre openjdk-7-jdk libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl libxml-libxslt-perl libapache2-mod-scgi openvpn >>"${OUTTO}" 2>&1
+  elif [[ "${rel}" =~ "14.04" ]];then
+    apt-get install -qq --yes --force-yes fail2ban bc sudo screen zip irssi unzip nano build-essential bwm-ng ifstat git subversion dstat automake libtool libcppunit-dev libssl-dev pkg-config libsigc++-2.0-dev lshell cron unrar curl libncurses5-dev yasm apache2 php5 php5-fpm php5-cli php-net-socket libdbd-mysql-perl libdbi-perl fontconfig libfontconfig1 libfontconfig1-dev rar mediainfo php5-curl htop libapache2-mod-php5 ttf-mscorefonts-installer libarchive-zip-perl libnet-ssleay-perl php5-geoip openjdk-7-jre openjdk-7-jdk libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl libxml-libxslt-perl libapache2-mod-scgi openvpn >>"${OUTTO}" 2>&1
+  else
+    apt-get install -qq --yes --force-yes fail2ban bc sudo screen zip irssi unzip nano build-essential bwm-ng ifstat git subversion dstat automake libtool libcppunit-dev libssl-dev pkg-config libcurl4-openssl-dev libsigc++-2.0-dev lshell cron unrar curl libncurses5-dev yasm apache2 php5 php5-fpm php5-cli php-net-socket libdbd-mysql-perl libdbi-perl fontconfig libfontconfig1 libfontconfig1-dev rar mediainfo php5-curl htop libapache2-mod-php5 ttf-mscorefonts-installer libarchive-zip-perl libnet-ssleay-perl php5-geoip openjdk-7-jre openjdk-7-jdk libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl libxml-libxslt-perl libapache2-mod-scgi openvpn >>"${OUTTO}" 2>&1
   fi
   cd
   rm -rf /etc/skel
