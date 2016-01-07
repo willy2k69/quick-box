@@ -472,40 +472,40 @@ function _logcheck() {
 
 # package and repo addition (4) _update and upgrade_
 function _updates() {
-  echo "Which country do you want for apt-get"
-  echo "1) USA"
-  echo "2) NL"
-  echo "3) FR"
-  echo "4) DE"
-  read input
-  case $input in
-    1) echo "Selecting USA ... "; country=us ;;
-    2) echo "Selecting NL ... "; country=nl ;;
-    3) echo "Selecting FR ... "; country=fr ;;
-    4) echo "Selecting DR ... "; country=us ;;
-    *) echo "Defaulting to USA ... "; country=us ;;
-  esac
-  if lsb_release >>"${OUTTO}" 2>&1; then ver=$(lsb_release -c|awk '{print $2}')
-  else
-    apt-get -yq install lsb-release >>"${OUTTO}" 2>&1
-    if [[ -e /usr/bin/lsb_release ]]; then ver=$(lsb_release -c|awk '{print $2}')
-    else echo "failed to install lsb-release from apt-get, please install manually and re-run script"; exit
-    fi
-  fi
-  echo -n "Updating system ... "
-
-cat >/etc/apt/sources.list<<EOF
+#  echo "Which country do you want for apt-get"
+#  echo "1) USA"
+#  echo "2) NL"
+#  echo "3) FR"
+#  echo "4) DE"
+#  read input
+#  case $input in
+#    1) echo "Selecting USA ... "; country=us ;;
+#    2) echo "Selecting NL ... "; country=nl ;;
+#    3) echo "Selecting FR ... "; country=fr ;;
+#    4) echo "Selecting DR ... "; country=us ;;
+#    *) echo "Defaulting to USA ... "; country=us ;;
+#  esac
+#  if lsb_release >>"${OUTTO}" 2>&1; then ver=$(lsb_release -c|awk '{print $2}')
+#  else
+#    apt-get -yq install lsb-release >>"${OUTTO}" 2>&1
+#    if [[ -e /usr/bin/lsb_release ]]; then ver=$(lsb_release -c|awk '{print $2}')
+#    else echo "failed to install lsb-release from apt-get, please install manually and re-run script"; exit
+#    fi
+#  fi
+#  echo -n "Updating system ... "
+#
+cat >>/etc/apt/sources.list<<EOF
 ###### Ubuntu Main Repos
-deb http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc) main universe multiverse 
-deb-src http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc) main universe multiverse 
+#deb http://archive.ubuntu.com/ubuntu/ $(lsb_release -sc) main universe multiverse 
+#deb-src http://archive.ubuntu.com/ubuntu/ $(lsb_release -sc) main universe multiverse 
 
 ###### Ubuntu Update Repos
-deb http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-security main universe multiverse 
-deb http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-updates main universe multiverse 
-deb http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-backports main universe multiverse 
-deb-src http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-security main universe multiverse 
-deb-src http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-updates main universe multiverse 
-deb-src http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-backports main universe multiverse 
+#deb http://archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-security main universe multiverse 
+#deb http://archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-updates main universe multiverse 
+#deb http://archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-backports main universe multiverse 
+#deb-src http://archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-security main universe multiverse 
+#deb-src http://archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-updates main universe multiverse 
+#deb-src http://archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-backports main universe multiverse 
 
 ###### Ubuntu Partner Repo
 deb http://www.deb-multimedia.org testing main
