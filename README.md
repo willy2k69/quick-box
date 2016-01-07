@@ -17,7 +17,7 @@ For Ubuntu 15.04 & 15.10 installs.
 
 ## UPDATE as of 01/07/2016
 
-> I am going to place all release versions of this script in development mode. You may download the repo and install, but please do so at your own risk. I will outline some changes as well as why I am making the decision to label this development.
+> I am going to place all release versions of this script in development mode. You may download the repo and install, but please do so at your own risk. I will outline some changes as well as why I am making the decision to label this development. **Update** All builds now pass if the offending dependency is left out of the 14.04 and 12.04 releases. I will keep it within the 15.x builds for now as it just works with newer builds. I am keeping the script on development status in the meantime.. but the script is ready for use on 12.04 | 14.04 | 15.04 | 15.10. Please report any issues. Also, please wait for the script build tests to update before attempting an install... I want to contribute... not bork your server. You'll know it passes via badge status above. _Forecasted within the hour Updated: 4:30PM CST 01/07/2016_
 
   1. Updating jquery for rutorrent. The included (already) addition jquery.browser.js has been updated, thus, I am running tests against this new js for any screw ups that may occur...
   2. A couple of really good requests have been made. Placing the repo into a development status (no - I don't want to use a development branch) ensures that future downloads receive full functionality... and it adds full transparency to what has been committed as additions to the script.
@@ -26,11 +26,11 @@ For Ubuntu 15.04 & 15.10 installs.
 
 ### Additional notes on status::
 
-  15.10 is successfully built. However, there is an issue where rtorrent is failing to start. This is priority and it first on the list of things to fix... asap.
+  15.10 is successfully built. ~~However, there is an issue where rtorrent is failing to start. This is priority and it first on the list of things to fix... asap~~ FIXED. In some late night coding binge in one of these fateful commits I decided to delete a trailing '/' during the xmlrpc-c build... as a result, the directory was not moving to root for the configure/male process... this is resolved.
 
   15.04 same as 15.10
 
-  14.04 libcurl dependency stops the rest of the build from happening... in this way apache fails to install etc etc. This is priority and up next on the list of fix it now.
+  14.04 libcurl dependency stops the rest of the build from happening... in this way apache fails to install etc etc. This is priority and up next on the list of fix it now **Additional note to self and anyone listening** - I don't think we'll need this dependency as a build without it passes now that the xmlrpc-c fiasco is resolved. .
 
   12.04 same as 14.04
 
