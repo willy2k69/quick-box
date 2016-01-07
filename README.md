@@ -19,10 +19,10 @@ For Ubuntu 15.04 & 15.10 installs.
 
 > I am going to place all release versions of this script in development mode. You may download the repo and install, but please do so at your own risk. I will outline some changes as well as why I am making the decision to label this development.
 
-  1) Updating jquery for rutorrent. The included (already) addition jquery.browser.js has been updated, thus, I am running tests against this new js for any screw ups that may occur...
-  2) A couple of really good requests have been made. Placing the repo into a development status (no - I don't want to use a development branch) ensures that future downloads receive full functionality... and it adds full transparency to what has been committed as additions to the script.
-  3) Lesser repos have a hard time with the libcurl4-openssl-dev dependency. I am still trying to figure out why this is occurring. Although, this dependency shouldn't have any ill effects on the initial success... I do believe all should be in tact and in stable working order... something other seedbox repos are focusing on so much.
-  4) I have additional time in the next couple of days to really hammer out some trials on the script. If anyone wants to join me... spin up a vm and run some tests to see what you find, open a issue or push over some fixes and I'll add them and throw all the credit your way.
+  1. Updating jquery for rutorrent. The included (already) addition jquery.browser.js has been updated, thus, I am running tests against this new js for any screw ups that may occur...
+  2. A couple of really good requests have been made. Placing the repo into a development status (no - I don't want to use a development branch) ensures that future downloads receive full functionality... and it adds full transparency to what has been committed as additions to the script.
+  3. Lesser repos have a hard time with the libcurl4-openssl-dev dependency. I am still trying to figure out why this is occurring. Although, this dependency shouldn't have any ill effects on the initial success... I do believe all should be in tact and in stable working order... something other seedbox repos are focusing on so much.
+  4. I have additional time in the next couple of days to really hammer out some trials on the script. If anyone wants to join me... spin up a vm and run some tests to see what you find, open a issue or push over some fixes and I'll add them and throw all the credit your way.
 
 ### Additional notes on status::
 
