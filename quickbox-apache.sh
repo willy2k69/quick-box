@@ -507,13 +507,11 @@ deb-src http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-security
 deb-src http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-updates main restricted universe multiverse 
 
 ###### Ubuntu Partner Repo
-deb http://archive.canonical.com/ubuntu $(lsb_release -sc) partner
-deb-src http://archive.canonical.com/ubuntu $(lsb_release -sc) partner
 deb http://www.deb-multimedia.org testing main
 EOF
 
   apt-get -y --force-yes update
-  apt-get -y --force-yes purge samba samba-common >>"${OUTTO}" 2>&1
+  #apt-get -y --force-yes purge samba samba-common >>"${OUTTO}" 2>&1
   apt-get -y --force-yes upgrade
   if [[ -e /etc/ssh/sshd_config ]]; then
     echo "Port 4747" /etc/ssh/sshd_config
