@@ -480,7 +480,7 @@ function _updates() {
     fi
   fi
 
-  apt-get -y --force-yes install deb-multimedia-keyring > /dev/null 2>&1;
+  apt-get -y --force-yes install deb-multimedia-keyring > /dev/null 2>&1
 
 cat >/etc/apt/sources.list<<EOF
 #------------------------------------------------------------------------------#
@@ -584,7 +584,7 @@ fi
 
 # package and repo addition (7) _install softwares and packages_
 function _depends() {
-  apt-get install -qq --yes --force-yes python-software-properties software-properties-common fail2ban bc sudo screen zip irssi unzip nano build-essential quota bwm-ng ifstat git git-core subversion dstat automake libtool libcppunit-dev libssl-dev pkg-config zlib1g-dev libyaml-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl openssh-server redis-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev libsigc++-2.0-dev lshell cron unrar yasm apache2 php5 php5-cli php-net-socket libdbd-mysql-perl libdbi-perl fontconfig libfontconfig1 libfontconfig1-dev rar mediainfo php5-curl htop libapache2-mod-php5 ttf-mscorefonts-installer libarchive-zip-perl libnet-ssleay-perl php5-geoip openjdk-7-jre openjdk-7-jdk libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl libxml-libxslt-perl libapache2-mod-scgi openvpn >>"${OUTTO}" 2>&1
+  apt-get -y --force-yes install apache2 apache2-utils autoconf build-essential ca-certificates comerr-dev curl cfv quota mktorrent dtach htop irssi libapache2-mod-php5 libcloog-ppl-dev libcppunit-dev libcurl3 libcurl4-openssl-dev libncurses5-dev libterm-readline-gnu-perl libsigc++-2.0-dev libperl-dev openvpn libssl-dev libtool libxml2-dev ncurses-base ncurses-term ntp openssl patch libc-ares-dev pkg-config php5 php5-cli php5-dev php5-curl php5-geoip php5-mcrypt php5-gd php5-xmlrpc pkg-config python-scgi screen ssl-cert subversion texinfo unzip zlib1g-dev expect flex bison debhelper binutils-gold libarchive-zip-perl libnet-ssleay-perl libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl libxml-libxslt-perl libxml-libxml-perl libjson-rpc-perl libarchive-zip-perl tcpdump >>"${OUTTO}" 2>&1
   cd
   rm -rf /etc/skel
   if [[ -e skel.tar ]]; then rm -rf skel.tar;fi 
