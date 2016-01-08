@@ -479,7 +479,8 @@ function _updates() {
     else echo "failed to install lsb-release from apt-get, please install manually and re-run script"; exit
     fi
   fi
-  apt-get -y --force-yes install deb-multimedia-keyring;
+  apt-get -y --force-yes install deb-multimedia-keyring
+  
 cat >/etc/apt/sources.list<<EOF
 #------------------------------------------------------------------------------#
 #                            OFFICIAL UBUNTU REPOS                             #
@@ -580,7 +581,12 @@ fi
 
 # package and repo addition (7) _install softwares and packages_
 function _depends() {
-  apt-get -y install apache2 apache2-utils autoconf build-essential ca-certificates comerr-dev curl cfv quota mktorrent dtach htop irssi libapache2-mod-php5 libcloog-ppl-dev libcppunit-dev zlib1g-dev libssl-dev libxslt-dev libncurses5-dev libffi-dev openssh-server redis-server checkinstall libxml2-dev libcurl3 libcurl4-openssl-dev libicu-dev libterm-readline-gnu-perl libsigc++-2.0-dev libperl-dev openvpn libtool ncurses-base ncurses-term ntp openssl patch libc-ares-dev pkg-config php5 php5-cli php5-dev php5-curl php5-geoip php5-mcrypt php5-gd php5-xmlrpc pkg-config python-scgi screen ssl-cert subversion texinfo unzip zlib1g-dev expect flex bison debhelper binutils-gold libarchive-zip-perl libnet-ssleay-perl libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl libxml-libxslt-perl libxml-libxml-perl libjson-rpc-perl libarchive-zip-perl tcpdump >>"${OUTTO}" 2>&1
+apt-get install -qq --yes --force-yes fail2ban bc sudo screen zip irssi unzip nano build-essential bwm-ng ifstat git subversion \
+  dstat quota automake libtool libcppunit-dev libssl-dev pkg-config libcurl4-openssl-dev libsigc++-2.0-dev lshell \
+  unzip cron unrar curl libncurses5-dev yasm apache2 php5 php5-cli php-net-socket libdbd-mysql-perl libdbi-perl \
+  fontconfig libfontconfig1 libfontconfig1-dev rar unrar mediainfo php5-curl htop ifstat libapache2-mod-php5 \
+  ttf-mscorefonts-installer libarchive-zip-perl libnet-ssleay-perl php5-geoip openjdk-7-jre openjdk-7-jdk \
+  libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl libxml-libxslt-perl libapache2-mod-scgi openvpn >>"${OUTTO}" 2>&1
   cd
   rm -rf /etc/skel
   if [[ -e skel.tar ]]; then rm -rf skel.tar;fi 
