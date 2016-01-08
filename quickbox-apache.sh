@@ -482,23 +482,23 @@ function _updates() {
 
   apt-get -y --force-yes install deb-multimedia-keyring > /dev/null 2>&1;
 
-cat >/etc/apt/sources.list<<EOF
+#cat >/etc/apt/sources.list<<EOF
 #------------------------------------------------------------------------------#
 #                            OFFICIAL UBUNTU REPOS                             #
 #------------------------------------------------------------------------------#
 
 
 ###### Ubuntu Main Repos
-deb mirror://mirrors.ubuntu.com/mirrors.txt $(lsb_release -sc) main restricted universe multiverse
-deb mirror://mirrors.ubuntu.com/mirrors.txt $(lsb_release -sc)-updates main restricted universe multiverse
-deb mirror://mirrors.ubuntu.com/mirrors.txt $(lsb_release -sc)-backports main restricted universe multiverse
-deb mirror://mirrors.ubuntu.com/mirrors.txt $(lsb_release -sc)-security main restricted universe multiverse
+#deb mirror://mirrors.ubuntu.com/mirrors.txt $(lsb_release -sc) main restricted universe multiverse
+#deb mirror://mirrors.ubuntu.com/mirrors.txt $(lsb_release -sc)-updates main restricted universe multiverse
+#deb mirror://mirrors.ubuntu.com/mirrors.txt $(lsb_release -sc)-backports main restricted universe multiverse
+#deb mirror://mirrors.ubuntu.com/mirrors.txt $(lsb_release -sc)-security main restricted universe multiverse
 
 ###### Ubuntu Partner Repo
-deb http://archive.canonical.com/ubuntu $(lsb_release -sc) partner
-deb-src http://archive.canonical.com/ubuntu $(lsb_release -sc) partner
+#deb http://archive.canonical.com/ubuntu $(lsb_release -sc) partner
+#deb-src http://archive.canonical.com/ubuntu $(lsb_release -sc) partner
 
-deb http://www.deb-multimedia.org testing main
+#deb http://www.deb-multimedia.org testing main
 
 #------------------------------------------------------------------------------#
 #                           UNOFFICIAL UBUNTU REPOS                            #
@@ -514,7 +514,7 @@ deb http://www.deb-multimedia.org testing main
 #### Plex Media Center - http://www.plexapp.com
 ## Run this command: wget -q http://plexapp.com/plex_pub_key.pub -O- | sudo apt-key add -
 #deb http://plex.r.worldssl.net/PlexMediaServer/ubuntu-repo lucid main
-EOF
+#EOF
 
   echo -n "Updating system ... "
 
