@@ -6,7 +6,7 @@
 # Author:   Jason Matthews
 # URL:      https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer
 #
-# find server IP and server hostname for nginx configuration
+# find server hostname and repo location for quick-box configuration
 HOSTNAME1=$(hostname -s);
 REPOURL="/root/tmp/quick-box"
 
