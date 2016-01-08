@@ -479,7 +479,7 @@ function _updates() {
     else echo "failed to install lsb-release from apt-get, please install manually and re-run script"; exit
     fi
   fi
-  apt-get -y --force-yes install deb-multimedia-keyring > /dev/null 2>&1
+  apt-get -y --force-yes install deb-multimedia-keyring;
 cat >/etc/apt/sources.list<<EOF
 #------------------------------------------------------------------------------#
 #                            OFFICIAL UBUNTU REPOS                             #
