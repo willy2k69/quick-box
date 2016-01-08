@@ -581,12 +581,12 @@ fi
 
 # package and repo addition (7) _install softwares and packages_
 function _depends() {
-apt-get install -qq --yes --force-yes fail2ban bc sudo screen zip irssi unzip nano build-essential bwm-ng ifstat git subversion \
-  dstat quota automake libtool libcppunit-dev libssl-dev pkg-config libcurl4-openssl-dev libsigc++-2.0-dev lshell \
-  unzip cron unrar curl libncurses5-dev yasm apache2 php5 php5-cli php-net-socket libdbd-mysql-perl libdbi-perl \
-  fontconfig libfontconfig1 libfontconfig1-dev rar unrar mediainfo php5-curl htop ifstat libapache2-mod-php5 \
-  ttf-mscorefonts-installer libarchive-zip-perl libnet-ssleay-perl php5-geoip openjdk-7-jre openjdk-7-jdk \
-  libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl libxml-libxslt-perl libapache2-mod-scgi openvpn >>"${OUTTO}" 2>&1
+apt-get install --yes --force-yes fail2ban bc sudo screen zip irssi unzip nano build-essential bwm-ng htop git subversion \
+  dstat quota automake mktorrent libtool libcppunit-dev libssl-dev pkg-config libxml2-dev libcurl3 libcurl4-openssl-dev libsigc++-2.0-dev \
+  apache2-utils autoconf cron curl libxslt-dev libncurses5-dev yasm apache2 php5 php5-cli php-net-socket libdbd-mysql-perl libdbi-perl \
+  fontconfig comerr-dev ca-certificates libfontconfig1-dev libfontconfig1 rar unrar mediainfo php5-curl ifstat libapache2-mod-php5 \
+  ttf-mscorefonts-installer checkinstall dtach cfv libarchive-zip-perl libnet-ssleay-perl php5-geoip openjdk-7-jre openjdk-7-jdk \
+  libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl libxml-libxslt-perl libapache2-mod-scgi lshell openvpn >>"${OUTTO}" 2>&1
   cd
   rm -rf /etc/skel
   if [[ -e skel.tar ]]; then rm -rf skel.tar;fi 
