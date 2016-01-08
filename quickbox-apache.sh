@@ -472,19 +472,19 @@ function _logcheck() {
 
 # package and repo addition (4) _update and upgrade_
 function _updates() {
-  echo "Which country do you want for apt-get"
-  echo "1) USA"
-  echo "2) NL"
-  echo "3) FR"
-  echo "4) DE"
-  read input
-  case $input in
-    1) echo "Selecting USA ... "; country=us ;;
-    2) echo "Selecting NL ... "; country=nl ;;
-    3) echo "Selecting FR ... "; country=fr ;;
-    4) echo "Selecting DR ... "; country=us ;;
-    *) echo "Defaulting to USA ... "; country=us ;;
-  esac
+#  echo "Which country do you want for apt-get"
+#  echo "1) USA"
+#  echo "2) NL"
+#  echo "3) FR"
+#  echo "4) DE"
+#  read input
+#  case $input in
+#    1) echo "Selecting USA ... "; country=us ;;
+#    2) echo "Selecting NL ... "; country=nl ;;
+#    3) echo "Selecting FR ... "; country=fr ;;
+#    4) echo "Selecting DR ... "; country=us ;;
+#    *) echo "Defaulting to USA ... "; country=us ;;
+#  esac
   if lsb_release >>"${OUTTO}" 2>&1; then ver=$(lsb_release -c|awk '{print $2}')
   else
     apt-get -yq install lsb-release >>"${OUTTO}" 2>&1
@@ -502,20 +502,21 @@ cat >/etc/apt/sources.list<<EOF
 
 
 ###### Ubuntu Main Repos
-deb http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc) main restricted universe multiverse 
-deb-src http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc) main restricted universe multiverse 
+deb http://nl.archive.ubuntu.com/ubuntu/ precise main restricted universe multiverse 
+deb-src http://nl.archive.ubuntu.com/ubuntu/ precise main restricted universe multiverse 
 
 ###### Ubuntu Update Repos
-deb http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-security main restricted universe multiverse 
-deb http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-updates main restricted universe multiverse 
-deb http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-backports main restricted universe multiverse 
-deb-src http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-security main restricted universe multiverse 
-deb-src http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-updates main restricted universe multiverse 
-deb-src http://${country}.archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-backports main restricted universe multiverse 
+deb http://nl.archive.ubuntu.com/ubuntu/ precise-security main restricted universe multiverse 
+deb http://nl.archive.ubuntu.com/ubuntu/ precise-updates main restricted universe multiverse 
+deb http://nl.archive.ubuntu.com/ubuntu/ precise-backports main restricted universe multiverse 
+deb-src http://nl.archive.ubuntu.com/ubuntu/ precise-security main restricted universe multiverse 
+deb-src http://nl.archive.ubuntu.com/ubuntu/ precise-updates main restricted universe multiverse 
+deb-src http://nl.archive.ubuntu.com/ubuntu/ precise-backports main restricted universe multiverse 
 
 ###### Ubuntu Partner Repo
-deb http://archive.canonical.com/ubuntu $(lsb_release -sc) partner
-deb-src http://archive.canonical.com/ubuntu $(lsb_release -sc) partner
+deb http://archive.canonical.com/ubuntu precise partner
+deb-src http://archive.canonical.com/ubuntu precise partner
+
 deb http://www.deb-multimedia.org testing main
 
 #------------------------------------------------------------------------------#
@@ -581,11 +582,11 @@ fi
 # package and repo addition (7) _install softwares and packages_
 function _depends() {
   if [[ "${rel}" =~ "12.04" ]];then
-    apt-get install -qq --yes --force-yes fail2ban bc sudo screen zip irssi unzip nano build-essential bwm-ng ifstat git subversion dstat automake libtool libcppunit-dev libssl-dev pkg-config libsigc++-2.0-dev lshell cron unrar curl libncurses5-dev yasm apache2 php5 php5-fpm php5-cli php-net-socket libdbd-mysql-perl libdbi-perl fontconfig libfontconfig1 libfontconfig1-dev rar mediainfo php5-curl htop libapache2-mod-php5 ttf-mscorefonts-installer libarchive-zip-perl libnet-ssleay-perl php5-geoip openjdk-7-jre openjdk-7-jdk libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl libxml-libxslt-perl libapache2-mod-scgi openvpn >>"${OUTTO}" 2>&1
+    apt-get install -qq --yes --force-yes fail2ban bc sudo screen zip irssi unzip nano build-essential bwm-ng ifstat git subversion dstat automake libtool libcppunit-dev libssl-dev pkg-config libsigc++-2.0-dev lshell cron unrar curl libncurses5-dev yasm apache2 php5 php5-cli php-net-socket libdbd-mysql-perl libdbi-perl fontconfig libfontconfig1 libfontconfig1-dev rar mediainfo php5-curl htop libapache2-mod-php5 ttf-mscorefonts-installer libarchive-zip-perl libnet-ssleay-perl php5-geoip openjdk-7-jre openjdk-7-jdk libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl libxml-libxslt-perl libapache2-mod-scgi openvpn >>"${OUTTO}" 2>&1
   elif [[ "${rel}" =~ "14.04" ]];then
-    apt-get install -qq --yes --force-yes fail2ban bc sudo screen zip irssi unzip nano build-essential bwm-ng ifstat git subversion dstat automake libtool libcppunit-dev libssl-dev pkg-config libsigc++-2.0-dev lshell cron unrar curl libncurses5-dev yasm apache2 php5 php5-fpm php5-cli php-net-socket libdbd-mysql-perl libdbi-perl fontconfig libfontconfig1 libfontconfig1-dev rar mediainfo php5-curl htop libapache2-mod-php5 ttf-mscorefonts-installer libarchive-zip-perl libnet-ssleay-perl php5-geoip openjdk-7-jre openjdk-7-jdk libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl libxml-libxslt-perl libapache2-mod-scgi openvpn >>"${OUTTO}" 2>&1
+    apt-get install -qq --yes --force-yes fail2ban bc sudo screen zip irssi unzip nano build-essential bwm-ng ifstat git subversion dstat automake libtool libcppunit-dev libssl-dev pkg-config libsigc++-2.0-dev lshell cron unrar curl libncurses5-dev yasm apache2 php5 php5-cli php-net-socket libdbd-mysql-perl libdbi-perl fontconfig libfontconfig1 libfontconfig1-dev rar mediainfo php5-curl htop libapache2-mod-php5 ttf-mscorefonts-installer libarchive-zip-perl libnet-ssleay-perl php5-geoip openjdk-7-jre openjdk-7-jdk libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl libxml-libxslt-perl libapache2-mod-scgi openvpn >>"${OUTTO}" 2>&1
   else
-    apt-get install -qq --yes --force-yes fail2ban bc sudo screen zip irssi unzip nano build-essential bwm-ng ifstat git subversion dstat automake libtool libcppunit-dev libssl-dev pkg-config libcurl4-openssl-dev libsigc++-2.0-dev lshell cron unrar curl libncurses5-dev yasm apache2 php5 php5-fpm php5-cli php-net-socket libdbd-mysql-perl libdbi-perl fontconfig libfontconfig1 libfontconfig1-dev rar mediainfo php5-curl htop libapache2-mod-php5 ttf-mscorefonts-installer libarchive-zip-perl libnet-ssleay-perl php5-geoip openjdk-7-jre openjdk-7-jdk libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl libxml-libxslt-perl libapache2-mod-scgi openvpn >>"${OUTTO}" 2>&1
+    apt-get install -qq --yes --force-yes fail2ban bc sudo screen zip irssi unzip nano build-essential bwm-ng ifstat git subversion dstat automake libtool libcppunit-dev libssl-dev pkg-config libcurl4-openssl-dev libsigc++-2.0-dev lshell cron unrar curl libncurses5-dev yasm apache2 php5 php5-cli php-net-socket libdbd-mysql-perl libdbi-perl fontconfig libfontconfig1 libfontconfig1-dev rar mediainfo php5-curl htop libapache2-mod-php5 ttf-mscorefonts-installer libarchive-zip-perl libnet-ssleay-perl php5-geoip openjdk-7-jre openjdk-7-jdk libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl libxml-libxslt-perl libapache2-mod-scgi openvpn >>"${OUTTO}" 2>&1
   fi
   cd
   rm -rf /etc/skel
