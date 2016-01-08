@@ -17,7 +17,9 @@ For Ubuntu 15.04 & 15.10 installs.
 
 ## UPDATE as of 01/07/2016
 
-> I am going to place all release versions of this script in development mode. You may download the repo and install, but please do so at your own risk. I will outline some changes as well as why I am making the decision to label this development. **Update** All builds now pass if the offending dependency is left out of the 14.04 and 12.04 releases. I will keep it within the 15.x builds for now as it just works with newer builds. I am keeping the script on development status in the meantime.. but the script is ready for use on 12.04 | 14.04 | 15.04 | 15.10. Please report any issues. Also, please wait for the script build tests to update before attempting an install... I want to contribute... not bork your server. You'll know it passes via badge status above. _Forecasted within the hour Updated: 4:30PM CST 01/07/2016_
+> I am going to place all release versions of this script in development mode. You may download the repo and install, but please do so at your own risk. I will outline some changes as well as why I am making the decision to label this development. 
+
+> **Update** The issue appears to have been with bad default mirrors when selecting from key geographic locations, i.e; US, NL, FR & DR. I have tested on a couple of different VM's and a small dedi provided via One Provider and it installs the required packages without issue. All that is required at this moment is adding in any key's that may be needed for installing said packages... however, this can be bypassed as Plex and BTSync are being built from source provided via the /sources/ directory and not using unreliable ppa's.
 
   1. Updating jquery for rutorrent. The included (already) addition jquery.browser.js has been updated, thus, I am running tests against this new js for any screw ups that may occur...
   2. A couple of really good requests have been made. Placing the repo into a development status (no - I don't want to use a development branch) ensures that future downloads receive full functionality... and it adds full transparency to what has been committed as additions to the script.
