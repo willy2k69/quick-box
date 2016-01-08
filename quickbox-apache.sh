@@ -482,7 +482,7 @@ function _updates() {
 
   apt-get -y --force-yes install deb-multimedia-keyring > /dev/null 2>&1;
 
-#cat >/etc/apt/sources.list<<EOF
+cat >/etc/apt/sources.list<<EOF
 #------------------------------------------------------------------------------#
 #                            OFFICIAL UBUNTU REPOS                             #
 #------------------------------------------------------------------------------#
@@ -514,7 +514,7 @@ deb http://www.deb-multimedia.org testing main
 #### Plex Media Center - http://www.plexapp.com
 ## Run this command: wget -q http://plexapp.com/plex_pub_key.pub -O- | sudo apt-key add -
 #deb http://plex.r.worldssl.net/PlexMediaServer/ubuntu-repo lucid main
-#EOF
+EOF
 
   echo -n "Updating system ... "
 
