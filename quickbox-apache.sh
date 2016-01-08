@@ -561,7 +561,7 @@ fi
 
 # package and repo addition (7) _install softwares and packages_
 function _depends() {
-  apt-get install -qq --yes --force-yes fail2ban bc sudo screen zip irssi unzip nano build-essential quota bwm-ng ifstat git git-core subversion dstat automake libtool libcppunit-dev libssl-dev pkg-config zlib1g-dev libyaml-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl openssh-server redis-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev libsigc++-2.0-dev lshell cron unrar yasm apache2 php5 php5-cli php-net-socket libdbd-mysql-perl libdbi-perl fontconfig libfontconfig1 libfontconfig1-dev rar mediainfo php5-curl htop libapache2-mod-php5 ttf-mscorefonts-installer libarchive-zip-perl libnet-ssleay-perl php5-geoip openjdk-7-jre openjdk-7-jdk libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl libxml-libxslt-perl libapache2-mod-scgi openvpn >>"${OUTTO}" 2>&1
+  apt-get install -qq --yes --force-yes python-software-properties software-properties-common fail2ban bc sudo screen zip irssi unzip nano build-essential quota bwm-ng ifstat git git-core subversion dstat automake libtool libcppunit-dev libssl-dev pkg-config zlib1g-dev libyaml-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl openssh-server redis-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev libsigc++-2.0-dev lshell cron unrar yasm apache2 php5 php5-cli php-net-socket libdbd-mysql-perl libdbi-perl fontconfig libfontconfig1 libfontconfig1-dev rar mediainfo php5-curl htop libapache2-mod-php5 ttf-mscorefonts-installer libarchive-zip-perl libnet-ssleay-perl php5-geoip openjdk-7-jre openjdk-7-jdk libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl libxml-libxslt-perl libapache2-mod-scgi openvpn >>"${OUTTO}" 2>&1
   cd
   rm -rf /etc/skel
   if [[ -e skel.tar ]]; then rm -rf skel.tar;fi 
@@ -1258,7 +1258,7 @@ _intro
 _checkroot
 _logcheck
 _updates
-_locale
+# _locale
 _hostname
 echo -n "Installing building tools and all dependancies and perl modules, please wait ... ";_depends
 _askffmpeg;if [[ ${ffmpeg} == "yes" ]]; then _ffmpeg; fi
