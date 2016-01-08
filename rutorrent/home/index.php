@@ -391,7 +391,17 @@ break;
 
           <h5 class="sidebar-title">Quick Tips</h5>
           <ul class="nav nav-pills nav-stacked nav-quirk nav-mail">
-            <li style="padding: 7px"><span style="font-size: 12px; color:#eee">Coming Soon...</span></li>
+            <li style="padding: 7px"><span style="font-size: 12px; color:#eee">createSeedboxUser</span><br/>
+            <small>Type this command in ssh to create a new seedbox user on your server.</small></li>
+            <li style="padding: 7px"><span style="font-size: 12px; color:#eee">deleteSeedboxUser</span>
+            <br/>
+            <small>Type this command in ssh to delete a seedbox user on your server. You will need to enter the users account name, you will be prompted.</small></li>
+            <li style="padding: 7px"><span style="font-size: 12px; color:#eee">setdisk</span><br/>
+            <small>During the install of your seedbox, a quota system was arranged. Type in the above command to allocate space to a users account.</small></li>
+            <li style="padding: 7px"><span style="font-size: 12px; color:#eee">reload</span><br/>
+            <small>Type this command in ssh to reload all services on your seedbox. These services include rTorrent and IRSSI.</small></li>
+            <li style="padding: 7px"><span style="font-size: 12px; color:#eee">restartSeedbox</span><br/>
+            <small>Type this command in ssh to restart your seedbox services, ie; rTorrent and IRSSI.</small></li>
           </ul>
         </div><!-- tab-pane -->
 
