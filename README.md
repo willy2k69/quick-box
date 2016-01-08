@@ -2,7 +2,7 @@
 |---|
 | **Quick Box - A Friendly, Fresh and Modernized Seedbox Script** |
 
-For Ubuntu 15.04 & 15.10 installs.
+For Ubuntu 14.04, 15.04 & 15.10 installs.
 
 ## Script status
 
@@ -10,8 +10,8 @@ For Ubuntu 15.04 & 15.10 installs.
 [![MIT License](https://img.shields.io/badge/license-MIT%20License-blue.svg?style=flat-square)](https://github.com/JMSDOnline/quick-box/blob/master/LICENSE)
 [![Ubuntu 15.10 Passing](https://img.shields.io/badge/Ubuntu%2015.10-passing-brightgreen.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
 [![Ubuntu 15.04 Passing](https://img.shields.io/badge/Ubuntu%2015.04-passing-brightgreen.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
-[![Ubuntu 14.04 Testing](https://img.shields.io/badge/Ubuntu%2014.04-trials-F7CA18.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
-[![Ubuntu 12.04 Fails](https://img.shields.io/badge/Ubuntu%2012.04-fails-F22613.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
+[![Ubuntu 14.04 Passing](https://img.shields.io/badge/Ubuntu%2014.04-passing-brightgreen.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
+[![Ubuntu 12.04 Testing](https://img.shields.io/badge/Ubuntu%2012.04-trials-F7CA18.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
 
 ---
 
@@ -19,22 +19,9 @@ For Ubuntu 15.04 & 15.10 installs.
 
 > I am going to place all release versions of this script in development mode. You may download the repo and install, but please do so at your own risk. I will outline some changes as well as why I am making the decision to label this development. 
 
-> **Update** The issue appears to have been with bad default mirrors when selecting from key geographic locations, i.e; US, NL, FR & DR. I have tested on a couple of different VM's and a small dedi provided via One Provider and it installs the required packages without issue. All that is required at this moment is adding in any key's that may be needed for installing said packages... however, this can be bypassed as Plex and BTSync are being built from source provided via the /sources/ directory and not using unreliable ppa's.
-
-  1. Updating jquery for rutorrent. The included (already) addition jquery.browser.js has been updated, thus, I am running tests against this new js for any screw ups that may occur...
-  2. A couple of really good requests have been made. Placing the repo into a development status (no - I don't want to use a development branch) ensures that future downloads receive full functionality... and it adds full transparency to what has been committed as additions to the script.
-  3. Lesser repos have a hard time with the libcurl4-openssl-dev dependency. I am still trying to figure out why this is occurring. Although, this dependency shouldn't have any ill effects on the initial success... I do believe all should be in tact and in stable working order... something other seedbox repos are focusing on so much.
-  4. I have additional time in the next couple of days to really hammer out some trials on the script. If anyone wants to join me... spin up a vm and run some tests to see what you find, open a issue or push over some fixes and I'll add them and throw all the credit your way.
-
 ### Additional notes on status::
 
-  15.10 is successfully built. ~~However, there is an issue where rtorrent is failing to start. This is priority and it first on the list of things to fix... asap~~ FIXED. In some late night coding binge in one of these fateful commits I decided to delete a trailing '/' during the xmlrpc-c build... as a result, the directory was not moving to root for the configure/male process... this is resolved.
-
-  15.04 same as 15.10
-
-  14.04 libcurl dependency stops the rest of the build from happening... in this way apache fails to install etc etc. This is priority and up next on the list of fix it now **Additional note to self and anyone listening** - I don't think we'll need this dependency as a build without it passes now that the xmlrpc-c fiasco is resolved. .
-
-  12.04 same as 14.04
+  12.04 - currently running trials on 12.04 after 14.04 has successfully passed all tests. Please see the install instructions below for new methods to installing depending on your release version of Ubuntu.
 
 ---
 
@@ -156,9 +143,19 @@ DO NOT try to reconfigure packages using other tutorials - this script (AS IS) i
 ## How to install
 > This script is valid for both VPS & Dedicated Environments.
 
-**First, let's install git & curl**
+---
+
+### Ubuntu 12.04 & 14.04
+
+**Pre-Install Notice for Ubuntu 14.04 & 12.04:**  Some servers it is a good idea to intially run the following command -
 ```
-apt-get -y install git curl
+apt-get -y update
+
+```
+
+**Next, let's install git for downloading our repo**
+```
+apt-get -y install git
 
 ```
 **Next, we clone the repo to the server and create a ~/tmp/quick-box/ directory _the script does this for you_**
@@ -167,10 +164,32 @@ git clone https://github.com/JMSDOnline/quick-box.git ~/tmp/quick-box/
 cd tmp/quick-box
 
 ```
-**Finally, run that funky script to unleash the goodies**
+**Finally, run the 12x script to unleash the goodies**
 ```
-chmod +x quickbox-apache.sh
-./quickbox-apache.sh
+chmod +x quickbox-12x.sh
+./quickbox-12x.sh
+
+```
+
+---
+
+### Ubuntu 15.04 & 15.10
+
+**First, let's install git for downloading our repo**
+```
+apt-get -y install git
+
+```
+**Next, we clone the repo to the server and create a ~/tmp/quick-box/ directory _the script does this for you_**
+```
+git clone https://github.com/JMSDOnline/quick-box.git ~/tmp/quick-box/
+cd tmp/quick-box
+
+```
+**Finally, run the 15x script to unleash the goodies**
+```
+chmod +x quickbox-15x.sh
+./quickbox-15x.sh
 
 ```
 
