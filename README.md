@@ -6,12 +6,12 @@ For Ubuntu 15.04 & 15.10 installs.
 
 ## Script status
 
-[![Version 1.0.1-development](https://img.shields.io/badge/version-1.0.1%20dev-674172.svg?style=flat-square)](https://github.com/JMSDOnline/quick-box/)    [![MIT License](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)](https://github.com/JMSDOnline/quick-box/blob/master/LICENSE)    
-
-[![Ubuntu 15.10 Passing](https://img.shields.io/badge/Ubuntu%2015.10-passing-brightgreen.svg?style=flat-square)](https://github.com/JMSDOnline/quick-box/)
-[![Ubuntu 15.04 Passing](https://img.shields.io/badge/Ubuntu%2015.04-passing-brightgreen.svg?style=flat-square)](https://github.com/JMSDOnline/quick-box/)
-[![Ubuntu 14.04 Passing](https://img.shields.io/badge/Ubuntu%2014.04-fails-F22613.svg?style=flat-square)](https://github.com/JMSDOnline/quick-box/)
-[![Ubuntu 12.04 Fails](https://img.shields.io/badge/Ubuntu%2012.04-fails-F22613.svg?style=flat-square)](https://github.com/JMSDOnline/quick-box/)
+[![Version 1.0.1-development](https://img.shields.io/badge/version-1.0.1%20dev-674172.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
+[![MIT License](https://img.shields.io/badge/license-MIT%20License-blue.svg?style=flat-square)](https://github.com/JMSDOnline/quick-box/blob/master/LICENSE)
+[![Ubuntu 15.10 Passing](https://img.shields.io/badge/Ubuntu%2015.10-passing-brightgreen.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
+[![Ubuntu 15.04 Passing](https://img.shields.io/badge/Ubuntu%2015.04-passing-brightgreen.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
+[![Ubuntu 14.04 Testing](https://img.shields.io/badge/Ubuntu%2014.04-trials-F7CA18.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
+[![Ubuntu 12.04 Fails](https://img.shields.io/badge/Ubuntu%2012.04-fails-F22613.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
 
 ---
 
