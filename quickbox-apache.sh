@@ -488,33 +488,33 @@ cat >/etc/apt/sources.list<<EOF
 
 
 ###### Ubuntu Main Repos
-deb http://mirrors.digitalocean.com/ubuntu $(lsb_release -sc) main restricted
-deb-src http://mirrors.digitalocean.com/ubuntu $(lsb_release -sc) main restricted
+deb http://mirrors.digitalocean.com/ubuntu ${ver} main restricted
+deb-src http://mirrors.digitalocean.com/ubuntu ${ver} main restricted
 
 ## Major bug fix updates produced after the final release of the
 ## distribution.
-deb http://mirrors.digitalocean.com/ubuntu $(lsb_release -sc)-updates main restricted
-deb-src http://mirrors.digitalocean.com/ubuntu $(lsb_release -sc)-updates main restricted
+deb http://mirrors.digitalocean.com/ubuntu ${ver}-updates main restricted
+deb-src http://mirrors.digitalocean.com/ubuntu ${ver}-updates main restricted
 
-deb http://mirrors.digitalocean.com/ubuntu $(lsb_release -sc) universe
-deb-src http://mirrors.digitalocean.com/ubuntu $(lsb_release -sc) universe
-deb http://mirrors.digitalocean.com/ubuntu $(lsb_release -sc)-updates universe
-deb-src http://mirrors.digitalocean.com/ubuntu $(lsb_release -sc)-updates universe
+deb http://mirrors.digitalocean.com/ubuntu ${ver} universe
+deb-src http://mirrors.digitalocean.com/ubuntu ${ver} universe
+deb http://mirrors.digitalocean.com/ubuntu ${ver}-updates universe
+deb-src http://mirrors.digitalocean.com/ubuntu ${ver}-updates universe
 
-deb http://mirrors.digitalocean.com/ubuntu $(lsb_release -sc) multiverse
-deb-src http://mirrors.digitalocean.com/ubuntu $(lsb_release -sc) multiverse
-deb http://mirrors.digitalocean.com/ubuntu $(lsb_release -sc)-updates multiverse
-deb-src http://mirrors.digitalocean.com/ubuntu $(lsb_release -sc)-updates multiverse
+deb http://mirrors.digitalocean.com/ubuntu ${ver} multiverse
+deb-src http://mirrors.digitalocean.com/ubuntu ${ver} multiverse
+deb http://mirrors.digitalocean.com/ubuntu ${ver}-updates multiverse
+deb-src http://mirrors.digitalocean.com/ubuntu ${ver}-updates multiverse
 
 ## Please note that software in backports WILL NOT receive any review
 ## or updates from the Ubuntu security team.
-deb http://mirrors.digitalocean.com/ubuntu $(lsb_release -sc)-backports main restricted universe multiverse
-deb-src http://mirrors.digitalocean.com/ubuntu $(lsb_release -sc)-backports main restricted universe multiverse
+deb http://mirrors.digitalocean.com/ubuntu ${ver}-backports main restricted universe multiverse
+deb-src http://mirrors.digitalocean.com/ubuntu ${ver}-backports main restricted universe multiverse
 
-deb http://security.ubuntu.com/ubuntu $(lsb_release -sc)-security main
-deb-src http://security.ubuntu.com/ubuntu $(lsb_release -sc)-security main
-deb http://security.ubuntu.com/ubuntu $(lsb_release -sc)-security universe
-deb-src http://security.ubuntu.com/ubuntu $(lsb_release -sc)-security universe
+deb http://security.ubuntu.com/ubuntu ${ver}-security main
+deb-src http://security.ubuntu.com/ubuntu ${ver}-security main
+deb http://security.ubuntu.com/ubuntu ${ver}-security universe
+deb-src http://security.ubuntu.com/ubuntu ${ver}-security universe
 
 ###### Ubuntu Partner Repo
 deb http://archive.canonical.com/ubuntu $(lsb_release -sc) partner
@@ -531,7 +531,7 @@ deb http://www.deb-multimedia.org testing main
 
 #### BitTorrent Sync - http://www.bittorrent.com/sync
 ## Run this command: sudo apt-key adv --keyserver keys.gnupg.net --recv-keys 6BF18B15
-#deb http://debian.yeasoft.net/btsync $(lsb_release -sc) main
+#deb http://debian.yeasoft.net/btsync ${ver} main
 
 #### Plex Media Center - http://www.plexapp.com
 ## Run this command: wget -q http://plexapp.com/plex_pub_key.pub -O- | sudo apt-key add -
