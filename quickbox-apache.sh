@@ -540,15 +540,17 @@ deb http://www.deb-multimedia.org testing main
 ## Run this command: wget -q http://plexapp.com/plex_pub_key.pub -O- | sudo apt-key add -
 #deb http://plex.r.worldssl.net/PlexMediaServer/ubuntu-repo lucid main
 EOF
+
   echo -n "Updating system ... "
-  apt-get -y update
+  apt-get -y update >>"${OUTTO}" 2>&1
   apt-get -y purge samba samba-common >>"${OUTTO}" 2>&1
-  apt-get -y upgrade
+  apt-get -y upgrade >>"${OUTTO}" 2>&1
   if [[ -e /etc/ssh/sshd_config ]]; then
     echo "Port 4747" /etc/ssh/sshd_config
     sed -i 's/Port 22/Port 4747/g' /etc/ssh/sshd_config
     service sshd restart >>"${OUTTO}" 2>&1
   fi
+  echo "${OK}"
   clear
 }
 
