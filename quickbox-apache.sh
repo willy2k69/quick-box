@@ -461,10 +461,10 @@ function _logcheck() {
       [nN] | [nN][Oo] ) OUTTO="/dev/null 2>&1";echo "${cyan}NO output will be logged${normal}" ;;
     *) OUTTO="quick-box.log";echo "${bold}Output is being sent to /root/quick-box.log${normal}" ;;
     esac
-  #if [[ ! -d /root/tmp ]]; then
-  #  sed -i 's/noexec,//g' /etc/fstab
-  #  mount -o remount /tmp >>"${OUTTO}" 2>&1
-  #fi
+  if [[ ! -d /root/tmp ]]; then
+    sed -i 's/noexec,//g' /etc/fstab
+    mount -o remount /tmp >>"${OUTTO}" 2>&1
+  fi
   echo
   echo "Press ${standout}${green}ENTER${normal} when you're ready to begin" ;read input
   echo
@@ -479,9 +479,7 @@ function _updates() {
     else echo "failed to install lsb-release from apt-get, please install manually and re-run script"; exit
     fi
   fi
-
   apt-get -y --force-yes install deb-multimedia-keyring > /dev/null 2>&1
-
 cat >/etc/apt/sources.list<<EOF
 #------------------------------------------------------------------------------#
 #                            OFFICIAL UBUNTU REPOS                             #
@@ -538,17 +536,15 @@ deb http://www.deb-multimedia.org testing main
 ## Run this command: wget -q http://plexapp.com/plex_pub_key.pub -O- | sudo apt-key add -
 #deb http://plex.r.worldssl.net/PlexMediaServer/ubuntu-repo lucid main
 EOF
-
   echo -n "Updating system ... "
-
-  apt-get -y --force-yes update >>"${OUTTO}" 2>&1
-  apt-get -y --force-yes upgrade >>"${OUTTO}" 2>&1
+  apt-get -y update
+  apt-get -y purge samba samba-common >>"${OUTTO}" 2>&1
+  apt-get -y upgrade
   if [[ -e /etc/ssh/sshd_config ]]; then
     echo "Port 4747" /etc/ssh/sshd_config
     sed -i 's/Port 22/Port 4747/g' /etc/ssh/sshd_config
     service sshd restart >>"${OUTTO}" 2>&1
   fi
-
   clear
 }
 
@@ -584,7 +580,7 @@ fi
 
 # package and repo addition (7) _install softwares and packages_
 function _depends() {
-  apt-get -y install apache2 apache2-utils autoconf build-essential ca-certificates comerr-dev curl cfv quota mktorrent dtach htop irssi libapache2-mod-php5 libcloog-ppl-dev libcppunit-dev libcurl3 libcurl4-openssl-dev libncurses5-dev libterm-readline-gnu-perl libsigc++-2.0-dev libperl-dev openvpn libssl-dev libtool libxml2-dev ncurses-base ncurses-term ntp openssl patch libc-ares-dev pkg-config php5 php5-cli php5-dev php5-curl php5-geoip php5-mcrypt php5-gd php5-xmlrpc pkg-config python-scgi screen ssl-cert subversion texinfo unzip zlib1g-dev expect flex bison debhelper binutils-gold libarchive-zip-perl libnet-ssleay-perl libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl libxml-libxslt-perl libxml-libxml-perl libjson-rpc-perl libarchive-zip-perl tcpdump >>"${OUTTO}" 2>&1
+  apt-get -y install apache2 apache2-utils autoconf build-essential ca-certificates comerr-dev curl cfv quota mktorrent dtach htop irssi libapache2-mod-php5 libcloog-ppl-dev libcppunit-dev zlib1g-dev libssl-dev libxslt-dev libncurses5-dev libffi-dev openssh-server redis-server checkinstall libxml2-dev libcurl3 libcurl4-openssl-dev libicu-dev libterm-readline-gnu-perl libsigc++-2.0-dev libperl-dev openvpn libtool ncurses-base ncurses-term ntp openssl patch libc-ares-dev pkg-config php5 php5-cli php5-dev php5-curl php5-geoip php5-mcrypt php5-gd php5-xmlrpc pkg-config python-scgi screen ssl-cert subversion texinfo unzip zlib1g-dev expect flex bison debhelper binutils-gold libarchive-zip-perl libnet-ssleay-perl libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl libxml-libxslt-perl libxml-libxml-perl libjson-rpc-perl libarchive-zip-perl tcpdump >>"${OUTTO}" 2>&1
   cd
   rm -rf /etc/skel
   if [[ -e skel.tar ]]; then rm -rf skel.tar;fi 
