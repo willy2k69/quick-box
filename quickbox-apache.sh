@@ -472,19 +472,19 @@ function _logcheck() {
 
 # package and repo addition (4) _update and upgrade_
 function _updates() {
-#  echo "Which country do you want for apt-get"
-#  echo "1) USA"
-#  echo "2) NL"
-#  echo "3) FR"
-#  echo "4) DE"
-#  read input
-#  case $input in
-#    1) echo "Selecting USA ... "; country=us ;;
-#    2) echo "Selecting NL ... "; country=nl ;;
-#    3) echo "Selecting FR ... "; country=fr ;;
-#    4) echo "Selecting DR ... "; country=us ;;
-#    *) echo "Defaulting to USA ... "; country=us ;;
-#  esac
+  echo "Which country do you want for apt-get"
+  echo "1) USA"
+  echo "2) NL"
+  echo "3) FR"
+  echo "4) DE"
+  read input
+  case $input in
+    1) echo "Selecting USA ... "; country=us ;;
+    2) echo "Selecting NL ... "; country=nl ;;
+    3) echo "Selecting FR ... "; country=fr ;;
+    4) echo "Selecting DR ... "; country=us ;;
+    *) echo "Defaulting to USA ... "; country=us ;;
+  esac
   if lsb_release >>"${OUTTO}" 2>&1; then ver=$(lsb_release -c|awk '{print $2}')
   else
     apt-get -yq install lsb-release >>"${OUTTO}" 2>&1
@@ -502,16 +502,16 @@ cat >/etc/apt/sources.list<<EOF
 
 
 ###### Ubuntu Main Repos
-deb http://nl.archive.ubuntu.com/ubuntu/ precise main restricted universe multiverse 
-deb-src http://nl.archive.ubuntu.com/ubuntu/ precise main restricted universe multiverse 
+deb http://${country}.archive.ubuntu.com/ubuntu/ precise main restricted universe multiverse 
+deb-src http://${country}.archive.ubuntu.com/ubuntu/ precise main restricted universe multiverse 
 
 ###### Ubuntu Update Repos
-deb http://nl.archive.ubuntu.com/ubuntu/ precise-security main restricted universe multiverse 
-deb http://nl.archive.ubuntu.com/ubuntu/ precise-updates main restricted universe multiverse 
-deb http://nl.archive.ubuntu.com/ubuntu/ precise-backports main restricted universe multiverse 
-deb-src http://nl.archive.ubuntu.com/ubuntu/ precise-security main restricted universe multiverse 
-deb-src http://nl.archive.ubuntu.com/ubuntu/ precise-updates main restricted universe multiverse 
-deb-src http://nl.archive.ubuntu.com/ubuntu/ precise-backports main restricted universe multiverse 
+deb http://${country}.archive.ubuntu.com/ubuntu/ precise-security main restricted universe multiverse 
+deb http://${country}.archive.ubuntu.com/ubuntu/ precise-updates main restricted universe multiverse 
+deb http://${country}.archive.ubuntu.com/ubuntu/ precise-backports main restricted universe multiverse 
+deb-src http://${country}.archive.ubuntu.com/ubuntu/ precise-security main restricted universe multiverse 
+deb-src http://${country}.archive.ubuntu.com/ubuntu/ precise-updates main restricted universe multiverse 
+deb-src http://${country}.archive.ubuntu.com/ubuntu/ precise-backports main restricted universe multiverse 
 
 ###### Ubuntu Partner Repo
 deb http://archive.canonical.com/ubuntu precise partner
@@ -538,7 +538,6 @@ EOF
   echo -n "Updating system ... "
 
   apt-get -y --force-yes update >>"${OUTTO}" 2>&1
-  apt-get -y --force-yes purge samba samba-common >>"${OUTTO}" 2>&1
   apt-get -y --force-yes upgrade >>"${OUTTO}" 2>&1
   if [[ -e /etc/ssh/sshd_config ]]; then
     echo "Port 4747" /etc/ssh/sshd_config
