@@ -435,7 +435,7 @@ function _intro() {
     echo "${dis}: ${alert} You do not appear to be running Ubuntu ${normal} "
     echo 'Exiting...'
     exit 1
-  elif [[ ! "${rel}" =~ ("15.04"|"15.10") ]]; then
+  elif [[ ! "${rel}" =~ ("14.04"|"15.04"|"15.10") ]]; then
     echo "${bold}${rel}:${normal} You do not appear to be running a supported Ubuntu release."
     echo 'Exiting...'
     exit 1
@@ -489,16 +489,16 @@ function _updates() {
 
 
 ###### Ubuntu Main Repos
-#deb mirror://mirrors.ubuntu.com/mirrors.txt $(lsb_release -sc) main restricted universe multiverse
-#deb mirror://mirrors.ubuntu.com/mirrors.txt $(lsb_release -sc)-updates main restricted universe multiverse
-#deb mirror://mirrors.ubuntu.com/mirrors.txt $(lsb_release -sc)-backports main restricted universe multiverse
-#deb mirror://mirrors.ubuntu.com/mirrors.txt $(lsb_release -sc)-security main restricted universe multiverse
+deb mirror://mirrors.ubuntu.com/mirrors.txt $(lsb_release -sc) main restricted universe multiverse
+deb mirror://mirrors.ubuntu.com/mirrors.txt $(lsb_release -sc)-updates main restricted universe multiverse
+deb mirror://mirrors.ubuntu.com/mirrors.txt $(lsb_release -sc)-backports main restricted universe multiverse
+deb mirror://mirrors.ubuntu.com/mirrors.txt $(lsb_release -sc)-security main restricted universe multiverse
 
 ###### Ubuntu Partner Repo
-#deb http://archive.canonical.com/ubuntu $(lsb_release -sc) partner
-#deb-src http://archive.canonical.com/ubuntu $(lsb_release -sc) partner
+deb http://archive.canonical.com/ubuntu $(lsb_release -sc) partner
+deb-src http://archive.canonical.com/ubuntu $(lsb_release -sc) partner
 
-#deb http://www.deb-multimedia.org testing main
+deb http://www.deb-multimedia.org testing main
 
 #------------------------------------------------------------------------------#
 #                           UNOFFICIAL UBUNTU REPOS                            #
@@ -1258,7 +1258,7 @@ _intro
 _checkroot
 _logcheck
 _updates
-_locale
+#_locale
 _hostname
 echo -n "Installing building tools and all dependancies and perl modules, please wait ... ";_depends
 _askffmpeg;if [[ ${ffmpeg} == "yes" ]]; then _ffmpeg; fi
