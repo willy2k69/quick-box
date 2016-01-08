@@ -30,7 +30,7 @@ This script has the following features
 * A multi-user environment, complete with scripts to add and delete users.
 * Linux Quota, to control how much space every user can use in the box.
 * Customized Seedbox Dashboard located at http://SERVER_IP/
-* HTTPs Downloads directory (https://SERVER_IP/private/Downloads)
+* HTTPs Downloads directory (https://SERVER_IP/${username}.downloads)
 
 ## Installed software
 * ruTorrent 3.7 + official plugins
