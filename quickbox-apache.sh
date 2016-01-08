@@ -489,10 +489,33 @@ cat >/etc/apt/sources.list<<EOF
 
 
 ###### Ubuntu Main Repos
-deb mirror://mirrors.ubuntu.com/mirrors.txt $(lsb_release -sc) main restricted universe multiverse
-deb mirror://mirrors.ubuntu.com/mirrors.txt $(lsb_release -sc)-updates main restricted universe multiverse
-deb mirror://mirrors.ubuntu.com/mirrors.txt $(lsb_release -sc)-backports main restricted universe multiverse
-deb mirror://mirrors.ubuntu.com/mirrors.txt $(lsb_release -sc)-security main restricted universe multiverse
+deb http://mirrors.digitalocean.com/ubuntu $(lsb_release -sc) main restricted
+deb-src http://mirrors.digitalocean.com/ubuntu $(lsb_release -sc) main restricted
+
+## Major bug fix updates produced after the final release of the
+## distribution.
+deb http://mirrors.digitalocean.com/ubuntu $(lsb_release -sc)-updates main restricted
+deb-src http://mirrors.digitalocean.com/ubuntu $(lsb_release -sc)-updates main restricted
+
+deb http://mirrors.digitalocean.com/ubuntu $(lsb_release -sc) universe
+deb-src http://mirrors.digitalocean.com/ubuntu $(lsb_release -sc) universe
+deb http://mirrors.digitalocean.com/ubuntu $(lsb_release -sc)-updates universe
+deb-src http://mirrors.digitalocean.com/ubuntu $(lsb_release -sc)-updates universe
+
+deb http://mirrors.digitalocean.com/ubuntu $(lsb_release -sc) multiverse
+deb-src http://mirrors.digitalocean.com/ubuntu $(lsb_release -sc) multiverse
+deb http://mirrors.digitalocean.com/ubuntu $(lsb_release -sc)-updates multiverse
+deb-src http://mirrors.digitalocean.com/ubuntu $(lsb_release -sc)-updates multiverse
+
+## Please note that software in backports WILL NOT receive any review
+## or updates from the Ubuntu security team.
+deb http://mirrors.digitalocean.com/ubuntu $(lsb_release -sc)-backports main restricted universe multiverse
+deb-src http://mirrors.digitalocean.com/ubuntu $(lsb_release -sc)-backports main restricted universe multiverse
+
+deb http://security.ubuntu.com/ubuntu $(lsb_release -sc)-security main
+deb-src http://security.ubuntu.com/ubuntu $(lsb_release -sc)-security main
+deb http://security.ubuntu.com/ubuntu $(lsb_release -sc)-security universe
+deb-src http://security.ubuntu.com/ubuntu $(lsb_release -sc)-security universe
 
 ###### Ubuntu Partner Repo
 deb http://archive.canonical.com/ubuntu $(lsb_release -sc) partner
