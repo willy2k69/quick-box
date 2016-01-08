@@ -1229,7 +1229,7 @@ EOF
   sed -i 's/venet0/eth0/g' /srv/rutorrent/home/data.php
   fi
   rm -rf "$0" >>"${OUTTO}" 2>&1
-  for i in sshd apache2 pure-ftpd fail2ban quota plexmediaserver vsftpd php5-fpm; do
+  for i in sshd apache2 pure-ftpd fail2ban quota plexmediaserver vsftpd; do
     service $i restart >>"${OUTTO}" 2>&1
     systemctl enable $i >>"${OUTTO}" 2>&1
   done
