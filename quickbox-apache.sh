@@ -470,6 +470,10 @@ function _logcheck() {
   echo
 }
 
+function _keys() {
+  apt-get -y --force-yes install deb-multimedia-keyring >/dev/null 2>&1;
+}
+
 # package and repo addition (4) _update and upgrade_
 function _updates() {
   if lsb_release >>"${OUTTO}" 2>&1; then ver=$(lsb_release -c|awk '{print $2}')
@@ -479,7 +483,6 @@ function _updates() {
     else echo "failed to install lsb-release from apt-get, please install manually and re-run script"; exit
     fi
   fi
-  apt-get -y --force-yes install deb-multimedia-keyring
 
 cat >/etc/apt/sources.list<<EOF
 #------------------------------------------------------------------------------#
@@ -1282,6 +1285,7 @@ _bashrc
 _intro
 _checkroot
 _logcheck
+_keys
 _updates
 # _locale
 _hostname
