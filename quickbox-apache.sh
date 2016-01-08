@@ -461,10 +461,10 @@ function _logcheck() {
       [nN] | [nN][Oo] ) OUTTO="/dev/null 2>&1";echo "${cyan}NO output will be logged${normal}" ;;
     *) OUTTO="quick-box.log";echo "${bold}Output is being sent to /root/quick-box.log${normal}" ;;
     esac
-  if [[ ! -d /root/tmp ]]; then
-    sed -i 's/noexec,//g' /etc/fstab
-    mount -o remount /tmp >>"${OUTTO}" 2>&1
-  fi
+  #if [[ ! -d /root/tmp ]]; then
+  #  sed -i 's/noexec,//g' /etc/fstab
+  #  mount -o remount /tmp >>"${OUTTO}" 2>&1
+  #fi
   echo
   echo "Press ${standout}${green}ENTER${normal} when you're ready to begin" ;read input
   echo
@@ -1258,12 +1258,11 @@ _intro
 _checkroot
 _logcheck
 _updates
-#_locale
+_locale
 _hostname
 echo -n "Installing building tools and all dependancies and perl modules, please wait ... ";_depends
 _askffmpeg;if [[ ${ffmpeg} == "yes" ]]; then _ffmpeg; fi
 _askrtorrent;_xmlrpc;_libtorrent;_rtorrent
-#;_scgi;
 echo -n "Installing rutorrent into /srv ... ";_rutorrent;_askshell;_adduser;_apachesudo
 echo -n "Setting up seedbox.conf for apache ... ";_apacheconf
 echo -n "Installing .rtorrent.rc for ${username} ... ";_rconf
