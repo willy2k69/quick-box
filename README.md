@@ -232,7 +232,3 @@ After installing you will have access to the following commands to be used direc
 #### BUILDING ERRORS
   * If ffmpeg/rtorrent/libtorrent/xmlrpc-c fails to build.. check /etc/fstab for 'noexec' flag (_but this should be fixed_)
 
-#### TIPS/TRICKS
-  ``` 
-  apt-get update && apt-get install -yy screen && wget https://raw.githubusercontent.com/JMSDOnline/quick-box/master/quickbox-apache.sh -q && screen bash quickbox-apache.sh 
-  ```
