@@ -276,7 +276,7 @@ break;
   <link rel="stylesheet" href="lib/jquery-toggles/toggles-full.css">
   <link rel="stylesheet" href="lib/font-awesome/font-awesome.css">
   <link rel="stylesheet" href="lib/ionicons/css/ionicons.css">
-  <link rel="stylesheet" href="skins/quirk.css">
+  <link rel="stylesheet" href="skins/quick.css">
 
   <script src="lib/modernizr/modernizr.js"></script>
   <script src="lib/jquery/jquery.js"></script>

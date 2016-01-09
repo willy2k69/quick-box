@@ -1,8 +1,6 @@
 /*!
- * Quirk UI v1.0.0 (http://themepixels.com/demo/webpage/quirk)
- * Copyright 2015 Themepixels
- *
- * Last compiled on Thursday, July 23rd, 2015, 10:53:11 PM
+ * Quick Box UI
+ * Last compiled on Thursday, December 23rd, 2015
  */
  
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,600,600italic,700,700italic,300italic,300);
@@ -1302,7 +1300,7 @@ p {
 }
 small,
 .small {
-  font-size: 91%;
+  font-size: 70%;
 }
 mark,
 .mark {
@@ -9797,7 +9795,7 @@ blockquote {
 }
 .nav-quirk > li {
   border-top: 1px solid #2f2f2f;
-  text-transform: uppercase;
+  *text-transform: uppercase;
   font-family: 'Open Sans', 'Helvetica Neue', Helvetica, sans-serif;
 }
 .nav-quirk > li > a {

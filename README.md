@@ -41,7 +41,7 @@ This script has the following features
 ![New and Custom Theme by JMSolo Designs](https://github.com/JMSDOnline/quick-box/blob/master/img/quick-box-theme.png "Quick Box - New and Custom Theme by JMSolo Designs")
 
 ## Main ruTorrent plugins
-autotoolscpuload, quotaspace, erasedata, extratio, extsearch, feeds, filedrop, filemanager, geoip, history, logoff, mediainfo, mediastream, ratiocolor, rss, scheduler, screenshots, theme, trafic and unpack
+autotools, cpuload, quotaspace, erasedata, extratio, extsearch, feeds, filedrop, filemanager, geoip, history, logoff, mediainfo, mediastream, ratiocolor, rss, scheduler, screenshots, theme, trafic and unpack
 
 ## Additional ruTorrent plugins
 * Autodl-IRSSI (with an updated list of trackers)
@@ -220,7 +220,7 @@ After installing you will have access to the following commands to be used direc
    ``` 
    sed -i 's/\$torrent->is_private(true);/\$torrent->is_private(false);/g' /var/www/rutorrent/plugins/create/createtorrent.php 
    ```
-  2. Currently CuteFTP can only connect to your ${username} seedbox home directory via FTP on port 21. I am going to be looking further into allowing CuteFTP a connection on SFTP for added security. That is, if I am not completley limited by GlobalScapes software practices.
+  2. Currently CuteFTP can only connect to your ${username} seedbox home directory via FTP on port 5757. I am going to be looking further into allowing CuteFTP a connection on SFTP for added security. That is, if I am not completley limited by GlobalScapes software practices.
 
 #### BUILDING ERRORS
   * If ffmpeg/rtorrent/libtorrent/xmlrpc-c fails to build.. check /etc/fstab for 'noexec' flag (_but this should be fixed_)
