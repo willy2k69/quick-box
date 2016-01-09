@@ -225,9 +225,6 @@ After installing you will have access to the following commands to be used direc
    ``` 
    sed -i 's/\$torrent->is_private(true);/\$torrent->is_private(false);/g' /var/www/rutorrent/plugins/create/createtorrent.php 
    ```
-  2. ruTorrent Homepage failing to show running processes
-   * __CAUSE:__ due to the kernel/debian version trims off usernames and appends a + at the end, causes the script to fail to grab the correct stats
-   * __SOLUTION:__ ``` wget https://raw.githubusercontent.com/JMSDOnline/quick-box/master/rutorrent/home/index.php -O /srv/rutorrent/home/index.php ```
 
 #### BUILDING ERRORS
   * If ffmpeg/rtorrent/libtorrent/xmlrpc-c fails to build.. check /etc/fstab for 'noexec' flag (_but this should be fixed_)
