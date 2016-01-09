@@ -4,7 +4,7 @@
 #
 # GitHub:   https://github.com/JMSDOnline/quick-box
 # Author:   Jason Matthews
-# URL:      https://jmsolodesigns.com
+# URL:      https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer
 #
 REALM=rutorrent
 HTPASSWD=/etc/htpasswd
@@ -19,11 +19,11 @@ echo -n "Username: "; read user
                 echo "setting password to ${password}"
                 passwd=${password}
                 echo "${username}:${passwd}" | chpasswd >/dev/null 2>&1
-                sed -i '/^${username}/d' ${HTPASSWD}
+                sed -i "/^${username}/d" ${HTPASSWD}
                 (echo -n "${username}:${REALM}:" && echo -n "${username}:${REALM}:${passwd}" | md5sum | awk '{print $1}' ) >> "${HTPASSWD}"
         else
                 echo "setting password to ${genpass}"
-                sed -i '/^${username}/d' ${HTPASSWD}
+                sed -i "/^${username}/d" ${HTPASSWD}
                 passwd=${genpass}
                 echo "${username}:${passwd}" | chpasswd >/dev/null 2>&1
                 (echo -n "${username}:${REALM}:" && echo -n "${username}:${REALM}:${passwd}" | md5sum | awk '{print $1}' ) >> "${HTPASSWD}"
