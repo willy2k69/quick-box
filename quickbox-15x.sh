@@ -279,7 +279,6 @@ encryption = allow_incoming,try_outgoing,enable_retry
 dht = yes
 peer_exchange = no
 check_hash = no
-execute_nothrow=chmod,777,/home/${username}/.config/rpc.socket
 execute_nothrow=chmod,777,/home/${username}/.sessions/
 # -- END HERE --
 
