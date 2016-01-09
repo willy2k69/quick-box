@@ -14,13 +14,17 @@ For Ubuntu 14.04, 15.04 & 15.10 installs.
 
 ---
 
+### Check out the [Quick Box Wiki](https://github.com/JMSDOnline/quick-box/wiki) for some reference material to common issues. If you have an error of your own and need help, please open an issue.
+
+---
+
 This script has the following features
 
 * A multi-user environment, complete with scripts to add and delete users.
-* Linux Quota, to control how much space every user can use in the box. This can be controled via the 'setdisk' command.
-* Customized Seedbox Dashboard located at http://SERVER_IP/
+* Linux Quota, to control how much space every user can use in the box. This can be controlled via the '__setdisk__' command.
+* Customized Seedbox Dashboard located at https://SERVER_IP/
 * HTTPs Downloads directory (https://SERVER_IP/${username}.downloads)
-* Obscures ports for ssh and ftp. SSH = 4747 | FTP = 5757 (note, this is not for security reasons... it's simply a means to reduce bad bot hits from all over the web)
+* Obscures ports for ssh and ftp. __SSH = 4747__ | __FTP = 5757__ (note, this is not for security reasons... it's simply a means to reduce bad bot hits from all over the web)
 
 ## Installed software
 * ruTorrent 3.7 + official plugins
