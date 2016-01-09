@@ -457,9 +457,9 @@ function _checkroot() {
 function _logcheck() {
   echo -ne "${bold}${yellow}Do you wish to write to a log file?${normal} (Default: ${green}${bold}Y${normal}) "; read input
     case $input in
-      [yY] | [yY][Ee][Ss] | "" ) OUTTO="~/quick-box.log";echo "${bold}Output is being sent to /root/quick-box.log${normal}" ;;
+      [yY] | [yY][Ee][Ss] | "" ) OUTTO="/root/quick-box.log";echo "${bold}Output is being sent to /root/quick-box.log${normal}" ;;
       [nN] | [nN][Oo] ) OUTTO="/dev/null 2>&1";echo "${cyan}NO output will be logged${normal}" ;;
-    *) OUTTO="~/quick-box.log";echo "${bold}Output is being sent to /root/quick-box.log${normal}" ;;
+    *) OUTTO="/root/quick-box.log";echo "${bold}Output is being sent to /root/quick-box.log${normal}" ;;
     esac
   if [[ ! -d /root/tmp ]]; then
     sed -i 's/noexec,//g' /etc/fstab
