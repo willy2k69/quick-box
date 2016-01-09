@@ -14,18 +14,13 @@ For Ubuntu 14.04, 15.04 & 15.10 installs.
 
 ---
 
-## UPDATE as of 01/08/2016
-
-> I have decided to null the idea of implementing 12.04 into the quick box scripts as it would be limited in the additions I plan on adding to the dashboard in the future. I want to keep the script serving the same great flavors to any release version the script supports. 12.04 is a bit lacking is some features as per third-party repos and their supports. With that said Rel. 14.04, 15.04 and 15.10 are working splendidly. I will continue to adjust settings that are easy to implement for enhanced stability. These enhancements will be released as simple bash scripts to run on top of existing installs... tested thoroughly first of course. ENJOY!
-
----
-
 This script has the following features
 
 * A multi-user environment, complete with scripts to add and delete users.
-* Linux Quota, to control how much space every user can use in the box.
+* Linux Quota, to control how much space every user can use in the box. This can be controled via the 'setdisk' command.
 * Customized Seedbox Dashboard located at http://SERVER_IP/
 * HTTPs Downloads directory (https://SERVER_IP/${username}.downloads)
+* Obscures ports for ssh and ftp. SSH = 4747 | FTP = 5757 (note, this is not for security reasons... it's simply a means to reduce bad bot hits from all over the web)
 
 ## Installed software
 * ruTorrent 3.7 + official plugins
@@ -40,7 +35,7 @@ This script has the following features
 * BTSync
 
 ### Quick Box Seedbox Dashboard
-![Modern & Simple Seedbox Dashboard](https://github.com/JMSDOnline/quick-box/blob/master/img/quick-box-dashboard.png "Quick Box Modern & Simple Seedbox Dashboard")
+![Modern & Simple Seedbox Dashboard](https://github.com/JMSDOnline/quick-box/blob/master/img/quickbox-dashboard.png "Quick Box Modern & Simple Seedbox Dashboard")
 
 ### Quick Box Seedbox Custom ruTorrent Theme by JMSolo Designs
 ![New and Custom Theme by JMSolo Designs](https://github.com/JMSDOnline/quick-box/blob/master/img/quick-box-theme.png "Quick Box - New and Custom Theme by JMSolo Designs")
@@ -225,6 +220,7 @@ After installing you will have access to the following commands to be used direc
    ``` 
    sed -i 's/\$torrent->is_private(true);/\$torrent->is_private(false);/g' /var/www/rutorrent/plugins/create/createtorrent.php 
    ```
+  2. Currently CuteFTP can only connect to your ${username} seedbox home directory via FTP on port 21. I am going to be looking further into allowing CuteFTP a connection on SFTP for added security. That is, if I am not completley limited by GlobalScapes software practices.
 
 #### BUILDING ERRORS
   * If ffmpeg/rtorrent/libtorrent/xmlrpc-c fails to build.. check /etc/fstab for 'noexec' flag (_but this should be fixed_)
