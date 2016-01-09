@@ -145,9 +145,9 @@ DO NOT try to reconfigure packages using other tutorials - this script (AS IS) i
 
 ---
 
-### Ubuntu 12.04 & 14.04
+### Ubuntu 14.04
 
-**Pre-Install Notice for Ubuntu 14.04 & 12.04:**  Some servers it is a good idea to intially run the following command -
+**Pre-Install Notice for Ubuntu 14.04:**  Some servers it is a good idea to intially run the following command -
 ```
 apt-get -y update
 
@@ -164,10 +164,10 @@ git clone https://github.com/JMSDOnline/quick-box.git ~/tmp/quick-box/
 cd tmp/quick-box
 
 ```
-**Finally, run the 12x script to unleash the goodies**
+**Finally, run the 14x script to unleash the goodies**
 ```
-chmod +x quickbox-12x.sh
-./quickbox-12x.sh
+chmod +x quickbox-14x.sh
+./quickbox-14x.sh
 
 ```
 
