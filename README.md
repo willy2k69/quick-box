@@ -6,22 +6,17 @@ For Ubuntu 14.04, 15.04 & 15.10 installs.
 
 ## Script status
 
-[![Version 1.0.1-development](https://img.shields.io/badge/version-1.0.1%20dev-674172.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
+[![Version 1.1-production](https://img.shields.io/badge/version-1.1-674172.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
 [![MIT License](https://img.shields.io/badge/license-MIT%20License-blue.svg?style=flat-square)](https://github.com/JMSDOnline/quick-box/blob/master/LICENSE)
 [![Ubuntu 15.10 Passing](https://img.shields.io/badge/Ubuntu%2015.10-passing-brightgreen.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
 [![Ubuntu 15.04 Passing](https://img.shields.io/badge/Ubuntu%2015.04-passing-brightgreen.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
 [![Ubuntu 14.04 Passing](https://img.shields.io/badge/Ubuntu%2014.04-passing-brightgreen.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
-[![Ubuntu 12.04 Testing](https://img.shields.io/badge/Ubuntu%2012.04-trials-F7CA18.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
 
 ---
 
-## UPDATE as of 01/07/2016
+## UPDATE as of 01/08/2016
 
-> I am going to place all release versions of this script in development mode. You may download the repo and install, but please do so at your own risk. I will outline some changes as well as why I am making the decision to label this development. 
-
-### Additional notes on status::
-
-  12.04 - currently running trials on 12.04 after 14.04 has successfully passed all tests. Please see the install instructions below for new methods to installing depending on your release version of Ubuntu.
+> I have decided to null the idea of implementing 12.04 into the quick box scripts as it would be limited in the additions I plan on adding to the dashboard in the future. I want to keep the script serving the same great flavors to any release version the script supports. 12.04 is a bit lacking is some features as per third-party repos and their supports. With that said Rel. 14.04, 15.04 and 15.10 are working splendidly. I will continue to adjust settings that are easy to implement for enhanced stability. These enhancements will be released as simple bash scripts to run on top of existing installs... tested thoroughly first of course. ENJOY!
 
 ---
 
