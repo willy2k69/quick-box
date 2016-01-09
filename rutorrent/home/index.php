@@ -202,9 +202,12 @@ if (file_exists('/usr/sbin/repquota')) {
           $spacebodyerr .= 'Error ('.$e-getMessage().')';
         exit();
           }
-      $dffree .= ''.sprintf('%1.2f',$bytesfree / pow($base,$class)) .'<b>'.$si_prefix[$class].'</b> Free<br/>';
-      $dfused .= ''.sprintf('%1.2f',$bytesused / pow($base,$class)) .'<b>'.$si_prefix[$class].'</b> Used<br/>';
-      $dftotal .= ''.sprintf('%1.2f',$bytestotal / pow($base,$class)) .'<b>'.$si_prefix[$class].'</b> Total<br/>';
+      $dffree .= ''.sprintf('%1.2f',$bytesfree / pow($base,$class)) //.'<b>'.$si_prefix[$class].'</b> Free<br/>'
+      ;
+      $dfused .= ''.sprintf('%1.2f',$bytesused / pow($base,$class)) //.'<b>'.$si_prefix[$class].'</b> Used<br/>'
+      ;
+      $dftotal .= ''.sprintf('%1.2f',$bytestotal / pow($base,$class)) //.'<b>'.$si_prefix[$class].'</b> Total<br/>'
+      ;
       $perused = sprintf('%1.0f', $bytesused / $bytestotal * 100);
 }
 
