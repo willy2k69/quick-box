@@ -595,7 +595,7 @@ apt-get install --yes --force-yes fail2ban bc sudo screen zip irssi unzip nano b
   rm -rf /etc/skel
   if [[ -e skel.tar ]]; then rm -rf skel.tar;fi 
   mkdir /etc/skel
-  tar xf $REPOURL/sources/skel.tar -C /etc
+  tar xf $REPOURL/sources/skel.tar -C /etc/skel
   tar xzf $REPOURL/sources/rarlinux-x64-5.2.1.tar.gz -C ./
   cp ./rar/*rar /usr/bin
   cp ./rar/*rar /usr/sbin
