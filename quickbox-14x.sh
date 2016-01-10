@@ -434,7 +434,7 @@ function _intro() {
     echo "${dis}: ${alert} You do not appear to be running Ubuntu ${normal} "
     echo 'Exiting...'
     exit 1
-  elif [[ ! "${rel}" =~ ("12.04"|"14.04") ]]; then
+  elif [[ ! "${rel}" =~ ("15.04"|"15.10") ]]; then
     echo "${bold}${rel}:${normal} You do not appear to be running a supported Ubuntu release."
     echo 'Exiting...'
     exit 1
@@ -470,11 +470,11 @@ function _logcheck() {
 }
 
 function _keys() {
-  apt-get -y --force-yes install deb-multimedia-keyring >>"${OUTTO}" 2>&1
+  apt-get -y --force-yes install deb-multimedia-keyring >/dev/null 2>&1;
 }
 
-# package and repo addition (7) _install softwares and packages_
-function _depends() {
+# package and repo addition (4) _update and upgrade_
+function _updates() {
   if lsb_release >>"${OUTTO}" 2>&1; then ver=$(lsb_release -c|awk '{print $2}')
   else
     apt-get -yq install lsb-release >>"${OUTTO}" 2>&1
@@ -490,39 +490,20 @@ cat >/etc/apt/sources.list<<EOF
 
 
 ###### Ubuntu Main Repos
-deb http://mirrors.digitalocean.com/ubuntu ${ver} main restricted
-deb-src http://mirrors.digitalocean.com/ubuntu ${ver} main restricted
+deb http://nl.archive.ubuntu.com/ubuntu/ ${ver} main restricted universe multiverse 
+deb-src http://nl.archive.ubuntu.com/ubuntu/ ${ver} main restricted universe multiverse 
 
-## Major bug fix updates produced after the final release of the
-## distribution.
-deb http://mirrors.digitalocean.com/ubuntu ${ver}-updates main restricted
-deb-src http://mirrors.digitalocean.com/ubuntu ${ver}-updates main restricted
-
-deb http://mirrors.digitalocean.com/ubuntu ${ver} universe
-deb-src http://mirrors.digitalocean.com/ubuntu ${ver} universe
-deb http://mirrors.digitalocean.com/ubuntu ${ver}-updates universe
-deb-src http://mirrors.digitalocean.com/ubuntu ${ver}-updates universe
-
-deb http://mirrors.digitalocean.com/ubuntu ${ver} multiverse
-deb-src http://mirrors.digitalocean.com/ubuntu ${ver} multiverse
-deb http://mirrors.digitalocean.com/ubuntu ${ver}-updates multiverse
-deb-src http://mirrors.digitalocean.com/ubuntu ${ver}-updates multiverse
-
-## Please note that software in backports WILL NOT receive any review
-## or updates from the Ubuntu security team.
-deb http://mirrors.digitalocean.com/ubuntu ${ver}-backports main restricted universe multiverse
-deb-src http://mirrors.digitalocean.com/ubuntu ${ver}-backports main restricted universe multiverse
-
-deb http://security.ubuntu.com/ubuntu ${ver}-security main
-deb-src http://security.ubuntu.com/ubuntu ${ver}-security main
-deb http://security.ubuntu.com/ubuntu ${ver}-security universe
-deb-src http://security.ubuntu.com/ubuntu ${ver}-security universe
+###### Ubuntu Update Repos
+deb http://nl.archive.ubuntu.com/ubuntu/ ${ver}-security main restricted universe multiverse 
+deb http://nl.archive.ubuntu.com/ubuntu/ ${ver}-updates main restricted universe multiverse 
+deb http://nl.archive.ubuntu.com/ubuntu/ ${ver}-backports main restricted universe multiverse 
+deb-src http://nl.archive.ubuntu.com/ubuntu/ ${ver}-security main restricted universe multiverse 
+deb-src http://nl.archive.ubuntu.com/ubuntu/ ${ver}-updates main restricted universe multiverse 
+deb-src http://nl.archive.ubuntu.com/ubuntu/ ${ver}-backports main restricted universe multiverse 
 
 ###### Ubuntu Partner Repo
 deb http://archive.canonical.com/ubuntu ${ver} partner
 deb-src http://archive.canonical.com/ubuntu ${ver} partner
-
-deb http://www.deb-multimedia.org testing main
 
 #------------------------------------------------------------------------------#
 #                           UNOFFICIAL UBUNTU REPOS                            #
@@ -540,19 +521,57 @@ deb http://www.deb-multimedia.org testing main
 #deb http://plex.r.worldssl.net/PlexMediaServer/ubuntu-repo lucid main
 EOF
 
-apt-get install -y --force-yes fail2ban bc sudo screen zip irssi unzip nano build-essential bwm-ng htop git subversion dstat automake mktorrent libtool libcppunit-dev libssl-dev pkg-config libxml2-dev libcurl3 libcurl4-openssl-dev libsigc++-2.0-dev apache2-utils autoconf cron curl libxslt-dev libncurses5-dev yasm apache2 php5 php5-cli php-net-socket libdbd-mysql-perl libdbi-perl fontconfig comerr-dev ca-certificates libfontconfig1-dev libfontconfig1 rar unrar mediainfo php5-curl ifstat libapache2-mod-php5 ttf-mscorefonts-installer checkinstall dtach cfv libarchive-zip-perl libnet-ssleay-perl php5-geoip openjdk-7-jre openjdk-7-jdk libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl libxml-libxslt-perl libapache2-mod-scgi lshell openvpn >>"${OUTTO}" 2>&1
-
-  export DEBIAN_FRONTEND=noninteractive &&
-  apt-get -y --force-yes update >>"${OUTTO}" 2>&1
+  echo -n "Updating system ... "
+  apt-get -y update >>"${OUTTO}" 2>&1
   apt-get -y purge samba samba-common >>"${OUTTO}" 2>&1
-  apt-get -y --force-yes upgrade >>"${OUTTO}" 2>&1
-
+  apt-get -y upgrade >>"${OUTTO}" 2>&1
   if [[ -e /etc/ssh/sshd_config ]]; then
-    echo "Port 4747" /etc/ssh/sshd_config >>"${OUTTO}" 2>&1
+    echo "Port 4747" /etc/ssh/sshd_config
     sed -i 's/Port 22/Port 4747/g' /etc/ssh/sshd_config
-    service ssh restart >>"${OUTTO}" 2>&1
+    service sshd restart >>"${OUTTO}" 2>&1
   fi
+  echo "${OK}"
+  clear
+}
 
+# setting locale function (5)
+function _locale() {
+echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
+echo "LANG=en_US.UTF-8" > /etc/default/locale
+echo "LANGUAGE=en_US.UTF-8">>/etc/default/locale
+echo "LC_ALL=en_US.UTF-8" >>/etc/default/locale
+  if [[ -e /usr/sbin/locale-gen ]]; then locale-gen >>"${OUTTO}" 2>&1
+  else
+    apt-get update >>"${OUTTO}" 2>&1
+    apt-get install locales locale-gen -y --force-yes >>"${OUTTO}" 2>&1
+    locale-gen >>"${OUTTO}" 2>&1
+    export LANG="en_US.UTF-8"
+    export LC_ALL="en_US.UTF-8"
+    export LANGUAGE="en_US.UTF-8"
+  fi
+}
+
+# setting system hostname function (6)
+function _hostname() {
+echo -ne "Please enter a hostname for this server (${bold}Hit enter to make no changes${normal}): " ; read input
+if [[ -z $input ]]; then
+        echo "No hostname supplied, no changes made!!"
+else
+        hostname ${input}
+        echo "${input}">/etc/hostname
+        echo "hostname ${input}">> /etc/rc.local
+        echo "Hostname set to ${input}"
+fi
+}
+
+# package and repo addition (7) _install softwares and packages_
+function _depends() {
+apt-get install --yes --force-yes fail2ban bc sudo screen zip irssi unzip nano build-essential bwm-ng htop git subversion \
+  dstat automake mktorrent libtool libcppunit-dev libssl-dev pkg-config libxml2-dev libcurl3 libcurl4-openssl-dev libsigc++-2.0-dev \
+  apache2-utils autoconf cron curl libxslt-dev libncurses5-dev yasm apache2 php5 php5-cli php-net-socket libdbd-mysql-perl libdbi-perl \
+  fontconfig comerr-dev ca-certificates libfontconfig1-dev libfontconfig1 rar unrar mediainfo php5-curl ifstat libapache2-mod-php5 \
+  ttf-mscorefonts-installer checkinstall dtach cfv libarchive-zip-perl libnet-ssleay-perl php5-geoip openjdk-7-jre openjdk-7-jdk \
+  libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl libxml-libxslt-perl libapache2-mod-scgi lshell openvpn >>"${OUTTO}" 2>&1
   cd
   rm -rf /etc/skel
   if [[ -e skel.tar ]]; then rm -rf skel.tar;fi 
@@ -594,19 +613,6 @@ sftp            : 1
 overssh         : ['ls', 'rsync','scp']
 LS
 echo "${OK}"
-}
-
-# setting system hostname function (6)
-function _hostname() {
-echo -ne "Please enter a hostname for this server (${bold}Hit enter to make no changes${normal}): " ; read input
-if [[ -z $input ]]; then
-        echo "No hostname supplied, no changes made!!"
-else
-        hostname ${input}
-        echo "${input}">/etc/hostname
-        echo "hostname ${input}">> /etc/rc.local
-        echo "Hostname set to ${input}"
-fi
 }
 
 # install ffmpeg question (8)
@@ -1229,7 +1235,7 @@ EOF
   sed -i 's/venet0/eth0/g' /srv/rutorrent/home/data.php
   fi
   rm -rf "$0" >>"${OUTTO}" 2>&1
-  for i in sshd apache2 pure-ftpd fail2ban quota plexmediaserver vsftpd; do
+  for i in sshd apache2 pure-ftpd fail2ban quota plexmediaserver vsftpd php5-fpm; do
     service $i restart >>"${OUTTO}" 2>&1
     systemctl enable $i >>"${OUTTO}" 2>&1
   done
@@ -1263,8 +1269,10 @@ _intro
 _checkroot
 _logcheck
 _keys
-echo -n "Installing building tools and all dependencies, please wait ... ";_depends
+_updates
+# _locale
 _hostname
+echo -n "Installing building tools and all dependancies and perl modules, please wait ... ";_depends
 _askffmpeg;if [[ ${ffmpeg} == "yes" ]]; then _ffmpeg; fi
 _askrtorrent;_xmlrpc;_libtorrent;_rtorrent
 echo -n "Installing rutorrent into /srv ... ";_rutorrent;_askshell;_adduser;_apachesudo

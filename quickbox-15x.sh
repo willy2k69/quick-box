@@ -490,39 +490,20 @@ cat >/etc/apt/sources.list<<EOF
 
 
 ###### Ubuntu Main Repos
-deb http://mirrors.digitalocean.com/ubuntu ${ver} main restricted
-deb-src http://mirrors.digitalocean.com/ubuntu ${ver} main restricted
+deb http://nl.archive.ubuntu.com/ubuntu/ ${ver} main restricted universe multiverse 
+deb-src http://nl.archive.ubuntu.com/ubuntu/ ${ver} main restricted universe multiverse 
 
-## Major bug fix updates produced after the final release of the
-## distribution.
-deb http://mirrors.digitalocean.com/ubuntu ${ver}-updates main restricted
-deb-src http://mirrors.digitalocean.com/ubuntu ${ver}-updates main restricted
-
-deb http://mirrors.digitalocean.com/ubuntu ${ver} universe
-deb-src http://mirrors.digitalocean.com/ubuntu ${ver} universe
-deb http://mirrors.digitalocean.com/ubuntu ${ver}-updates universe
-deb-src http://mirrors.digitalocean.com/ubuntu ${ver}-updates universe
-
-deb http://mirrors.digitalocean.com/ubuntu ${ver} multiverse
-deb-src http://mirrors.digitalocean.com/ubuntu ${ver} multiverse
-deb http://mirrors.digitalocean.com/ubuntu ${ver}-updates multiverse
-deb-src http://mirrors.digitalocean.com/ubuntu ${ver}-updates multiverse
-
-## Please note that software in backports WILL NOT receive any review
-## or updates from the Ubuntu security team.
-deb http://mirrors.digitalocean.com/ubuntu ${ver}-backports main restricted universe multiverse
-deb-src http://mirrors.digitalocean.com/ubuntu ${ver}-backports main restricted universe multiverse
-
-deb http://security.ubuntu.com/ubuntu ${ver}-security main
-deb-src http://security.ubuntu.com/ubuntu ${ver}-security main
-deb http://security.ubuntu.com/ubuntu ${ver}-security universe
-deb-src http://security.ubuntu.com/ubuntu ${ver}-security universe
+###### Ubuntu Update Repos
+deb http://nl.archive.ubuntu.com/ubuntu/ ${ver}-security main restricted universe multiverse 
+deb http://nl.archive.ubuntu.com/ubuntu/ ${ver}-updates main restricted universe multiverse 
+deb http://nl.archive.ubuntu.com/ubuntu/ ${ver}-backports main restricted universe multiverse 
+deb-src http://nl.archive.ubuntu.com/ubuntu/ ${ver}-security main restricted universe multiverse 
+deb-src http://nl.archive.ubuntu.com/ubuntu/ ${ver}-updates main restricted universe multiverse 
+deb-src http://nl.archive.ubuntu.com/ubuntu/ ${ver}-backports main restricted universe multiverse 
 
 ###### Ubuntu Partner Repo
-deb http://archive.canonical.com/ubuntu $(lsb_release -sc) partner
-deb-src http://archive.canonical.com/ubuntu $(lsb_release -sc) partner
-
-deb http://www.deb-multimedia.org testing main
+deb http://archive.canonical.com/ubuntu ${ver} partner
+deb-src http://archive.canonical.com/ubuntu ${ver} partner
 
 #------------------------------------------------------------------------------#
 #                           UNOFFICIAL UBUNTU REPOS                            #
