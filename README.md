@@ -139,51 +139,23 @@ DO NOT try to reconfigure packages using other tutorials - this script (AS IS) i
 
 ---
 
-### Ubuntu 14.04
+### Ubuntu 14.04, 15.04, and 15.10
 
-**Pre-Install Notice for Ubuntu 14.04:**  Some servers it is a good idea to intially run the following command -
+**Pre-Install Notice: Some servers it is a good idea to intially run the following command -**
 ```
-apt-get -y update
-
-```
-
-**Next, let's install git for downloading our repo**
-```
-apt-get -y install git
+apt-get -yq update; apt-get -yq install curl
 
 ```
-**Next, we clone the repo to the server and create a ~/tmp/quick-box/ directory _the script does this for you_**
+**Run the following command to grab our prep script and setup for install ...**
 ```
-git clone https://github.com/JMSDOnline/quick-box.git ~/tmp/quick-box/
+curl -LO https://raw.githubusercontent.com/JMSDOnline/quick-box/master/quick-box.sh
 cd tmp/quick-box
 
 ```
-**Finally, run the 14x script to unleash the goodies**
+**... Finally, make the script executable and run to unleash the goodies ...**
 ```
-chmod +x quickbox-14x.sh
-./quickbox-14x.sh
-
-```
-
----
-
-### Ubuntu 15.04 & 15.10
-
-**First, let's install git for downloading our repo**
-```
-apt-get -y install git
-
-```
-**Next, we clone the repo to the server and create a ~/tmp/quick-box/ directory _the script does this for you_**
-```
-git clone https://github.com/JMSDOnline/quick-box.git ~/tmp/quick-box/
-cd tmp/quick-box
-
-```
-**Finally, run the 15x script to unleash the goodies**
-```
-chmod +x quickbox-15x.sh
-./quickbox-15x.sh
+chmod +x quick-box.sh
+./quick-box.sh
 
 ```
 
