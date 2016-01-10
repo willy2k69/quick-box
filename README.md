@@ -149,7 +149,6 @@ apt-get -yq update; apt-get -yq install curl
 **Run the following command to grab our prep script and setup for install ...**
 ```
 curl -LO https://raw.githubusercontent.com/JMSDOnline/quick-box/master/quick-box.sh
-cd tmp/quick-box
 
 ```
 **... Finally, make the script executable and run to unleash the goodies ...**
