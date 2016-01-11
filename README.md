@@ -160,7 +160,7 @@ chmod +x quick-box.sh
 
 ---
 
-####You must be logged in as root to run this installation or use sudo on it.
+####You must be logged in as root to run this installation.
 
 ## Commands
 After installing you will have access to the following commands to be used directly in terminal
@@ -181,10 +181,10 @@ After installing you will have access to the following commands to be used direc
   * jquery.browser.js - update JS file
   * jquery.browser.min.js - Updated JS file
   * plugins [directory] - rutorrent plugins
-  * rarlinux-x64-5.1.0.tar.gz - rar for linux
-  * rtorrent.sh - quick-box seedbox installer
+  * quick-box.sh - quick-box seedbox prep installer script
+  * quickbox-ubuntu.sh - quick-box seedbox master installer script for Ubuntu 14.04, 15.04, and 15.10
   * rutorrent - rutorrent web folder
-  * rutorrent-quickbox-dark.zip - Custom quick-box ruTorrent kkin
+  * rutorrent-quickbox-dark.zip - Custom quick-box ruTorrent skin
   * skel.tar - Default skel directory for the 'adduser' command
   * sources [directory] - Folder containing rtorrent/libtorrent
   * commands [directory] - Folder containing various functions for user creation etc. _if you desire them_
