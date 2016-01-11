@@ -14,9 +14,8 @@ For Ubuntu 14.04, 15.04 & 15.10 installs.
 
 ---
 
-### Check out the [Quick Box Wiki](https://github.com/JMSDOnline/quick-box/wiki) for some reference material to common issues. If you have an error of your own and need help, please open an issue.
+### Check out the [Quick Box Wiki](https://github.com/JMSDOnline/quick-box/wiki) for some reference material to common issues as well as Tips and Tricks __before__ you install... make sure it's the right fit for you. If you have an error of your own and need help, please open an issue.
 
-__Please be advised:__ Multi-User functionality is still being actively tested in regards to port generation. You may have issues with rTorrent connecting. I am working this out as fast as possible with the amount of free time I have.
 
 ---
 
@@ -27,6 +26,7 @@ This script has the following features
 * Customized Seedbox Dashboard located at https://SERVER_IP/
 * HTTPs Downloads directory (https://SERVER_IP/${username}.downloads)
 * Obscures ports for ssh and ftp. __SSH = 4747__ | __FTP = 5757__ (note, this is not for security reasons... it's simply a means to reduce bad bot hits from all over the web)
+* Creates a limited shell access environment. This gives your additional created users the ability to interact with their seedbox via ssh on port 4747 w/o having access to other users shells and/or root/sudo commands and functions.
 
 ## Installed software
 * ruTorrent 3.7 + official plugins
@@ -39,6 +39,7 @@ This script has the following features
 * IRSSI
 * Plex
 * BTSync
+* LShell
 
 ### Quick Box Seedbox Dashboard
 ![Modern & Simple Seedbox Dashboard](https://github.com/JMSDOnline/quick-box/blob/master/img/quickbox-dashboard.png "Quick Box Modern & Simple Seedbox Dashboard")
