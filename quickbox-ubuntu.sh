@@ -276,7 +276,6 @@ schedule = filter_alert,30,30,"view_filter = alert,d.get_message=; view_sort = a
 port_range = $PORT-$PORTEND
 use_udp_trackers = yes
 encryption = allow_incoming,try_outgoing,enable_retry
-dht = yes
 peer_exchange = no
 check_hash = no
 execute_nothrow=chmod,777,/home/${username}/.sessions/
