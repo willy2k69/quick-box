@@ -16,6 +16,8 @@ For Ubuntu 14.04, 15.04 & 15.10 installs.
 
 ### Check out the [Quick Box Wiki](https://github.com/JMSDOnline/quick-box/wiki) for some reference material to common issues. If you have an error of your own and need help, please open an issue.
 
+__Please be advised:__ Multi-User functionality is still being actively tested in regards to port generation. You may have issues with rTorrent connecting. I am working this out as fast as possible with the amount of free time I have.
+
 ---
 
 This script has the following features
