@@ -295,9 +295,12 @@ cat >/home/${username}/.startup<<SU
 export USER=\$(id -un)
 IRSSI_CLIENT=yes
 RTORRENT_CLIENT=yes
-ADDRESS=\$(/sbin/ifconfig | grep "inet addr" | awk -F: '{print \$2}' | awk '{print \$1}'|grep -v "^127"|head -n1)
+WIPEDEAD=yes
+ADDRESS=$(/sbin/ifconfig | grep "inet addr" | awk -F: '{print $2}' | awk '{print $1}'|grep -v "^127"|head -n1)
 
 # NO NEED TO EDIT PAST HERE!
+if [ "$WIPEDEAD" == "yes" ]; then screen -wipe >/dev/null 2>&1; fi
+
 if [ "\$IRSSI_CLIENT" == "yes" ]; then 
   (screen -ls|grep irssi > /dev/null || (screen -fa -dmS irssi irssi && false))
 fi
@@ -603,12 +606,12 @@ allowed         : ['cd','cp','-d','-dmS','git','irssi','ll','ls','-m','mkdir','m
 forbidden       : [';', '&', '|','`','>','<', '$(', '${','sudo','vi','vim','./']
 warning_counter : 2
 aliases         : {'ls':'ls --color=auto','ll':'ls -l'}
-intro           : "== Seedbox Shell ==\nWelcome To Your Quick Box Seedbox Shell\nType '?' or 'help' to get the list of allowed commands"
+intro           : "== Seedbox Shell ==\nWelcome To Your Quick Box Seedbox Shell\nType '?' to get the list of allowed commands"
 home_path       : '/home/%u'
 env_path        : ':/usr/local/bin:/usr/sbin'
 allowed_cmd_path: ['/home/']
 scp             : 1
-sftp            : 1
+sftp            : 0
 overssh         : ['ls', 'rsync','scp']
 LS
 echo "${OK}"
