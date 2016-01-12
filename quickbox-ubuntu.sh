@@ -162,11 +162,11 @@ echo -n "Username: "; read user
                 echo "setting password to ${password}"
                 passwd=${password}
                 echo "${username}:${passwd}" | chpasswd >/dev/null 2>&1
-                sed -i '/^${username}/d' ${HTPASSWD}
+                sed -i "/${username}/ d" ${HTPASSWD}
                 (echo -n "${username}:${REALM}:" && echo -n "${username}:${REALM}:${passwd}" | md5sum | awk '{print $1}' ) >> "${HTPASSWD}"
         else
                 echo "setting password to ${genpass}"
-                sed -i '/^${username}/d' ${HTPASSWD}
+                sed -i "/${username}/ d" ${HTPASSWD}
                 passwd=${genpass}
                 echo "${username}:${passwd}" | chpasswd >/dev/null 2>&1
                 (echo -n "${username}:${REALM}:" && echo -n "${username}:${REALM}:${passwd}" | md5sum | awk '{print $1}' ) >> "${HTPASSWD}"
@@ -471,6 +471,10 @@ function _logcheck() {
   echo
 }
 
+function _keys() {
+  apt-get -y --force-yes install deb-multimedia-keyring >/dev/null 2>&1;
+}
+
 # package and repo addition (4) _update and upgrade_
 function _updates() {
   if lsb_release >>"${OUTTO}" 2>&1; then ver=$(lsb_release -c|awk '{print $2}')
@@ -502,6 +506,21 @@ deb-src http://nl.archive.ubuntu.com/ubuntu/ ${ver}-backports main restricted un
 ###### Ubuntu Partner Repo
 deb http://archive.canonical.com/ubuntu ${ver} partner
 deb-src http://archive.canonical.com/ubuntu ${ver} partner
+
+#------------------------------------------------------------------------------#
+#                           UNOFFICIAL UBUNTU REPOS                            #
+#------------------------------------------------------------------------------#
+
+
+###### 3rd Party Binary Repos
+
+#### BitTorrent Sync - http://www.bittorrent.com/sync
+## Run this command: sudo apt-key adv --keyserver keys.gnupg.net --recv-keys 6BF18B15
+#deb http://debian.yeasoft.net/btsync ${ver} main
+
+#### Plex Media Center - http://www.plexapp.com
+## Run this command: wget -q http://plexapp.com/plex_pub_key.pub -O- | sudo apt-key add -
+#deb http://plex.r.worldssl.net/PlexMediaServer/ubuntu-repo lucid main
 EOF
 
   echo -n "Updating system ... "
@@ -763,8 +782,8 @@ function _adduser() {
 
 # function to enable sudo for www-data function (16)
 function _apachesudo() {
-awk '/^root/ && !x {print "www-data     ALL=(ALL:ALL) NOPASSWD: ALL"; x=1} 1' /etc/sudoers > /tmp/sudoers;mv /tmp/sudoers /etc
-awk '/^%sudo/ && !x {print "%www-data     ALL=(ALL:ALL) NOPASSWD: ALL"; x=1} 1' /etc/sudoers > /tmp/sudoers;mv /tmp/sudoers /etc
+awk '/^root/ && !x {print "www-data     ALL=(ALL:ALL) NOPASSWD: /usr/bin/quota, /usr/sbin/repquota, /usr/bin/reload, /bin/sed, /usr/bin/pkill, /usr/bin/killall"; x=1} 1' /etc/sudoers > /tmp/sudoers;mv /tmp/sudoers /etc
+awk '/^%sudo/ && !x {print "%www-data     ALL=(ALL:ALL) NOPASSWD: /usr/bin/quota, /usr/sbin/repquota, /usr/bin/reload, /bin/sed, /usr/bin/pkill, /usr/bin/killall"; x=1} 1' /etc/sudoers > /tmp/sudoers;mv /tmp/sudoers /etc
 }
 
 # function to configure apache (17)
@@ -1156,35 +1175,12 @@ function _askplex() {
       #cp $REPOURL/sources/plexmediaserver_0.9.14.6.1620-e0b7243_amd64.deb .
       #dpkg -i plexmediaserver_0.9.14.6.1620-e0b7243_amd64.deb >/dev/null 2>&1
       # Just grab latest from plex.tv
-      echo "ServerName ${HOSTNAME1}" | sudo tee /etc/apache2/conf-available/fqdn.conf
-      sudo a2enconf fqdn
-      touch /etc/apache2/sites-enabled/plex.conf
-      chown www-data: /etc/apache2/sites-enabled/plex.conf
-      echo "deb http://shell.ninthgate.se/packages/debian squeeze main" > /etc/apt/sources.list.d/plexmediaserver.list
-      curl http://shell.ninthgate.se/packages/shell-ninthgate-se-keyring.key >>"${OUTTO}" 2>&1 | sudo apt-key add - >>"${OUTTO}" 2>&1
-      apt-get update >>"${OUTTO}" 2>&1
-      apt-get install -qq --yes --force-yes plexmediaserver >>"${OUTTO}" 2>&1
 
-#cat >/etc/apache2/sites-enabled/plexmediaserver.conf<<POE
-#LoadModule proxy_module /usr/lib/apache2/modules/mod_proxy.so
-#LoadModule proxy_http_module /usr/lib/apache2/modules/mod_proxy_http.so
-#<VirtualHost *:31400>
-#  ProxyRequests Off
-#  ProxyPreserveHost On
-#  <Proxy *>
-#    AddDefaultCharset Off
-#    Order deny,allow
-#    Allow from all
-#  </Proxy>
-#  ProxyPass / http://$ip:32400/
-#  ProxyPassReverse / http://$ip:32400/
-#</VirtualHost>
-#<IfModule mod_proxy.c>
-#        Listen 31400
-#</IfModule>
-#POE
-
-      #sed -i 's/PLEX_MEDIA_SERVER_USER=plex/PLEX_MEDIA_SERVER_USER=${username}/g' /etc/default/plexmediaserver
+      wget -Oxelp https://plex.tv/downloads >>"${OUTTO}" 2>&1
+      wget -N `sed -e '/amd64.deb/!d;/Ubuntu/!d;s/.*href="//;s/".*//' xelp` >>"${OUTTO}" 2>&1
+      dpkg -i plexmediaserver* >>"${OUTTO}" 2>&1
+      rm -rf plexmediaserver*.deb >>"${OUTTO}" 2>&1
+      rm -rf xelp
       echo "${OK}"
       ;;
     [nN] | [nN][Oo] | "") echo "${cyan}Skipping Plex install${normal} ... " ;;
@@ -1242,7 +1238,7 @@ EOF
   sed -i 's/venet0/eth0/g' /srv/rutorrent/home/data.php
   fi
   rm -rf "$0" >>"${OUTTO}" 2>&1
-  for i in sshd apache2 pure-ftpd vsftpd fail2ban quota plexmediaserver vsftpd; do
+  for i in sshd apache2 pure-ftpd fail2ban quota plexmediaserver vsftpd php5-fpm; do
     service $i restart >>"${OUTTO}" 2>&1
     systemctl enable $i >>"${OUTTO}" 2>&1
   done
@@ -1275,6 +1271,7 @@ _bashrc
 _intro
 _checkroot
 _logcheck
+_keys
 _updates
 # _locale
 _hostname
