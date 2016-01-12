@@ -1156,8 +1156,8 @@ function _askplex() {
       #cp $REPOURL/sources/plexmediaserver_0.9.14.6.1620-e0b7243_amd64.deb .
       #dpkg -i plexmediaserver_0.9.14.6.1620-e0b7243_amd64.deb >/dev/null 2>&1
       # Just grab latest from plex.tv
-      touch /etc/apache2/plex.conf
-      chown www-data: /etc/apache2/plex.conf
+      touch /etc/apache2/sites-enabled/plex.conf
+      chown www-data: /etc/apache2/sites-enabled/plex.conf
       echo "deb http://shell.ninthgate.se/packages/debian squeeze main" > /etc/apt/sources.list.d/plexmediaserver.list
       curl http://shell.ninthgate.se/packages/shell-ninthgate-se-keyring.key >>"${OUTTO}" 2>&1 | sudo apt-key add - >>"${OUTTO}" 2>&1
       apt-get update >>"${OUTTO}" 2>&1
