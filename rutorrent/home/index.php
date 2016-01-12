@@ -52,7 +52,7 @@ function isEnabled($search, $username){
 
 function writePlex($ip) {
   if (file_exists('.plex')) {
-    $myFile = "/etc/plex.conf";
+    $myFile = "/etc/apache2/sites-enabled/plex.conf";
     $fh = fopen($myFile, 'w') or die("can't open file");
     $stringData = "";
     fwrite($fh, $stringData);
@@ -61,12 +61,12 @@ function writePlex($ip) {
     shell_exec('sudo service apache2 reload &');
     return 'Disabling inital setup connection for plex ... ';
   } else {
-    $myFile = "/etc/plex.conf";
+    $myFile = "/etc/apache2/sites-enabled/plex.conf";
     $fh = fopen($myFile, 'w') or die("can't open file");
     $stringData = "";
     $stringData .= "LoadModule proxy_module /usr/lib/apache2/modules/mod_proxy.so\n";
     $stringData .= "LoadModule proxy_http_module /usr/lib/apache2/modules/mod_proxy_http.so\n";
-    $stringData .= "<VirtualHost *:32400>\n";
+    $stringData .= "<VirtualHost *:31400>\n";
     $stringData .= "ProxyRequests Off\n";
     $stringData .= "ProxyPreserveHost On\n";
     $stringData .= "<Proxy *>\n";
@@ -78,7 +78,7 @@ function writePlex($ip) {
     $stringData .= "ProxyPassReverse / http://$ip:32400/\n";
     $stringData .= "</VirtualHost>\n";
     $stringData .= "<IfModule mod_proxy.c>\n";
-    $stringData .= "        Listen 32400\n";
+    $stringData .= "        Listen 31400\n";
     $stringData .= "</IfModule>\n";
     fwrite($fh, $stringData);
     fclose($fh);
@@ -120,7 +120,7 @@ function chkPlex() {
   }
 }
 
-$plexURL = "http://" . $_SERVER['HTTP_HOST'] . ":32400/web/";
+$plexURL = "http://" . $_SERVER['HTTP_HOST'] . ":31400/web/";
 $btsyncURL = "http://" . $_SERVER['HTTP_HOST'] . ":8888/gui/";
 
 $reload='';
