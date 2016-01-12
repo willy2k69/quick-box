@@ -163,7 +163,7 @@ chmod +x quick-box.sh
 
 ---
 
-## Update for Quick Box version 1.3 on Ubuntu 14.04, 15.04, and 15.10
+## Update to Quick Box version
 > This script is valid for current Quick Box installs only. You may review the changelog at any time via a __changelog.md__ file in your root directory.
 
 ---
