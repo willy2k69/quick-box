@@ -162,11 +162,11 @@ echo -n "Username: "; read user
                 echo "setting password to ${password}"
                 passwd=${password}
                 echo "${username}:${passwd}" | chpasswd >/dev/null 2>&1
-                sed -i '/^${username}/d' ${HTPASSWD}
+                sed -i "/${username}/ d" ${HTPASSWD}
                 (echo -n "${username}:${REALM}:" && echo -n "${username}:${REALM}:${passwd}" | md5sum | awk '{print $1}' ) >> "${HTPASSWD}"
         else
                 echo "setting password to ${genpass}"
-                sed -i '/^${username}/d' ${HTPASSWD}
+                sed -i "/${username}/ d" ${HTPASSWD}
                 passwd=${genpass}
                 echo "${username}:${passwd}" | chpasswd >/dev/null 2>&1
                 (echo -n "${username}:${REALM}:" && echo -n "${username}:${REALM}:${passwd}" | md5sum | awk '{print $1}' ) >> "${HTPASSWD}"
@@ -1155,7 +1155,6 @@ function _askplex() {
     echo -n "Installing Plex ... "
       #cp $REPOURL/sources/plexmediaserver_0.9.14.6.1620-e0b7243_amd64.deb .
       #dpkg -i plexmediaserver_0.9.14.6.1620-e0b7243_amd64.deb >/dev/null 2>&1
-      # Just grab latest from plex.tv
       echo "ServerName ${HOSTNAME1}" | sudo tee /etc/apache2/conf-available/fqdn.conf
       sudo a2enconf fqdn
       touch /etc/apache2/sites-enabled/plex.conf
@@ -1164,27 +1163,6 @@ function _askplex() {
       curl http://shell.ninthgate.se/packages/shell-ninthgate-se-keyring.key >>"${OUTTO}" 2>&1 | sudo apt-key add - >>"${OUTTO}" 2>&1
       apt-get update >>"${OUTTO}" 2>&1
       apt-get install -qq --yes --force-yes plexmediaserver >>"${OUTTO}" 2>&1
-
-#cat >/etc/apache2/sites-enabled/plexmediaserver.conf<<POE
-#LoadModule proxy_module /usr/lib/apache2/modules/mod_proxy.so
-#LoadModule proxy_http_module /usr/lib/apache2/modules/mod_proxy_http.so
-#<VirtualHost *:31400>
-#  ProxyRequests Off
-#  ProxyPreserveHost On
-#  <Proxy *>
-#    AddDefaultCharset Off
-#    Order deny,allow
-#    Allow from all
-#  </Proxy>
-#  ProxyPass / http://$ip:32400/
-#  ProxyPassReverse / http://$ip:32400/
-#</VirtualHost>
-#<IfModule mod_proxy.c>
-#        Listen 31400
-#</IfModule>
-#POE
-
-      #sed -i 's/PLEX_MEDIA_SERVER_USER=plex/PLEX_MEDIA_SERVER_USER=${username}/g' /etc/default/plexmediaserver
       echo "${OK}"
       ;;
     [nN] | [nN][Oo] | "") echo "${cyan}Skipping Plex install${normal} ... " ;;
