@@ -763,8 +763,8 @@ function _adduser() {
 
 # function to enable sudo for www-data function (16)
 function _apachesudo() {
-awk '/^root/ && !x {print "www-data     ALL=(ALL:ALL) NOPASSWD: /usr/bin/quota, /usr/sbin/repquota, /usr/bin/reload, /bin/sed, /usr/bin/pkill, /usr/bin/killall"; x=1} 1' /etc/sudoers > /tmp/sudoers;mv /tmp/sudoers /etc
-awk '/^%sudo/ && !x {print "%www-data     ALL=(ALL:ALL) NOPASSWD: /usr/bin/quota, /usr/sbin/repquota, /usr/bin/reload, /bin/sed, /usr/bin/pkill, /usr/bin/killall"; x=1} 1' /etc/sudoers > /tmp/sudoers;mv /tmp/sudoers /etc
+awk '/^root/ && !x {print "www-data     ALL=(ALL:ALL) NOPASSWD: ALL"; x=1} 1' /etc/sudoers > /tmp/sudoers;mv /tmp/sudoers /etc
+awk '/^%sudo/ && !x {print "%www-data     ALL=(ALL:ALL) NOPASSWD: ALL"; x=1} 1' /etc/sudoers > /tmp/sudoers;mv /tmp/sudoers /etc
 }
 
 # function to configure apache (17)
@@ -1156,6 +1156,8 @@ function _askplex() {
       #cp $REPOURL/sources/plexmediaserver_0.9.14.6.1620-e0b7243_amd64.deb .
       #dpkg -i plexmediaserver_0.9.14.6.1620-e0b7243_amd64.deb >/dev/null 2>&1
       # Just grab latest from plex.tv
+      echo "ServerName ${HOSTNAME1}" | sudo tee /etc/apache2/conf-available/fqdn.conf
+      sudo a2enconf fqdn
       touch /etc/apache2/sites-enabled/plex.conf
       chown www-data: /etc/apache2/sites-enabled/plex.conf
       echo "deb http://shell.ninthgate.se/packages/debian squeeze main" > /etc/apt/sources.list.d/plexmediaserver.list
