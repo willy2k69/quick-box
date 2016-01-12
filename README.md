@@ -6,7 +6,7 @@ For Ubuntu 14.04, 15.04 & 15.10 installs.
 
 ## Script status
 
-[![Version 1.2-production](https://img.shields.io/badge/version-1.2-674172.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
+[![Version 1.3-production](https://img.shields.io/badge/version-1.3-674172.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
 [![MIT License](https://img.shields.io/badge/license-MIT%20License-blue.svg?style=flat-square)](https://github.com/JMSDOnline/quick-box/blob/master/LICENSE)
 [![Ubuntu 15.10 Passing](https://img.shields.io/badge/Ubuntu%2015.10-passing-brightgreen.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
 [![Ubuntu 15.04 Passing](https://img.shields.io/badge/Ubuntu%2015.04-passing-brightgreen.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
@@ -162,6 +162,29 @@ chmod +x quick-box.sh
 ```
 
 ---
+
+## Update for Quick Box version 1.3 on Ubuntu 14.04, 15.04, and 15.10
+> This script is valid for current Quick Box installs only. You may review the changelog at any time via a __changelog.md__ file in your root directory.
+
+---
+
+### Update for version 1.3 on Ubuntu 14.04, 15.04, and 15.10
+
+**Run the following command to grab our prep script and setup for updating ...**
+```
+curl -LO https://raw.githubusercontent.com/JMSDOnline/quick-box-update/master/update-1-3.sh
+
+```
+**... Finally, make the script executable and run to produce the updates ...**
+```
+chmod +x update-1-3.sh
+./update-1-3.sh
+
+```
+
+---
+
+
 
 ####You must be logged in as root to run this installation.
 
