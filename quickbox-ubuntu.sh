@@ -547,7 +547,33 @@ else
 fi
 }
 
-# package and repo addition (7) _install softwares and packages_
+# ban public trackers (7)
+function _denyhosts() {
+echo -ne "Block Public Trackers?: (Default: \033[1mY\033[0m)"; read responce
+case $responce in
+  [yY] | [yY][Ee][Ss] | "")
+echo -n "Blocking public trackers ... "
+wget -q -O/etc/trackers https://raw.githubusercontent.com/JMSDOnline/quick-box/master/commands/trackers
+cat >/etc/cron.daily/denypublic<<'EOF'
+IFS=$'\n'
+L=$(/usr/bin/sort /etc/trackers | /usr/bin/uniq)
+for fn in $L; do
+        /sbin/iptables -D INPUT -d $fn -j DROP
+        /sbin/iptables -D FORWARD -d $fn -j DROP
+        /sbin/iptables -D OUTPUT -d $fn -j DROP
+        /sbin/iptables -A INPUT -d $fn -j DROP
+        /sbin/iptables -A FORWARD -d $fn -j DROP
+        /sbin/iptables -A OUTPUT -d $fn -j DROP
+done
+EOF
+  echo "${OK}"
+  ;;
+  [nN] | [nN][Oo] ) echo "Allowing ... "
+                ;;
+        esac
+}
+
+# package and repo addition (8) _install softwares and packages_
 function _depends() {
 apt-get install --yes --force-yes fail2ban bc sudo screen zip irssi unzip nano build-essential bwm-ng htop git subversion \
   dstat automake mktorrent libtool libcppunit-dev libssl-dev pkg-config libxml2-dev libcurl3 libcurl4-openssl-dev libsigc++-2.0-dev \
@@ -598,7 +624,7 @@ LS
 echo "${OK}"
 }
 
-# install ffmpeg question (8)
+# install ffmpeg question (9)
 function _askffmpeg() {
   echo -ne "${yellow}Install ffmpeg? (Used for screenshots)${normal} (Default: ${green}Y${normal}): "; read responce
   case $responce in
@@ -608,7 +634,7 @@ function _askffmpeg() {
   esac
 }
 
-# build function for ffmpeg (8.1)
+# build function for ffmpeg (9.1)
 function _ffmpeg() {
   if [[ ${ffmpeg} == "yes" ]]; then
     echo -n "Building ffmpeg from source for screenshots ... "
@@ -630,7 +656,7 @@ function _ffmpeg() {
   fi
 }
 
-# ask what rtorrent version (9)
+# ask what rtorrent version (10)
 function _askrtorrent() {
   echo -e "1) rtorrent ${green}0.9.6${normal}"
   echo -e "2) rtorrent ${green}0.9.4${normal}"
@@ -645,7 +671,7 @@ function _askrtorrent() {
   echo "Using rtorrent-$RTVERSION/libtorrent-$LTORRENT" 
 }
 
-# xmlrpc-c function (10)
+# xmlrpc-c function (11)
 function _xmlrpc() {
   cd /root/tmp
   echo -ne "Installing xmlrpc-c-${green}1.33.12${normal} ... "
@@ -660,7 +686,7 @@ function _xmlrpc() {
   echo "${OK}"
 }
 
-# libtorent function (11)
+# libtorent function (12)
 function _libtorrent() {
   cd /root/tmp
   MAXCPUS=$(echo "$(nproc) / 2"|bc)
@@ -677,7 +703,7 @@ function _libtorrent() {
   echo "${OK}"
 }
 
-# rtorrent function (9.1)
+# rtorrent function (10.1)
 function _rtorrent() {
   cd /root/tmp
   MAXCPUS=$(echo "$(nproc) / 2"|bc)
@@ -697,7 +723,7 @@ function _rtorrent() {
   echo "${OK}"
 }
 
-# scgi enable function (12)
+# scgi enable function (13-nixed)
 # function _scgi() { ln -s /etc/apache2/mods-available/scgi.load /etc/apache2/mods-enabled/scgi.load >>"${OUTTO}" 2>&1 ; }
 
 # function to install rutorrent (13)
@@ -1256,6 +1282,7 @@ _logcheck
 _updates
 # _locale
 _hostname
+_denyhosts
 echo -n "Installing building tools and all dependancies and perl modules, please wait ... ";_depends
 _askffmpeg;if [[ ${ffmpeg} == "yes" ]]; then _ffmpeg; fi
 _askrtorrent;_xmlrpc;_libtorrent;_rtorrent
