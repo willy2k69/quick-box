@@ -980,7 +980,7 @@ ADC
 # function to make dirs for first user (21)
 function _makedirs() {
   mkdir /home/"${username}"/{torrents,.sessions,watch} >>"${OUTTO}" 2>&1
-  chown "${username}".www-data /home/"${username}"/{torrents,.sessions,watch,.rtorrent.rc,.config} >>"${OUTTO}" 2>&1
+  chown "${username}".www-data /home/"${username}"/{torrents,.sessions,watch,.rtorrent.rc} >>"${OUTTO}" 2>&1
   usermod -a -G www-data "${username}" >>"${OUTTO}" 2>&1
   usermod -a -G "${username}" www-data >>"${OUTTO}" 2>&1
   echo "${OK}"
