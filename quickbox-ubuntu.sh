@@ -314,6 +314,8 @@ SU
 echo $OK
 echo -n "enabling $username cron script ... "
   mkdir "/srv/rutorrent/conf/users/${username}" >>"${OUTTO}" 2>&1
+  mkdir -p "/srv/rutorrent/conf/users/${username}/plugins/fileupload/" >>"${OUTTO}" 2>&1
+  cp /srv/rutorrent/plugins/fileupload/conf.php /srv/rutorrent/conf/users/${username}/plugins/fileupload/
   chown $username.$username /home/$username/.startup >/dev/null 2>&1
   sudo -u $username chmod +x /home/$username/.startup  >/dev/null 2>&1
   sudo -u $username chmod 750 /home/$username/ >/dev/null 2>&1
@@ -576,7 +578,7 @@ EOF
 # package and repo addition (8) _install softwares and packages_
 function _depends() {
 apt-get install --yes --force-yes fail2ban bc sudo screen zip irssi unzip nano build-essential bwm-ng htop git subversion \
-  dstat automake mktorrent libtool libcppunit-dev libssl-dev pkg-config libxml2-dev libcurl3 libcurl4-openssl-dev libsigc++-2.0-dev \
+  dstat plowshare4 openssh-server automake mktorrent libtool libcppunit-dev libssl-dev pkg-config libxml2-dev libcurl3 libcurl4-openssl-dev libsigc++-2.0-dev \
   apache2-utils autoconf cron curl libxslt-dev libncurses5-dev yasm apache2 php5 php5-cli php-net-socket libdbd-mysql-perl libdbi-perl \
   fontconfig comerr-dev ca-certificates libfontconfig1-dev libfontconfig1 rar unrar mediainfo php5-curl ifstat libapache2-mod-php5 \
   ttf-mscorefonts-installer checkinstall dtach cfv libarchive-zip-perl libnet-ssleay-perl php5-geoip openjdk-7-jre openjdk-7-jdk \
@@ -953,6 +955,13 @@ EOF
   cd /srv/rutorrent/plugins
   perl -pi -e "s/\$defaultTheme \= \"\"\;/\$defaultTheme \= \"QuickBox-Dark\"\;/g" /srv/rutorrent/plugins/theme/conf.php
   rm -rf /srv/rutorrent/plugins/tracklabels/labels/nlb.png
+
+  mkdir -p ~/bin && bash
+  git clone https://github.com/mcrapet/plowshare.git ~/.plowshare-source && cd ~/.plowshare-source
+  make install PREFIX=$HOME && cd && rm -rf .plowshare-source
+
+  chmod 775 /srv/rutorrent/plugins/fileupload/scripts/upload
+  cp /srv/rutorrent/plugins/fileupload/conf.php /srv/rutorrent/conf/users/${username}/plugins/fileupload/
 }
 
 # function autodl to install autodl irssi scripts (20)
