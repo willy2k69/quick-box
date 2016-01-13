@@ -54,9 +54,7 @@ autotools, cpuload, quotaspace, erasedata, extratio, extsearch, feeds, filedrop,
 * Autodl-IRSSI (with an updated list of trackers)
 * A modified version of Diskpace to support quota (by Notos)
 * Filemanager (modified to handle rar, zip, unzip, tar and bzip)
-* Fileupload
 * Fileshare Plugin (http://forums.rutorrent.org/index.php?topic=705.0)
-* MediaStream (_No longer a valid plugin due to current browser limitations on inline java_)
 * Logoff 
 * Theme: QuickBox ``Dark rutorrent skin``
 * Colorful Ratios: Customized to match QuickBox Theme
