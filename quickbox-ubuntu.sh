@@ -917,7 +917,7 @@ EOF
 # function to install rutorrent plugins (19)
 function _plugins() {
   mkdir -p "${rutorrent}plugins"; cd "${rutorrent}plugins"
-  LIST="autodl-irssi autotools check_port chunks cookies cpuload create data datadir diskspace edit erasedata extratio extsearch feeds filedrop filemanager fileshare geoip _getdir history httprpc loginmgr logoff lookat mediainfo _noty ratio ratiocolor retrackers rss rssurlrewrite rutorrentMobile rutracker_check scheduler seedingtime screenshots show_peers_like_wtorrent source _task theme throttle tracklabels trafic unpack xmpp"
+  LIST="autodl-irssi autotools check_port chunks cookies cpuload create data datadir diskspace edit erasedata extratio extsearch feeds filedrop filemanager fileshare fileupload geoip _getdir history httprpc loginmgr logoff lookat mediainfo _noty ratio ratiocolor retrackers rss rssurlrewrite rutorrentMobile rutracker_check scheduler seedingtime screenshots show_peers_like_wtorrent source _task theme throttle tracklabels trafic unpack xmpp"
   for i in $LIST; do
   echo -ne "Installing Plugin: ${green}${i}${normal} ... "
   cp -R "${REPOURL}/plugins/$i" .
