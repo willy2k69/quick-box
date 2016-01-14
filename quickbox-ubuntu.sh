@@ -1068,7 +1068,7 @@ ADDRESS=$(/sbin/ifconfig | grep "inet addr" | awk -F: '{print $2}' | awk '{print
 if [ "$WIPEDEAD" == "yes" ]; then screen -wipe >/dev/null 2>&1; fi
 
 if [ "$IRSSI_CLIENT" == "yes" ]; then
-  (screen -ls|grep irssi > /dev/null || (screen -S irssi -d -t irssi -m irssi -h ${ADDRESS} && false))
+  (screen -ls|grep irssi >/dev/null || (screen -S irssi -d -t irssi -m irssi -h "${ADDRESS}" && false))
 fi
 
 if [ "$RTORRENT_CLIENT" == "yes" ]; then
@@ -1076,7 +1076,7 @@ if [ "$RTORRENT_CLIENT" == "yes" ]; then
 fi
 
 if [ "$BTSYNC" == "yes" ]; then
-        (pgrep -u $USER btsync >/dev/null || /home/$USER/btsync --webui.listen ${ADDRESS}:8888 >/dev/null 2>&1 && false)
+  (pgrep -u $USER btsync >/dev/null || /home/$USER/btsync --webui.listen "${ADDRESS}":8888 >/dev/null 2>&1 && false)
 fi
 EOF
 if [[ $btsync == "yes" ]]; then
