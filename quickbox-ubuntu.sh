@@ -643,8 +643,8 @@ yes '' | apt-get install --force-yes automake build-essential fail2ban bc sudo s
   mkdir -p /usr/share/GeoIP>>"${OUTTO}" 2>&1
   rm -rf GeoLiteCity.dat.gz
   mv GeoLiteCity.dat /usr/share/GeoIP/GeoIPCity.dat>>"${OUTTO}" 2>&1
-  (echo y;echo o conf prerequisites_policy follow;echo o conf commit)|cpan Digest::SHA1 >>"${OUTTO}" 2>&1
-  (echo y;echo o conf prerequisites_policy follow;echo o conf commit)|cpan Digest::SHA >>"${OUTTO}" 2>&1
+  (echo y;echo o conf prerequisites_policy follow;echo o conf commit)>/dev/null 2>&1|cpan Digest::SHA1 >>"${OUTTO}" 2>&1
+  (echo y;echo o conf prerequisites_policy follow;echo o conf commit)>/dev/null 2>&1|cpan Digest::SHA >>"${OUTTO}" 2>&1
   sed -i 's/errors=remount-ro/usrquota,errors=remount-ro/g' /etc/fstab
   mount -o remount / >>"${OUTTO}" 2>&1 || mount -o remount /home >>"${OUTTO}" 2>&1
   quotacheck -auMF vfsv1 >>"${OUTTO}" 2>&1
