@@ -1062,7 +1062,6 @@ IRSSI_CLIENT=yes
 RTORRENT_CLIENT=yes
 WIPEDEAD=yes
 BTSYNC=no
-PLEX=no
 ADDRESS=$(curl http://ipecho.net/plain; echo)
 
 if [ "$WIPEDEAD" == "yes" ]; then screen -wipe >/dev/null 2>&1; fi
@@ -1249,7 +1248,7 @@ function _askplex() {
     echo -n "Installing Plex ... "
       #cp $REPOURL/sources/plexmediaserver_0.9.14.6.1620-e0b7243_amd64.deb .
       #dpkg -i plexmediaserver_0.9.14.6.1620-e0b7243_amd64.deb >/dev/null 2>&1
-      echo "ServerName ${HOSTNAME1}" | sudo tee /etc/apache2/conf-available/fqdn.conf
+      echo -e "ServerName ${HOSTNAME1} ... " | sudo tee /etc/apache2/conf-available/fqdn.conf
       sudo a2enconf fqdn >>"${OUTTO}" 2>&1
       touch /etc/apache2/sites-enabled/plex.conf
       chown www-data: /etc/apache2/sites-enabled/plex.conf
