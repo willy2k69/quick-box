@@ -957,11 +957,11 @@ EOF
   rm -rf /srv/rutorrent/plugins/tracklabels/labels/nlb.png
 
   mkdir -p ~/bin && bash
-  git clone https://github.com/mcrapet/plowshare.git ~/.plowshare-source && cd ~/.plowshare-source
-  make install PREFIX=$HOME && cd && rm -rf .plowshare-source
+  git clone https://github.com/mcrapet/plowshare.git ~/.plowshare-source && cd ~/.plowshare-source >>"${OUTTO}" 2>&1
+  make install PREFIX=$HOME && cd && rm -rf .plowshare-source >>"${OUTTO}" 2>&1
 
   chmod 775 /srv/rutorrent/plugins/fileupload/scripts/upload
-  cp /srv/rutorrent/plugins/fileupload/conf.php /srv/rutorrent/conf/users/${username}/plugins/fileupload/
+  cp /srv/rutorrent/plugins/fileupload/conf.php /srv/rutorrent/conf/users/${username}/plugins/fileupload/conf.php
 }
 
 # function autodl to install autodl irssi scripts (20)
