@@ -14,9 +14,9 @@ REPOURL="/root/tmp/quick-box"
 black=$(tput setaf 0);red=$(tput setaf 1);green=$(tput setaf 2);yellow=$(tput setaf 3);blue=$(tput setaf 4);magenta=$(tput setaf 5);cyan=$(tput setaf 6);white=$(tput setaf 7);on_red=$(tput setab 1);on_green=$(tput setab 2);on_yellow=$(tput setab 3);on_blue=$(tput setab 4);on_magenta=$(tput setab 5);on_cyan=$(tput setab 6);on_white=$(tput setab 7);bold=$(tput bold);dim=$(tput dim);underline=$(tput smul);reset_underline=$(tput rmul);standout=$(tput smso);reset_standout=$(tput rmso);normal=$(tput sgr0);alert=${white}${on_red};title=${standout};sub_title=${bold}${yellow};repo_title=${black}${on_green};
 
 # Color Prompt
-sed -i.bak -e 's/^#force_color/force_color/' \
- -e 's/1;34m/1;35m/g' \
- -e "\$aLS_COLORS=\$LS_COLORS:'di=0;35:' ; export LS_COLORS" /etc/skel/.bashrc
+#sed -i.bak -e 's/^#force_color/force_color/' \
+# -e 's/1;34m/1;35m/g' \
+# -e "\$aLS_COLORS=\$LS_COLORS:'di=0;35:' ; export LS_COLORS" /etc/skel/.bashrc
 
 
 function _string() { perl -le 'print map {(a..z,A..Z,0..9)[rand 62] } 0..pop' 15 ; }
@@ -478,7 +478,7 @@ function _logcheck() {
 function _updates() {
   if lsb_release >>"${OUTTO}" 2>&1; then ver=$(lsb_release -c|awk '{print $2}')
   else
-    apt-get -yq install lsb-release >>"${OUTTO}" 2>&1
+    apt-get -y -q install lsb-release >>"${OUTTO}" 2>&1
     if [[ -e /usr/bin/lsb_release ]]; then ver=$(lsb_release -c|awk '{print $2}')
     else echo "failed to install lsb-release from apt-get, please install manually and re-run script"; exit
     fi
@@ -531,13 +531,22 @@ fi
 
   echo -n "Updating system ... "
   export DEBIAN_FRONTEND=noninteractive
-  apt-get -yes --force-yes update >>"${OUTTO}" 2>&1
+  if [[ -e /etc/skel ]]; then rm -rf /etc/skel;fi
+  yes '' | apt-get update >>"${OUTTO}" 2>&1
   apt-get -y purge samba samba-common >>"${OUTTO}" 2>&1
-  apt-get -yes --force-yes upgrade >>"${OUTTO}" 2>&1
-  if [[ -e /etc/ssh/sshd_config ]]; then
-    echo "Port 4747" /etc/ssh/sshd_config
-    sed -i 's/Port 22/Port 4747/g' /etc/ssh/sshd_config
-    service sshd restart >>"${OUTTO}" 2>&1
+  yes '' | apt-get upgrade >>"${OUTTO}" 2>&1
+  if [[ $dis -eq Debian ]]; then
+    if [[ -e /etc/ssh/sshd_config ]]; then
+      echo "Port 4747" /etc/ssh/sshd_config
+      sed -i 's/Port 22/Port 4747/g' /etc/ssh/sshd_config
+      service ssh restart >>"${OUTTO}" 2>&1
+    fi
+  else
+    if [[ -e /etc/ssh/sshd_config ]]; then
+      echo "Port 4747" /etc/ssh/sshd_config
+      sed -i 's/Port 22/Port 4747/g' /etc/ssh/sshd_config
+      service sshd restart >>"${OUTTO}" 2>&1
+    fi
   fi
   echo "${OK}"
   clear
@@ -601,7 +610,7 @@ EOF
 
 # package and repo addition (8) _install softwares and packages_
 function _depends() {
-apt-get install --yes --force-yes make automake build-essential fail2ban bc sudo screen zip irssi unzip nano bwm-ng htop git subversion \
+yes '' | apt-get install make automake build-essential fail2ban bc sudo screen zip irssi unzip nano bwm-ng htop git subversion \
   dstat plowshare4 openssh-server mktorrent libtool libcppunit-dev libssl-dev pkg-config libxml2-dev libcurl3 libcurl4-openssl-dev libsigc++-2.0-dev \
   apache2-utils autoconf cron curl libxslt-dev libncurses5-dev yasm apache2 php5 php5-cli php-net-socket libdbd-mysql-perl libdbi-perl \
   fontconfig comerr-dev ca-certificates libfontconfig1-dev libfontconfig1 rar unrar mediainfo php5-curl ifstat libapache2-mod-php5 \
@@ -1227,7 +1236,7 @@ function _askplex() {
       echo "deb http://shell.ninthgate.se/packages/debian squeeze main" > /etc/apt/sources.list.d/plexmediaserver.list
       curl http://shell.ninthgate.se/packages/shell-ninthgate-se-keyring.key >>"${OUTTO}" 2>&1 | sudo apt-key add - >>"${OUTTO}" 2>&1
       apt-get update >>"${OUTTO}" 2>&1
-      apt-get install -qq --yes --force-yes plexmediaserver >>"${OUTTO}" 2>&1
+      apt-get install -qq -y --force-yes plexmediaserver >>"${OUTTO}" 2>&1
       echo "${OK}"
       ;;
     [nN] | [nN][Oo] | "") echo "${cyan}Skipping Plex install${normal} ... " ;;
@@ -1285,10 +1294,17 @@ EOF
   sed -i 's/venet0/eth0/g' /srv/rutorrent/home/data.php
   fi
   rm -rf "$0" >>"${OUTTO}" 2>&1
-  for i in sshd apache2 pure-ftpd vsftpd fail2ban quota plexmediaserver vsftpd; do
-    service $i restart >>"${OUTTO}" 2>&1
-    systemctl enable $i >>"${OUTTO}" 2>&1
-  done
+  if [[ $dis -eq Debian ]]; then
+    for i in ssh apache2 pure-ftpd vsftpd fail2ban quota plexmediaserver; do
+      service $i restart >>"${OUTTO}" 2>&1
+      systemctl enable $i >>"${OUTTO}" 2>&1
+    done
+  else
+    for i in sshd apache2 pure-ftpd vsftpd fail2ban quota plexmediaserver; do
+      service $i restart >>"${OUTTO}" 2>&1
+      systemctl enable $i >>"${OUTTO}" 2>&1
+    done
+  fi
   rm -rf /root/tmp/
   echo -ne "Do you wish to reboot (recommended!): (Default ${green}Y${normal})"; read reboot
   case $reboot in
