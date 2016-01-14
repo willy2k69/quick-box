@@ -435,11 +435,11 @@ function _intro() {
   echo
   dis="$(lsb_release -is)"
   rel="$(lsb_release -rs)"
-  if [[ "${dis}" != "Ubuntu" ]]; then
+  if [[ "${dis}" != "Ubuntu"|"Debian" ]]; then
     echo "${dis}: ${alert} You do not appear to be running Ubuntu ${normal} "
     echo 'Exiting...'
     exit 1
-  elif [[ ! "${rel}" =~ ("14.04"|"15.04"|"15.10") ]]; then
+  elif [[ ! "${rel}" =~ ("14.04"|"15.04"|"15.10"|"7"|"8") ]]; then
     echo "${bold}${rel}:${normal} You do not appear to be running a supported Ubuntu release."
     echo 'Exiting...'
     exit 1
@@ -484,6 +484,26 @@ function _updates() {
     fi
   fi
 
+if [[ $dis -eq Debian ]]; then
+
+cat >/etc/apt/sources.list<<EOF
+#------------------------------------------------------------------------------#
+#                            OFFICIAL DEBIAN REPOS                             #
+#------------------------------------------------------------------------------#
+
+
+deb http://ftp.nl.debian.org/debian stable main contrib non-free
+deb-src http://ftp.nl.debian.org/debian stable main contrib non-free
+
+deb http://ftp.debian.org/debian/ ${ver}-updates main contrib non-free
+deb-src http://ftp.debian.org/debian/ ${ver}-updates main contrib non-free
+
+deb http://security.debian.org/ ${ver}/updates main contrib non-free
+deb-src http://security.debian.org/ ${ver}/updates main contrib non-free
+EOF
+
+else
+
 cat >/etc/apt/sources.list<<EOF
 #------------------------------------------------------------------------------#
 #                            OFFICIAL UBUNTU REPOS                             #
@@ -506,6 +526,8 @@ deb-src http://nl.archive.ubuntu.com/ubuntu/ ${ver}-backports main restricted un
 deb http://archive.canonical.com/ubuntu ${ver} partner
 deb-src http://archive.canonical.com/ubuntu ${ver} partner
 EOF
+
+fi
 
   echo -n "Updating system ... "
   apt-get -y update >>"${OUTTO}" 2>&1
