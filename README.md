@@ -12,6 +12,9 @@ For Ubuntu 14.04, 15.04 & 15.10 installs.
 [![Ubuntu 15.04 Passing](https://img.shields.io/badge/Ubuntu%2015.04-passing-brightgreen.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
 [![Ubuntu 14.04 Passing](https://img.shields.io/badge/Ubuntu%2014.04-passing-brightgreen.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
 
+[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/JMSDOnline/quick-box.svg?style=flat-square)](http://isitmaintained.com/project/JMSDOnline/quick-box "Average time to resolve an issue")
+[![Percentage of issues still open](http://isitmaintained.com/badge/open/JMSDOnline/quick-box.svg?style=flat-square)](http://isitmaintained.com/project/JMSDOnline/quick-box "Percentage of issues still open")
+
 ---
 
 ### Check out the [Quick Box Wiki](https://github.com/JMSDOnline/quick-box/wiki) for some reference material to common issues as well as Tips and Tricks __before__ you install... make sure it's the right fit for you. If you have an error of your own and need help, please open an issue.
