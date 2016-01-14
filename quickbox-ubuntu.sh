@@ -610,7 +610,7 @@ EOF
 
 # package and repo addition (8) _install softwares and packages_
 function _depends() {
-yes '' | apt-get install make automake build-essential fail2ban bc sudo screen zip irssi unzip nano bwm-ng htop git subversion \
+yes '' | apt-get install --force-yes make automake build-essential fail2ban bc sudo screen zip irssi unzip nano bwm-ng htop git subversion \
   dstat plowshare4 mktorrent libtool libcppunit-dev libssl-dev pkg-config libxml2-dev libcurl3 libcurl4-openssl-dev libsigc++-2.0-dev \
   apache2-utils autoconf cron curl libxslt-dev libncurses5-dev yasm apache2 php5 php5-cli php-net-socket libdbd-mysql-perl libdbi-perl \
   fontconfig comerr-dev ca-certificates libfontconfig1-dev libfontconfig1 rar unrar mediainfo php5-curl ifstat libapache2-mod-php5 \
