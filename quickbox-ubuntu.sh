@@ -513,6 +513,8 @@ deb http://www.deb-multimedia.org squeeze-backports main
 #http://backports.debian.org/debian-backports squeeze-backports main
 EOF
 
+  apt-get --yes --force-yes install deb-multimedia-keyring >>"${OUTTO}" 2>&1
+
 else
 
 cat >/etc/apt/sources.list<<EOF
