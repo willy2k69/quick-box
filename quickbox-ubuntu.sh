@@ -486,9 +486,7 @@ function _updates() {
 
 if [[ $dis -eq Debian ]]; then
 
-  wget -q http://www.deb-multimedia.org/pool/main/d/deb-multimedia-keyring/deb-multimedia-keyring_2012.05.05_all.deb -O deb-multimedia-keyring_all.deb >>"${OUTTO}" 2>&1
-  dpkg -i deb-multimedia-keyring_all.deb >>"${OUTTO}" 2>&1
-  rm -rf deb-multimedia-keyring_all.deb >>"${OUTTO}" 2>&1
+  apt-get --yes --force-yes install deb-multimedia-keyring >>"${OUTTO}" 2>&1
 
 cat >/etc/apt/sources.list<<EOF
 #------------------------------------------------------------------------------#
@@ -497,8 +495,8 @@ cat >/etc/apt/sources.list<<EOF
 
 
 ###### Debian Main Repos
-deb http://ftp.nl.debian.org/debian stable main contrib non-free
-deb-src http://ftp.nl.debian.org/debian stable main contrib non-free
+deb http://ftp.nl.debian.org/debian testing main contrib non-free
+deb-src http://ftp.nl.debian.org/debian testing main contrib non-free
 
 ###### Debian Update Repos
 deb http://ftp.debian.org/debian/ ${ver}-updates main contrib non-free
@@ -506,8 +504,13 @@ deb-src http://ftp.debian.org/debian/ ${ver}-updates main contrib non-free
 deb http://security.debian.org/ ${ver}/updates main contrib non-free
 deb-src http://security.debian.org/ ${ver}/updates main contrib non-free
 
-###### Debian Partner Repo
-deb http://www.deb-multimedia.org ${ver} main non-free
+#Third Parties Repos
+#Debian Multimedia
+deb http://www.deb-multimedia.org squeeze main non-free
+deb http://www.deb-multimedia.org squeeze-backports main
+
+#Debian Backports Repos
+#http://backports.debian.org/debian-backports squeeze-backports main
 EOF
 
 else
@@ -539,7 +542,6 @@ fi
 
   echo -n "Updating system ... "
   export DEBIAN_FRONTEND=noninteractive
-  if [[ -e /etc/skel ]]; then rm -rf /etc/skel;fi
   yes '' | apt-get update >>"${OUTTO}" 2>&1
   apt-get -y purge samba samba-common >>"${OUTTO}" 2>&1
   yes '' | apt-get upgrade >>"${OUTTO}" 2>&1
@@ -619,7 +621,7 @@ EOF
 # package and repo addition (8) _install softwares and packages_
 function _depends() {
 yes '' | apt-get install --force-yes automake build-essential fail2ban bc sudo screen zip irssi unzip nano bwm-ng htop git subversion \
-  dstat mktorrent libtool libcppunit-dev libssl-dev pkg-config libxml2-dev libcurl3 libcurl4-openssl-dev libsigc++-2.0-dev \
+  dstat mktorrent libtool libsigc++-2.0-0v5 libcppunit-dev libssl-dev pkg-config libxml2-dev libcurl3 libcurl4-openssl-dev libsigc++-2.0-dev \
   apache2-utils autoconf cron curl libxslt-dev libncurses5-dev yasm apache2 php5 php5-cli php-net-socket libdbd-mysql-perl libdbi-perl \
   fontconfig comerr-dev ca-certificates libfontconfig1-dev libfontconfig1 rar unrar mediainfo php5-curl ifstat libapache2-mod-php5 \
   ttf-mscorefonts-installer checkinstall dtach cfv libarchive-zip-perl libnet-ssleay-perl php5-geoip openjdk-7-jre-headless openjdk-7-jre openjdk-7-jdk \
