@@ -957,7 +957,7 @@ EOF
   rm -rf /srv/rutorrent/plugins/tracklabels/labels/nlb.png
 
   # Needed for fileupload
-  mkdir -p ~/bin && bash
+  mkdir -p /root/bin && bash
   git clone https://github.com/mcrapet/plowshare.git ~/.plowshare-source && cd ~/.plowshare-source >>"${OUTTO}" 2>&1
   make install PREFIX=$HOME && cd && rm -rf .plowshare-source >>"${OUTTO}" 2>&1
 
