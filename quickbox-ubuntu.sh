@@ -435,7 +435,7 @@ function _intro() {
   echo
   dis="$(lsb_release -is)"
   rel="$(lsb_release -rs)"
-  if [[ "${dis}" != "Ubuntu"|"Debian" ]]; then
+  if [[ ! "${dis}" =~ ("Ubuntu"|"Debian") ]]; then
     echo "${dis}: ${alert} You do not appear to be running Ubuntu ${normal} "
     echo 'Exiting...'
     exit 1
@@ -530,6 +530,7 @@ EOF
 fi
 
   echo -n "Updating system ... "
+  export DEBIAN_FRONTEND=noninteractive
   apt-get -y update >>"${OUTTO}" 2>&1
   apt-get -y purge samba samba-common >>"${OUTTO}" 2>&1
   apt-get -y upgrade >>"${OUTTO}" 2>&1
