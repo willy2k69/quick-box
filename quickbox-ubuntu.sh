@@ -1002,7 +1002,13 @@ EOF
   rm -rf /srv/rutorrent/plugins/tracklabels/labels/nlb.png
 
   # Needed for fileupload
-  yes '' | apt-get install --force-yes plowshare4 >>"${OUTTO}" 2>&1
+  if [[ $dis -eq Debian ]]; then
+    wget -q http://ftp.nl.debian.org/debian/pool/main/p/plowshare/plowshare_2.1.2-1_all.deb -O plowshare.deb >>"${OUTTO}" 2>&1
+    dpkg -i plowshare.deb >>"${OUTTO}" 2>&1
+    rm -rf plowshare.deb >>"${OUTTO}" 2>&1
+  else
+    yes '' | apt-get install --force-yes plowshare4 >>"${OUTTO}" 2>&1
+  fi
   cd /root
   mkdir -p /root/bin
   git clone https://github.com/mcrapet/plowshare.git ~/.plowshare-source >>"${OUTTO}" 2>&1
@@ -1055,7 +1061,8 @@ export USER=`id -un`
 IRSSI_CLIENT=yes
 RTORRENT_CLIENT=yes
 WIPEDEAD=yes
-BTSYNC=no
+BTSYNC=
+PLEX=
 ADDRESS=$(/sbin/ifconfig | grep "inet addr" | awk -F: '{print $2}' | awk '{print $1}'|grep -v "^127"|head -n1)
 
 if [ "$WIPEDEAD" == "yes" ]; then screen -wipe >/dev/null 2>&1; fi
