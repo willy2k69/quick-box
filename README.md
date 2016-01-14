@@ -8,10 +8,17 @@ For Ubuntu 14.04, 15.04 & 15.10 installs.
 
 [![Version 1.4-production](https://img.shields.io/badge/version-1.4-674172.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
 [![MIT License](https://img.shields.io/badge/license-MIT%20License-blue.svg?style=flat-square)](https://github.com/JMSDOnline/quick-box/blob/master/LICENSE)
+
+#### Ubuntu Builds
 [![Ubuntu 15.10 Passing](https://img.shields.io/badge/Ubuntu%2015.10-passing-brightgreen.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
 [![Ubuntu 15.04 Passing](https://img.shields.io/badge/Ubuntu%2015.04-passing-brightgreen.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
 [![Ubuntu 14.04 Passing](https://img.shields.io/badge/Ubuntu%2014.04-passing-brightgreen.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
 
+#### Debian Builds
+[![Debian 7 Testing](https://img.shields.io/badge/Debain%207-Testing-yellow.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
+[![Debian 8 Unavailable](https://img.shields.io/badge/Debain%208-Unavailable-lightgrey.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
+
+#### Repo Statistics
 [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/JMSDOnline/quick-box.svg?style=flat-square)](http://isitmaintained.com/project/JMSDOnline/quick-box "Average time to resolve an issue")
 [![Percentage of issues still open](http://isitmaintained.com/badge/open/JMSDOnline/quick-box.svg?style=flat-square)](http://isitmaintained.com/project/JMSDOnline/quick-box "Percentage of issues still open")
 
