@@ -314,8 +314,9 @@ SU
 echo $OK
 echo -n "enabling $username cron script ... "
   mkdir "/srv/rutorrent/conf/users/${username}" >>"${OUTTO}" 2>&1
-  mkdir -p "/srv/rutorrent/conf/users/${username}/plugins/fileupload/" >>"${OUTTO}" 2>&1
-  cp /srv/rutorrent/plugins/fileupload/conf.php /srv/rutorrent/conf/users/${username}/plugins/fileupload/conf.php
+  mkdir -p /srv/rutorrent/conf/users/"${username}"/plugins/fileupload/
+  cp /srv/rutorrent/plugins/fileupload/conf.php /srv/rutorrent/conf/users/"${username}"/plugins/fileupload/conf.php
+  chown -R www-data: /srv/rutorrent/conf/users/"${username}"
   chown $username.$username /home/$username/.startup >/dev/null 2>&1
   sudo -u $username chmod +x /home/$username/.startup  >/dev/null 2>&1
   sudo -u $username chmod 750 /home/$username/ >/dev/null 2>&1
@@ -952,19 +953,22 @@ EOF
   cp $REPOURL/plugins/rutorrent-quickbox-dark.zip .
   unzip rutorrent-quickbox-dark.zip >>"${OUTTO}" 2>&1
   rm -rf rutorrent-quickbox-dark.zip
-  cd /srv/rutorrent/plugins/
+  cd /srv/rutorrent/plugins
   perl -pi -e "s/\$defaultTheme \= \"\"\;/\$defaultTheme \= \"QuickBox-Dark\"\;/g" /srv/rutorrent/plugins/theme/conf.php
   rm -rf /srv/rutorrent/plugins/tracklabels/labels/nlb.png
 
   # Needed for fileupload
-  #mkdir -p /root/bin && bash
-  #git clone https://github.com/mcrapet/plowshare.git ~/.plowshare-source && cd ~/.plowshare-source >>"${OUTTO}" 2>&1
-  #make install PREFIX=$HOME && cd && rm -rf .plowshare-source >>"${OUTTO}" 2>&1
+  cd /root
+  mkdir -p /root/bin
+  git clone https://github.com/mcrapet/plowshare.git ~/.plowshare-source >>"${OUTTO}" 2>&1
+  cd ~/.plowshare-source >>"${OUTTO}" 2>&1
+  make install PREFIX=$HOME >>"${OUTTO}" 2>&1
+  cd && rm -rf .plowshare-source >>"${OUTTO}" 2>&1
 
-  #mkdir -p /srv/rutorrent/conf/users/"${username}"/plugins/fileupload/
-  #chown -R www-data: /srv/rutorrent/conf/users/"${username}"/plugins/fileupload/
-  #chmod 775 /srv/rutorrent/plugins/fileupload/scripts/upload
-  #cp /srv/rutorrent/plugins/fileupload/conf.php /srv/rutorrent/conf/users/"${username}"/plugins/fileupload/conf.php
+  mkdir -p /srv/rutorrent/conf/users/"${username}"/plugins/fileupload/
+  chmod 775 /srv/rutorrent/plugins/fileupload/scripts/upload
+  cp /srv/rutorrent/plugins/fileupload/conf.php /srv/rutorrent/conf/users/"${username}"/plugins/fileupload/conf.php
+  chown -R www-data: /srv/rutorrent/conf/users/"${username}"
 }
 
 # function autodl to install autodl irssi scripts (20)
