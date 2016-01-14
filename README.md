@@ -16,7 +16,7 @@ For Ubuntu 14.04, 15.04 & 15.10 installs.
 
 #### Debian Builds
 [![Debian 7 Passing](https://img.shields.io/badge/Debain%207-passing-brightgreen.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
-[![Debian 8 Testing](https://img.shields.io/badge/Debain%208-Testing-yellow.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
+[![Debian 8 Passing](https://img.shields.io/badge/Debain%208-passing-brightgreen.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
 
 #### Repo Statistics
 [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/JMSDOnline/quick-box.svg?style=flat-square)](http://isitmaintained.com/project/JMSDOnline/quick-box "Average time to resolve an issue")
