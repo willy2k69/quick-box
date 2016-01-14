@@ -531,9 +531,9 @@ fi
 
   echo -n "Updating system ... "
   export DEBIAN_FRONTEND=noninteractive
-  apt-get -y update >>"${OUTTO}" 2>&1
+  apt-get -y --force-yes update >>"${OUTTO}" 2>&1
   apt-get -y purge samba samba-common >>"${OUTTO}" 2>&1
-  apt-get -y upgrade >>"${OUTTO}" 2>&1
+  apt-get -y --force-yes upgrade >>"${OUTTO}" 2>&1
   if [[ -e /etc/ssh/sshd_config ]]; then
     echo "Port 4747" /etc/ssh/sshd_config
     sed -i 's/Port 22/Port 4747/g' /etc/ssh/sshd_config
