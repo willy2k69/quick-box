@@ -956,11 +956,13 @@ EOF
   perl -pi -e "s/\$defaultTheme \= \"\"\;/\$defaultTheme \= \"QuickBox-Dark\"\;/g" /srv/rutorrent/plugins/theme/conf.php
   rm -rf /srv/rutorrent/plugins/tracklabels/labels/nlb.png
 
+  # Needed for fileupload
   mkdir -p ~/bin && bash
   git clone https://github.com/mcrapet/plowshare.git ~/.plowshare-source && cd ~/.plowshare-source >>"${OUTTO}" 2>&1
   make install PREFIX=$HOME && cd && rm -rf .plowshare-source >>"${OUTTO}" 2>&1
 
   mkdir -p /srv/rutorrent/conf/users/${username}/plugins/fileupload/
+  chown -R www-data: /srv/rutorrent/conf/users/${username}/plugins/fileupload/
   chmod 775 /srv/rutorrent/plugins/fileupload/scripts/upload
   cp /srv/rutorrent/plugins/fileupload/conf.php /srv/rutorrent/conf/users/${username}/plugins/fileupload/conf.php
 }
