@@ -1076,7 +1076,7 @@ if [ "$RTORRENT_CLIENT" == "yes" ]; then
 fi
 
 if [ "$BTSYNC" == "yes" ]; then
-  (pgrep -u $USER btsync >/dev/null || /home/$USER/btsync --webui.listen "${ADDRESS}":8888 >/dev/null 2>&1 && false)
+  (pgrep -u "$USER" btsync >/dev/null || /home/"$USER"/btsync --webui.listen "${ADDRESS}":8888 >/dev/null 2>&1 && false)
 fi
 EOF
 if [[ $btsync == "yes" ]]; then
