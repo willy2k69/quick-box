@@ -6,7 +6,7 @@ For Ubuntu 14.04, 15.04 & 15.10 installs.
 
 ## Script status
 
-[![Version 1.4-production](https://img.shields.io/badge/version-1.4-674172.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
+[![Version 1.6-production](https://img.shields.io/badge/version-1.6-674172.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
 [![MIT License](https://img.shields.io/badge/license-MIT%20License-blue.svg?style=flat-square)](https://github.com/JMSDOnline/quick-box/blob/master/LICENSE)
 
 #### Ubuntu Builds
