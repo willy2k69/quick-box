@@ -13,11 +13,13 @@ REPOURL="/root/tmp/quick-box"
 #Script Console Colors
 black=$(tput setaf 0);red=$(tput setaf 1);green=$(tput setaf 2);yellow=$(tput setaf 3);blue=$(tput setaf 4);magenta=$(tput setaf 5);cyan=$(tput setaf 6);white=$(tput setaf 7);on_red=$(tput setab 1);on_green=$(tput setab 2);on_yellow=$(tput setab 3);on_blue=$(tput setab 4);on_magenta=$(tput setab 5);on_cyan=$(tput setab 6);on_white=$(tput setab 7);bold=$(tput bold);dim=$(tput dim);underline=$(tput smul);reset_underline=$(tput rmul);standout=$(tput smso);reset_standout=$(tput rmso);normal=$(tput sgr0);alert=${white}${on_red};title=${standout};sub_title=${bold}${yellow};repo_title=${black}${on_green};
 
-# Color Prompt
-#sed -i.bak -e 's/^#force_color/force_color/' \
-# -e 's/1;34m/1;35m/g' \
-# -e "\$aLS_COLORS=\$LS_COLORS:'di=0;35:' ; export LS_COLORS" /etc/skel/.bashrc
-
+if [[ -f /usr/bin/lsb_release ]]; then
+    DISTRO=$(lsb_release -i | cut -d: -f2 | sed s/'^\t'//)
+elif [ -f "/etc/redhat-release" ]; then
+    DISTRO=$(egrep -o 'Fedora|CentOS|Red.Hat' /etc/redhat-release)
+elif [ -f "/etc/debian_version" ]; then
+    DISTRO=='Debian'
+fi
 
 function _string() { perl -le 'print map {(a..z,A..Z,0..9)[rand 62] } 0..pop' 15 ; }
 
@@ -427,7 +429,7 @@ function _intro() {
 
   echo "${green}Checking distribution ...${normal}"
   if [ ! -x  /usr/bin/lsb_release ]; then
-    echo 'You do not appear to be running Ubuntu.'
+    echo 'It looks like you are running $DISTRO, which is not supported by Quick Box.'
     echo 'Exiting...'
     exit 1
   fi
@@ -436,11 +438,11 @@ function _intro() {
   dis="$(lsb_release -is)"
   rel="$(lsb_release -rs)"
   if [[ ! "${dis}" =~ ("Ubuntu"|"Debian") ]]; then
-    echo "${dis}: ${alert} You do not appear to be running Ubuntu ${normal} "
+    echo "${dis}: ${alert} It looks like you are running $DISTRO, which is not supported by Quick Box ${normal} "
     echo 'Exiting...'
     exit 1
   elif [[ ! "${rel}" =~ ("14.04"|"15.04"|"15.10"|"7"|"8") ]]; then
-    echo "${bold}${rel}:${normal} You do not appear to be running a supported Ubuntu release."
+    echo "${bold}${rel}:${normal} You do not appear to be running a supported $DISTRO release."
     echo 'Exiting...'
     exit 1
   fi
@@ -484,7 +486,7 @@ function _updates() {
     fi
   fi
 
-if [[ $dis -eq Debian ]]; then
+if [[ $DISTRO == Debian ]]; then
 
   apt-get --yes --force-yes install deb-multimedia-keyring >>"${OUTTO}" 2>&1
 
@@ -547,7 +549,7 @@ fi
   yes '' | apt-get update >>"${OUTTO}" 2>&1
   apt-get -y purge samba samba-common >>"${OUTTO}" 2>&1
   yes '' | apt-get upgrade >>"${OUTTO}" 2>&1
-  if [[ $dis -eq Debian ]]; then
+  if [[ $DISTRO == Debian ]]; then
     if [[ -e /etc/ssh/sshd_config ]]; then
       echo "Port 4747" /etc/ssh/sshd_config
       sed -i 's/Port 22/Port 4747/g' /etc/ssh/sshd_config
@@ -1002,7 +1004,7 @@ EOF
   rm -rf /srv/rutorrent/plugins/tracklabels/labels/nlb.png
 
   # Needed for fileupload
-  if [[ $dis -eq Debian ]]; then
+  if [[ $DISTRO == Debian ]]; then
     wget -q http://ftp.nl.debian.org/debian/pool/main/p/plowshare/plowshare_2.1.2-1_all.deb -O plowshare.deb >>"${OUTTO}" 2>&1
     dpkg -i plowshare.deb >>"${OUTTO}" 2>&1
     rm -rf plowshare.deb >>"${OUTTO}" 2>&1
@@ -1313,7 +1315,7 @@ EOF
   sed -i 's/venet0/eth0/g' /srv/rutorrent/home/data.php
   fi
   rm -rf "$0" >>"${OUTTO}" 2>&1
-  if [[ $dis -eq Debian ]]; then
+  if [[ $DISTRO == Debian ]]; then
     for i in ssh apache2 pure-ftpd vsftpd fail2ban quota plexmediaserver; do
       service $i restart >>"${OUTTO}" 2>&1
       systemctl enable $i >>"${OUTTO}" 2>&1
@@ -1344,7 +1346,7 @@ rutorrent="/srv/rutorrent/"
 REALM="rutorrent"
 IRSSI_PASS=$(_string)
 IRSSI_PORT=$(shuf -i 2000-61000 -n 1)
-ip=$(/sbin/ifconfig | grep "inet addr" | awk -F: '{print $2}' | awk '{print $1}'|grep -v "^127"|head -n1)
+ip=$(curl http://ipecho.net/plain; echo)
 export DEBIAN_FRONTEND=noninteractive
 cd
 
