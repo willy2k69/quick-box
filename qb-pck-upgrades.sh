@@ -16,4 +16,3 @@ chmod +x /usr/bin/upgradeBTSync
 
 # Start the Upgrade/Install
 upgradeBTSync
-
