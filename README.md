@@ -2,7 +2,7 @@
 |---|
 | **Quick Box - A Friendly, Fresh and Modernized Seedbox Script** |
 
-For Ubuntu 14.04, 15.04 & 15.10 installs.
+For Ubuntu == 14.04, 15.04 & 15.10 || Debian == 7 & 8 installs.
 
 ## Script status
 
