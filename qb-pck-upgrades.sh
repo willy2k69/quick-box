@@ -9,7 +9,7 @@
 # 
 
 # Download the needed upgrade scripts for Quick Box
-curl -LO https://raw.githubusercontent.com/JMSDOnline/quick-box/master/commands/upgradeBTSync /usr/bin/ >/dev/null 2>&1;
+curl -o /usr/bin/upgradeBTSync https://raw.githubusercontent.com/JMSDOnline/quick-box/master/commands/upgradeBTSync
 
 # Convert upgrade shell scripts to executable
 chmod +x /usr/bin/upgradeBTSync
