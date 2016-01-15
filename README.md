@@ -18,10 +18,6 @@ For Ubuntu 14.04, 15.04 & 15.10 installs.
 [![Debian 7 Passing](https://img.shields.io/badge/Debain%207-passing-brightgreen.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
 [![Debian 8 Passing](https://img.shields.io/badge/Debain%208-passing-brightgreen.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
 
-#### Repo Statistics
-[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/JMSDOnline/quick-box.svg?style=flat-square)](http://isitmaintained.com/project/JMSDOnline/quick-box "Average time to resolve an issue")
-[![Percentage of issues still open](http://isitmaintained.com/badge/open/JMSDOnline/quick-box.svg?style=flat-square)](http://isitmaintained.com/project/JMSDOnline/quick-box "Percentage of issues still open")
-
 ---
 
 ### Check out the [Quick Box Wiki](https://github.com/JMSDOnline/quick-box/wiki) for some reference material to common issues as well as Tips and Tricks __before__ you install... make sure it's the right fit for you. If you have an error of your own and need help, please open an issue.
@@ -189,6 +185,30 @@ chmod +x update-1-3.sh
 ./update-1-3.sh
 
 ```
+
+---
+
+## Update Inlcuded Media Packages (BTSync)
+> This script is valid for current Quick Box installs only. Running this update for BTSync on a non-Quick Box script may result in borking your current seedboxes BTSync. __Also, please be advised:__ Users on current Quick Box version 1.6 will have need to use this script as the command '__upgradeBTSync__' is included.
+
+---
+
+### Update for BTSync - grabs latest addition
+
+**Run the following command to grab our command for updating ...**
+```
+curl -LO https://raw.githubusercontent.com/JMSDOnline/quick-box/master/qb-pck-upgrades.sh
+
+```
+**... Finally, make the script executable and run to produce the updates ...**
+```
+chmod +x qb-pck-upgrades.sh
+./qb-pck-upgrades.sh
+
+```
+
+##### In the future, after downloading this script, you can simply type '__upgradeBTSync__' to upgrade.
+
 
 ---
 
