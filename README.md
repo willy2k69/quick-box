@@ -2,7 +2,7 @@
 |---|
 | **Quick Box - A Friendly, Fresh and Modernized Seedbox Script** |
 
-For Ubuntu 14.04, 15.04 & 15.10 | Debian 6 & 7 installs.
+For Ubuntu 14.04, 15.04 & 15.10 | Debian 7 & 8 installs.
 
 ## Script status
 
@@ -146,7 +146,7 @@ DO NOT try to reconfigure packages using other tutorials - this script (AS IS) i
 
 ---
 
-### Ubuntu 14.04, 15.04, and 15.10 | Debian 6 | 7
+### Ubuntu 14.04, 15.04, and 15.10 | Debian 7 | 8
 
 **Pre-Install Notice: Some servers it is a good idea to intially run the following command -**
 ```
