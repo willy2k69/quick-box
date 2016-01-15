@@ -219,11 +219,11 @@ chmod +x qb-pck-upgrades.sh
 ## Commands
 After installing you will have access to the following commands to be used directly in terminal
 
-* createSeedboxUser
-* deleteSeedboxUser
-* setdisk
-* reload
-* restartSeedbox
+* createSeedboxUser - yup
+* deleteSeedboxUser - yup
+* setdisk - set your user disk quota
+* reload - restarts your seedbox services, i.e; rtorrent & irssi
+* upgradeBTSync -- upgrades btsync when new version is available
 
 ---
 
