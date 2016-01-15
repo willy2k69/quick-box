@@ -13,11 +13,13 @@ REPOURL="/root/tmp/quick-box"
 #Script Console Colors
 black=$(tput setaf 0);red=$(tput setaf 1);green=$(tput setaf 2);yellow=$(tput setaf 3);blue=$(tput setaf 4);magenta=$(tput setaf 5);cyan=$(tput setaf 6);white=$(tput setaf 7);on_red=$(tput setab 1);on_green=$(tput setab 2);on_yellow=$(tput setab 3);on_blue=$(tput setab 4);on_magenta=$(tput setab 5);on_cyan=$(tput setab 6);on_white=$(tput setab 7);bold=$(tput bold);dim=$(tput dim);underline=$(tput smul);reset_underline=$(tput rmul);standout=$(tput smso);reset_standout=$(tput rmso);normal=$(tput sgr0);alert=${white}${on_red};title=${standout};sub_title=${bold}${yellow};repo_title=${black}${on_green};
 
-# Color Prompt
-sed -i.bak -e 's/^#force_color/force_color/' \
- -e 's/1;34m/1;35m/g' \
- -e "\$aLS_COLORS=\$LS_COLORS:'di=0;35:' ; export LS_COLORS" /etc/skel/.bashrc
-
+if [[ -f /usr/bin/lsb_release ]]; then
+    DISTRO=$(lsb_release -i | cut -d: -f2 | sed s/'^\t'//)
+elif [ -f "/etc/redhat-release" ]; then
+    DISTRO=$(egrep -o 'Fedora|CentOS|Red.Hat' /etc/redhat-release)
+elif [ -f "/etc/debian_version" ]; then
+    DISTRO=='Debian'
+fi
 
 function _string() { perl -le 'print map {(a..z,A..Z,0..9)[rand 62] } 0..pop' 15 ; }
 
@@ -296,7 +298,7 @@ export USER=\$(id -un)
 IRSSI_CLIENT=yes
 RTORRENT_CLIENT=yes
 WIPEDEAD=yes
-ADDRESS=$(/sbin/ifconfig | grep "inet addr" | awk -F: '{print $2}' | awk '{print $1}'|grep -v "^127"|head -n1)
+ADDRESS=$(curl http://ipecho.net/plain; echo)
 
 # NO NEED TO EDIT PAST HERE!
 if [ "$WIPEDEAD" == "yes" ]; then screen -wipe >/dev/null 2>&1; fi
@@ -427,7 +429,7 @@ function _intro() {
 
   echo "${green}Checking distribution ...${normal}"
   if [ ! -x  /usr/bin/lsb_release ]; then
-    echo 'You do not appear to be running Ubuntu.'
+    echo 'It looks like you are running $DISTRO, which is not supported by Quick Box.'
     echo 'Exiting...'
     exit 1
   fi
@@ -435,12 +437,12 @@ function _intro() {
   echo
   dis="$(lsb_release -is)"
   rel="$(lsb_release -rs)"
-  if [[ "${dis}" != "Ubuntu" ]]; then
-    echo "${dis}: ${alert} You do not appear to be running Ubuntu ${normal} "
+  if [[ ! "${dis}" =~ ("Ubuntu"|"Debian") ]]; then
+    echo "${dis}: ${alert} It looks like you are running $DISTRO, which is not supported by Quick Box ${normal} "
     echo 'Exiting...'
     exit 1
-  elif [[ ! "${rel}" =~ ("14.04"|"15.04"|"15.10") ]]; then
-    echo "${bold}${rel}:${normal} You do not appear to be running a supported Ubuntu release."
+  elif [[ ! "${rel}" =~ ("14.04"|"15.04"|"15.10"|"7"|"8") ]]; then
+    echo "${bold}${rel}:${normal} You do not appear to be running a supported $DISTRO release."
     echo 'Exiting...'
     exit 1
   fi
@@ -478,12 +480,41 @@ function _logcheck() {
 function _updates() {
   if lsb_release >>"${OUTTO}" 2>&1; then ver=$(lsb_release -c|awk '{print $2}')
   else
-    apt-get -yq install lsb-release >>"${OUTTO}" 2>&1
+    apt-get -y -q install lsb-release >>"${OUTTO}" 2>&1
     if [[ -e /usr/bin/lsb_release ]]; then ver=$(lsb_release -c|awk '{print $2}')
     else echo "failed to install lsb-release from apt-get, please install manually and re-run script"; exit
     fi
   fi
 
+if [[ $DISTRO == Debian ]]; then
+  apt-get --yes --force-yes install deb-multimedia-keyring >>"${OUTTO}" 2>&1
+cat >/etc/apt/sources.list<<EOF
+#------------------------------------------------------------------------------#
+#                            OFFICIAL DEBIAN REPOS                             #
+#------------------------------------------------------------------------------#
+
+
+###### Debian Main Repos
+deb http://ftp.nl.debian.org/debian testing main contrib non-free
+deb-src http://ftp.nl.debian.org/debian testing main contrib non-free
+
+###### Debian Update Repos
+deb http://ftp.debian.org/debian/ ${ver}-updates main contrib non-free
+deb-src http://ftp.debian.org/debian/ ${ver}-updates main contrib non-free
+deb http://security.debian.org/ ${ver}/updates main contrib non-free
+deb-src http://security.debian.org/ ${ver}/updates main contrib non-free
+
+#Third Parties Repos
+#Debian Multimedia
+deb http://www.deb-multimedia.org squeeze main non-free
+deb http://www.deb-multimedia.org squeeze-backports main
+
+#Debian Backports Repos
+#http://backports.debian.org/debian-backports squeeze-backports main
+EOF
+  apt-get --yes --force-yes install deb-multimedia-keyring >>"${OUTTO}" 2>&1
+
+else
 cat >/etc/apt/sources.list<<EOF
 #------------------------------------------------------------------------------#
 #                            OFFICIAL UBUNTU REPOS                             #
@@ -506,16 +537,26 @@ deb-src http://nl.archive.ubuntu.com/ubuntu/ ${ver}-backports main restricted un
 deb http://archive.canonical.com/ubuntu ${ver} partner
 deb-src http://archive.canonical.com/ubuntu ${ver} partner
 EOF
+fi
 
   echo -n "Updating system ... "
-  apt-get -y update >>"${OUTTO}" 2>&1
-  apt-get -y purge samba samba-common >>"${OUTTO}" 2>&1
-  apt-get -y upgrade >>"${OUTTO}" 2>&1
-  if [[ -e /etc/ssh/sshd_config ]]; then
-    echo "Port 4747" /etc/ssh/sshd_config
-    sed -i 's/Port 22/Port 4747/g' /etc/ssh/sshd_config
-    service sshd restart >>"${OUTTO}" 2>&1
+
+  if [[ $DISTRO == Debian ]]; then
+    export DEBIAN_FRONTEND=noninteractive
+    yes '' | apt-get update >>"${OUTTO}" 2>&1
+    apt-get -y purge samba samba-common >>"${OUTTO}" 2>&1
+    yes '' | apt-get upgrade >>"${OUTTO}" 2>&1
+  else
+    export DEBIAN_FRONTEND=noninteractive
+    apt-get -y --force-yes update >>"${OUTTO}" 2>&1
+    apt-get -y purge samba samba-common >>"${OUTTO}" 2>&1
+    apt-get -y --force-yes upgrade >>"${OUTTO}" 2>&1
   fi
+    if [[ -e /etc/ssh/sshd_config ]]; then
+      echo "Port 4747" /etc/ssh/sshd_config
+      sed -i 's/Port 22/Port 4747/g' /etc/ssh/sshd_config
+      service ssh restart >>"${OUTTO}" 2>&1
+    fi
   echo "${OK}"
   clear
 }
@@ -552,11 +593,11 @@ fi
 
 # ban public trackers (7)
 function _denyhosts() {
-echo -ne "Block Public Trackers?: (Default: \033[1mY\033[0m)"; read responce
-case $responce in
-  [yY] | [yY][Ee][Ss] | "")
-echo -n "Blocking public trackers ... "
-wget -q -O/etc/trackers https://raw.githubusercontent.com/JMSDOnline/quick-box/master/commands/trackers
+  echo -ne "Block Public Trackers?: (Default: \033[1mY\033[0m)"; read responce
+  case $responce in
+    [yY] | [yY][Ee][Ss] | "")
+    echo -n "Blocking public trackers ... "
+    wget -q -O/etc/trackers https://raw.githubusercontent.com/JMSDOnline/quick-box/master/commands/trackers
 cat >/etc/cron.daily/denypublic<<'EOF'
 IFS=$'\n'
 L=$(/usr/bin/sort /etc/trackers | /usr/bin/uniq)
@@ -569,21 +610,30 @@ for fn in $L; do
         /sbin/iptables -A OUTPUT -d $fn -j DROP
 done
 EOF
-  echo "${OK}"
-  ;;
-  [nN] | [nN][Oo] ) echo "Allowing ... "
-                ;;
-        esac
+    echo "${OK}"
+    ;;
+    [nN] | [nN][Oo] ) echo "Allowing ... "
+    ;;
+  esac
 }
 
 # package and repo addition (8) _install softwares and packages_
 function _depends() {
-apt-get install --yes --force-yes fail2ban bc sudo screen zip irssi unzip nano build-essential bwm-ng htop git subversion \
-  dstat plowshare4 openssh-server automake mktorrent libtool libcppunit-dev libssl-dev pkg-config libxml2-dev libcurl3 libcurl4-openssl-dev libsigc++-2.0-dev \
+if [[ $DISTRO == Debian ]]; then
+yes '' | apt-get install --force-yes build-essential fail2ban bc sudo screen zip irssi unzip nano bwm-ng htop git subversion \
+  dstat quota automake make mktorrent libtool libsigc++-2.0-0v5 libcppunit-dev libssl-dev pkg-config libxml2-dev libcurl3 libcurl4-openssl-dev libsigc++-2.0-dev \
   apache2-utils autoconf cron curl libxslt-dev libncurses5-dev yasm apache2 php5 php5-cli php-net-socket libdbd-mysql-perl libdbi-perl \
   fontconfig comerr-dev ca-certificates libfontconfig1-dev libfontconfig1 rar unrar mediainfo php5-curl ifstat libapache2-mod-php5 \
-  ttf-mscorefonts-installer checkinstall dtach cfv libarchive-zip-perl libnet-ssleay-perl php5-geoip openjdk-7-jre openjdk-7-jdk \
+  ttf-mscorefonts-installer checkinstall dtach cfv libarchive-zip-perl libnet-ssleay-perl php5-geoip openjdk-7-jre-headless openjdk-7-jre openjdk-7-jdk \
   libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl libxml-libxslt-perl libapache2-mod-scgi lshell openvpn >>"${OUTTO}" 2>&1
+elif [[ $DISTRO == Ubuntu ]]; then
+apt-get install -qq --yes --force-yes build-essential fail2ban bc sudo screen zip irssi unzip nano bwm-ng htop git subversion \
+  dstat quota automake make mktorrent libtool libcppunit-dev libssl-dev pkg-config libxml2-dev libcurl3 libcurl4-openssl-dev libsigc++-2.0-dev \
+  apache2-utils autoconf cron curl libxslt-dev libncurses5-dev yasm apache2 php5 php5-cli php-net-socket libdbd-mysql-perl libdbi-perl \
+  fontconfig comerr-dev ca-certificates libfontconfig1-dev libfontconfig1 rar unrar mediainfo php5-curl ifstat libapache2-mod-php5 \
+  ttf-mscorefonts-installer checkinstall dtach cfv libarchive-zip-perl libnet-ssleay-perl php5-geoip openjdk-7-jre-headless openjdk-7-jre openjdk-7-jdk \
+  libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl libxml-libxslt-perl libapache2-mod-scgi lshell openvpn >>"${OUTTO}" 2>&1
+fi
   cd
   rm -rf /etc/skel
   if [[ -e skel.tar ]]; then rm -rf skel.tar;fi 
@@ -599,8 +649,8 @@ apt-get install --yes --force-yes fail2ban bc sudo screen zip irssi unzip nano b
   mkdir -p /usr/share/GeoIP>>"${OUTTO}" 2>&1
   rm -rf GeoLiteCity.dat.gz
   mv GeoLiteCity.dat /usr/share/GeoIP/GeoIPCity.dat>>"${OUTTO}" 2>&1
-  (echo y;echo o conf prerequisites_policy follow;echo o conf commit)|cpan Digest::SHA1 >>"${OUTTO}" 2>&1
-  (echo y;echo o conf prerequisites_policy follow;echo o conf commit)|cpan Digest::SHA >>"${OUTTO}" 2>&1
+  (echo y;echo o conf prerequisites_policy follow;echo o conf commit)>/dev/null 2>&1|cpan Digest::SHA1 >>"${OUTTO}" 2>&1
+  (echo y;echo o conf prerequisites_policy follow;echo o conf commit)>/dev/null 2>&1|cpan Digest::SHA >>"${OUTTO}" 2>&1
   sed -i 's/errors=remount-ro/usrquota,errors=remount-ro/g' /etc/fstab
   mount -o remount / >>"${OUTTO}" 2>&1 || mount -o remount /home >>"${OUTTO}" 2>&1
   quotacheck -auMF vfsv1 >>"${OUTTO}" 2>&1
@@ -958,6 +1008,9 @@ EOF
   rm -rf /srv/rutorrent/plugins/tracklabels/labels/nlb.png
 
   # Needed for fileupload
+  wget -q http://ftp.nl.debian.org/debian/pool/main/p/plowshare/plowshare_2.1.2-1_all.deb -O plowshare.deb >>"${OUTTO}" 2>&1
+  dpkg -i plowshare.deb >>"${OUTTO}" 2>&1
+  rm -rf plowshare.deb >>"${OUTTO}" 2>&1
   cd /root
   mkdir -p /root/bin
   git clone https://github.com/mcrapet/plowshare.git ~/.plowshare-source >>"${OUTTO}" 2>&1
@@ -1011,12 +1064,12 @@ IRSSI_CLIENT=yes
 RTORRENT_CLIENT=yes
 WIPEDEAD=yes
 BTSYNC=no
-ADDRESS=$(/sbin/ifconfig | grep "inet addr" | awk -F: '{print $2}' | awk '{print $1}'|grep -v "^127"|head -n1)
+ADDRESS=$(curl http://ipecho.net/plain; echo)
 
 if [ "$WIPEDEAD" == "yes" ]; then screen -wipe >/dev/null 2>&1; fi
 
 if [ "$IRSSI_CLIENT" == "yes" ]; then
-  (screen -ls|grep irssi > /dev/null || (screen -S irssi -d -t irssi -m irssi -h ${ADDRESS} && false))
+  (screen -ls|grep irssi >/dev/null || (screen -S irssi -d -t irssi -m irssi -h "${ADDRESS}" && false))
 fi
 
 if [ "$RTORRENT_CLIENT" == "yes" ]; then
@@ -1024,7 +1077,7 @@ if [ "$RTORRENT_CLIENT" == "yes" ]; then
 fi
 
 if [ "$BTSYNC" == "yes" ]; then
-        (pgrep -u $USER btsync >/dev/null || /home/$USER/btsync --webui.listen ${ADDRESS}:8888 >/dev/null 2>&1 && false)
+  (pgrep -u "$USER" btsync >/dev/null || /home/"$USER"/btsync --webui.listen "${ADDRESS}":8888 >/dev/null 2>&1 && false)
 fi
 EOF
 if [[ $btsync == "yes" ]]; then
@@ -1197,15 +1250,15 @@ function _askplex() {
     echo -n "Installing Plex ... "
       #cp $REPOURL/sources/plexmediaserver_0.9.14.6.1620-e0b7243_amd64.deb .
       #dpkg -i plexmediaserver_0.9.14.6.1620-e0b7243_amd64.deb >/dev/null 2>&1
-      echo "ServerName ${HOSTNAME1}" | sudo tee /etc/apache2/conf-available/fqdn.conf
+      echo -n "ServerName ${HOSTNAME1}" | sudo tee /etc/apache2/conf-available/fqdn.conf
       sudo a2enconf fqdn >>"${OUTTO}" 2>&1
       touch /etc/apache2/sites-enabled/plex.conf
       chown www-data: /etc/apache2/sites-enabled/plex.conf
       echo "deb http://shell.ninthgate.se/packages/debian squeeze main" > /etc/apt/sources.list.d/plexmediaserver.list
       curl http://shell.ninthgate.se/packages/shell-ninthgate-se-keyring.key >>"${OUTTO}" 2>&1 | sudo apt-key add - >>"${OUTTO}" 2>&1
       apt-get update >>"${OUTTO}" 2>&1
-      apt-get install -qq --yes --force-yes plexmediaserver >>"${OUTTO}" 2>&1
-      echo "${OK}"
+      apt-get install -qq -y --force-yes plexmediaserver >>"${OUTTO}" 2>&1
+      echo " ... ${OK}"
       ;;
     [nN] | [nN][Oo] | "") echo "${cyan}Skipping Plex install${normal} ... " ;;
     *) echo "${cyan}Skipping Plex install${normal} ... " ;;
@@ -1262,10 +1315,17 @@ EOF
   sed -i 's/venet0/eth0/g' /srv/rutorrent/home/data.php
   fi
   rm -rf "$0" >>"${OUTTO}" 2>&1
-  for i in sshd apache2 pure-ftpd vsftpd fail2ban quota plexmediaserver vsftpd; do
-    service $i restart >>"${OUTTO}" 2>&1
-    systemctl enable $i >>"${OUTTO}" 2>&1
-  done
+  if [[ $DISTRO == Debian ]]; then
+    for i in ssh apache2 pure-ftpd vsftpd fail2ban quota plexmediaserver; do
+      service $i restart >>"${OUTTO}" 2>&1
+      systemctl enable $i >>"${OUTTO}" 2>&1
+    done
+  else
+    for i in sshd apache2 pure-ftpd vsftpd fail2ban quota plexmediaserver; do
+      service $i restart >>"${OUTTO}" 2>&1
+      systemctl enable $i >>"${OUTTO}" 2>&1
+    done
+  fi
   rm -rf /root/tmp/
   echo -ne "Do you wish to reboot (recommended!): (Default ${green}Y${normal})"; read reboot
   case $reboot in
@@ -1286,7 +1346,7 @@ rutorrent="/srv/rutorrent/"
 REALM="rutorrent"
 IRSSI_PASS=$(_string)
 IRSSI_PORT=$(shuf -i 2000-61000 -n 1)
-ip=$(/sbin/ifconfig | grep "inet addr" | awk -F: '{print $2}' | awk '{print $1}'|grep -v "^127"|head -n1)
+ip=$(curl http://ipecho.net/plain; echo)
 export DEBIAN_FRONTEND=noninteractive
 cd
 
