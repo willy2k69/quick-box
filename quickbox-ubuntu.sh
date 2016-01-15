@@ -487,9 +487,7 @@ function _updates() {
   fi
 
 if [[ $DISTRO == Debian ]]; then
-
   apt-get --yes --force-yes install deb-multimedia-keyring >>"${OUTTO}" 2>&1
-
 cat >/etc/apt/sources.list<<EOF
 #------------------------------------------------------------------------------#
 #                            OFFICIAL DEBIAN REPOS                             #
@@ -514,11 +512,9 @@ deb http://www.deb-multimedia.org squeeze-backports main
 #Debian Backports Repos
 #http://backports.debian.org/debian-backports squeeze-backports main
 EOF
-
   apt-get --yes --force-yes install deb-multimedia-keyring >>"${OUTTO}" 2>&1
 
 else
-
 cat >/etc/apt/sources.list<<EOF
 #------------------------------------------------------------------------------#
 #                            OFFICIAL UBUNTU REPOS                             #
@@ -541,27 +537,26 @@ deb-src http://nl.archive.ubuntu.com/ubuntu/ ${ver}-backports main restricted un
 deb http://archive.canonical.com/ubuntu ${ver} partner
 deb-src http://archive.canonical.com/ubuntu ${ver} partner
 EOF
-
 fi
 
   echo -n "Updating system ... "
-  export DEBIAN_FRONTEND=noninteractive
-  yes '' | apt-get update >>"${OUTTO}" 2>&1
-  apt-get -y purge samba samba-common >>"${OUTTO}" 2>&1
-  yes '' | apt-get upgrade >>"${OUTTO}" 2>&1
+
   if [[ $DISTRO == Debian ]]; then
+    export DEBIAN_FRONTEND=noninteractive
+    yes '' | apt-get update >>"${OUTTO}" 2>&1
+    apt-get -y purge samba samba-common >>"${OUTTO}" 2>&1
+    yes '' | apt-get upgrade >>"${OUTTO}" 2>&1
+  else
+    export DEBIAN_FRONTEND=noninteractive
+    apt-get -y --force-yes update >>"${OUTTO}" 2>&1
+    apt-get -y purge samba samba-common >>"${OUTTO}" 2>&1
+    apt-get -y --force-yes upgrade >>"${OUTTO}" 2>&1
+  fi
     if [[ -e /etc/ssh/sshd_config ]]; then
       echo "Port 4747" /etc/ssh/sshd_config
       sed -i 's/Port 22/Port 4747/g' /etc/ssh/sshd_config
       service ssh restart >>"${OUTTO}" 2>&1
     fi
-  else
-    if [[ -e /etc/ssh/sshd_config ]]; then
-      echo "Port 4747" /etc/ssh/sshd_config
-      sed -i 's/Port 22/Port 4747/g' /etc/ssh/sshd_config
-      service sshd restart >>"${OUTTO}" 2>&1
-    fi
-  fi
   echo "${OK}"
   clear
 }
@@ -598,11 +593,11 @@ fi
 
 # ban public trackers (7)
 function _denyhosts() {
-echo -ne "Block Public Trackers?: (Default: \033[1mY\033[0m)"; read responce
-case $responce in
-  [yY] | [yY][Ee][Ss] | "")
-echo -n "Blocking public trackers ... "
-wget -q -O/etc/trackers https://raw.githubusercontent.com/JMSDOnline/quick-box/master/commands/trackers
+  echo -ne "Block Public Trackers?: (Default: \033[1mY\033[0m)"; read responce
+  case $responce in
+    [yY] | [yY][Ee][Ss] | "")
+    echo -n "Blocking public trackers ... "
+    wget -q -O/etc/trackers https://raw.githubusercontent.com/JMSDOnline/quick-box/master/commands/trackers
 cat >/etc/cron.daily/denypublic<<'EOF'
 IFS=$'\n'
 L=$(/usr/bin/sort /etc/trackers | /usr/bin/uniq)
@@ -615,21 +610,30 @@ for fn in $L; do
         /sbin/iptables -A OUTPUT -d $fn -j DROP
 done
 EOF
-  echo "${OK}"
-  ;;
-  [nN] | [nN][Oo] ) echo "Allowing ... "
-                ;;
-        esac
+    echo "${OK}"
+    ;;
+    [nN] | [nN][Oo] ) echo "Allowing ... "
+    ;;
+  esac
 }
 
 # package and repo addition (8) _install softwares and packages_
 function _depends() {
-yes '' | apt-get install --force-yes automake build-essential fail2ban bc sudo screen zip irssi unzip nano bwm-ng htop git subversion \
-  dstat quota mktorrent libtool libsigc++-2.0-0v5 libcppunit-dev libssl-dev pkg-config libxml2-dev libcurl3 libcurl4-openssl-dev libsigc++-2.0-dev \
+if [[ $DISTRO == Debian ]]; then
+yes '' | apt-get install --force-yes build-essential fail2ban bc sudo screen zip irssi unzip nano bwm-ng htop git subversion \
+  dstat quota automake make mktorrent libtool libsigc++-2.0-0v5 libcppunit-dev libssl-dev pkg-config libxml2-dev libcurl3 libcurl4-openssl-dev libsigc++-2.0-dev \
   apache2-utils autoconf cron curl libxslt-dev libncurses5-dev yasm apache2 php5 php5-cli php-net-socket libdbd-mysql-perl libdbi-perl \
   fontconfig comerr-dev ca-certificates libfontconfig1-dev libfontconfig1 rar unrar mediainfo php5-curl ifstat libapache2-mod-php5 \
   ttf-mscorefonts-installer checkinstall dtach cfv libarchive-zip-perl libnet-ssleay-perl php5-geoip openjdk-7-jre-headless openjdk-7-jre openjdk-7-jdk \
   libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl libxml-libxslt-perl libapache2-mod-scgi lshell openvpn >>"${OUTTO}" 2>&1
+elif [[ $DISTRO == Ubuntu ]]; then
+apt-get install -qq --yes --force-yes build-essential fail2ban bc sudo screen zip irssi unzip nano bwm-ng htop git subversion \
+  dstat quota automake make mktorrent libtool libcppunit-dev libssl-dev pkg-config libxml2-dev libcurl3 libcurl4-openssl-dev libsigc++-2.0-dev \
+  apache2-utils autoconf cron curl libxslt-dev libncurses5-dev yasm apache2 php5 php5-cli php-net-socket libdbd-mysql-perl libdbi-perl \
+  fontconfig comerr-dev ca-certificates libfontconfig1-dev libfontconfig1 rar unrar mediainfo php5-curl ifstat libapache2-mod-php5 \
+  ttf-mscorefonts-installer checkinstall dtach cfv libarchive-zip-perl libnet-ssleay-perl php5-geoip openjdk-7-jre-headless openjdk-7-jre openjdk-7-jdk \
+  libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl libxml-libxslt-perl libapache2-mod-scgi lshell openvpn >>"${OUTTO}" 2>&1
+fi
   cd
   rm -rf /etc/skel
   if [[ -e skel.tar ]]; then rm -rf skel.tar;fi 
@@ -1004,13 +1008,9 @@ EOF
   rm -rf /srv/rutorrent/plugins/tracklabels/labels/nlb.png
 
   # Needed for fileupload
-  if [[ $DISTRO == Debian ]]; then
-    wget -q http://ftp.nl.debian.org/debian/pool/main/p/plowshare/plowshare_2.1.2-1_all.deb -O plowshare.deb >>"${OUTTO}" 2>&1
-    dpkg -i plowshare.deb >>"${OUTTO}" 2>&1
-    rm -rf plowshare.deb >>"${OUTTO}" 2>&1
-  else
-    yes '' | apt-get install --force-yes plowshare4 >>"${OUTTO}" 2>&1
-  fi
+  wget -q http://ftp.nl.debian.org/debian/pool/main/p/plowshare/plowshare_2.1.2-1_all.deb -O plowshare.deb >>"${OUTTO}" 2>&1
+  dpkg -i plowshare.deb >>"${OUTTO}" 2>&1
+  rm -rf plowshare.deb >>"${OUTTO}" 2>&1
   cd /root
   mkdir -p /root/bin
   git clone https://github.com/mcrapet/plowshare.git ~/.plowshare-source >>"${OUTTO}" 2>&1
@@ -1258,7 +1258,7 @@ function _askplex() {
       curl http://shell.ninthgate.se/packages/shell-ninthgate-se-keyring.key >>"${OUTTO}" 2>&1 | sudo apt-key add - >>"${OUTTO}" 2>&1
       apt-get update >>"${OUTTO}" 2>&1
       apt-get install -qq -y --force-yes plexmediaserver >>"${OUTTO}" 2>&1
-      echo -n " ... ${OK}"
+      echo " ... ${OK}"
       ;;
     [nN] | [nN][Oo] | "") echo "${cyan}Skipping Plex install${normal} ... " ;;
     *) echo "${cyan}Skipping Plex install${normal} ... " ;;
