@@ -189,7 +189,7 @@ chmod +x update-1-3.sh
 ---
 
 ## Update Inlcuded Media Packages (BTSync)
-> This script is valid for current Quick Box installs only. Running this update for BTSync on a non-Quick Box script may result in borking your current seedboxes BTSync. __Also, please be advised:__ Users on current Quick Box version 1.6 will have need to use this script as the command '__upgradeBTSync__' is included.
+> This script is valid for current Quick Box installs only. Running this update for BTSync on a non-Quick Box script may result in borking your current seedboxes BTSync. __Also, please be advised:__ Users on current Quick Box version 1.6 will have no need to use this script as the command '__upgradeBTSync__' is included.
 
 ---
 
