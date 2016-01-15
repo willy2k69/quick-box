@@ -7,13 +7,19 @@
 # URL:      https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer
 #
 # find server hostname and repo location for quick-box configuration
+#################################################################################
 HOSTNAME1=$(hostname -s);
 REPOURL="/root/tmp/quick-box"
-
-
+#################################################################################
 #Script Console Colors
-black=$(tput setaf 0);red=$(tput setaf 1);green=$(tput setaf 2);yellow=$(tput setaf 3);blue=$(tput setaf 4);magenta=$(tput setaf 5);cyan=$(tput setaf 6);white=$(tput setaf 7);on_red=$(tput setab 1);on_green=$(tput setab 2);on_yellow=$(tput setab 3);on_blue=$(tput setab 4);on_magenta=$(tput setab 5);on_cyan=$(tput setab 6);on_white=$(tput setab 7);bold=$(tput bold);dim=$(tput dim);underline=$(tput smul);reset_underline=$(tput rmul);standout=$(tput smso);reset_standout=$(tput rmso);normal=$(tput sgr0);alert=${white}${on_red};title=${standout};sub_title=${bold}${yellow};repo_title=${black}${on_green};
-
+black=$(tput setaf 0); red=$(tput setaf 1); green=$(tput setaf 2); yellow=$(tput setaf 3); 
+blue=$(tput setaf 4); magenta=$(tput setaf 5); cyan=$(tput setaf 6); white=$(tput setaf 7); 
+on_red=$(tput setab 1); on_green=$(tput setab 2); on_yellow=$(tput setab 3); on_blue=$(tput setab 4); 
+on_magenta=$(tput setab 5); on_cyan=$(tput setab 6); on_white=$(tput setab 7); bold=$(tput bold); 
+dim=$(tput dim); underline=$(tput smul); reset_underline=$(tput rmul); standout=$(tput smso); 
+reset_standout=$(tput rmso); normal=$(tput sgr0); alert=${white}${on_red}; title=${standout}; 
+sub_title=${bold}${yellow}; repo_title=${black}${on_green};
+#################################################################################
 if [[ -f /usr/bin/lsb_release ]]; then
     DISTRO=$(lsb_release -i | cut -d: -f2 | sed s/'^\t'//)
 elif [ -f "/etc/redhat-release" ]; then
@@ -21,6 +27,7 @@ elif [ -f "/etc/redhat-release" ]; then
 elif [ -f "/etc/debian_version" ]; then
     DISTRO=='Debian'
 fi
+#################################################################################
 
 function _string() { perl -le 'print map {(a..z,A..Z,0..9)[rand 62] } 0..pop' 15 ; }
 
@@ -299,7 +306,7 @@ export USER=\$(id -un)
 IRSSI_CLIENT=yes
 RTORRENT_CLIENT=yes
 WIPEDEAD=yes
-ADDRESS=$(curl http://ipecho.net/plain; echo)
+ADDRESS=$(curl -s http://ipecho.net/plain || curl -s http://ifconfig.me/ip ; echo)
 
 # NO NEED TO EDIT PAST HERE!
 if [ "$WIPEDEAD" == "yes" ]; then screen -wipe >/dev/null 2>&1; fi
@@ -415,6 +422,37 @@ rm -rf /home/${username} >/dev/null 2>&1
 rm -rf /var/run/screens/S-${username} >/dev/null 2>&1
 rm -rf /etc/openvpn/server-${username}.conf >/dev/null 2>&1
 echo ${OK}
+}
+
+function upgradeBTSync() {
+  echo -n "${yellow}Please enter the username of your master account below${normal}"
+  echo
+  echo "(This is the username you created on install)"
+  echo
+  read -p "${bold}Master Account Username ${normal} : " username
+  if [[ ! $(grep "^${username}" ${HTPASSWD}) ]]; then 
+    echo "Username ${username} wasnt found ... please check your username and try again"
+    exit 1
+  fi
+  ip=$(curl -s http://ipecho.net/plain || curl -s http://ifconfig.me/ip ; echo)
+  echo -ne "${yellow}Would you like to upgrade BTSync?${normal} (Y/n): (Default: ${green}Y${normal}) "; read responce
+  case $responce in
+    [yY] | [yY][Ee][Ss] | "")
+    echo -n "Installing and Upgrading BTSync ... "
+      killall btsync
+      wget -qq https://github.com/JMSDOnline/quick-box/raw/master/sources/btsync.latest.tar.gz . >>"${OUTTO}" 2>&1
+      tar xf btsync.latest.tar.gz -C /home/"${username}"/ >>"${OUTTO}" 2>&1
+      sudo -u "${username}" /home/"${username}"/btsync --webui.listen $ip:8888 >>"${OUTTO}" 2>&1
+      rm -rf btsync_x64-2.2.7.tar.gz >>"${OUTTO}" 2>&1
+    echo "${OK}"
+    ;;
+    [nN] | [nN][Oo] ) echo "Skipping ... " ;;
+    *) echo "${cyan}Skipping BTSync install${normal} ... " ;;
+  esac
+  echo
+  echo "${green}Congrats! Upgrade is complete - Enjoy${normal}"
+  echo
+  echo
 }
 
 EOF
@@ -1069,7 +1107,7 @@ IRSSI_CLIENT=yes
 RTORRENT_CLIENT=yes
 WIPEDEAD=yes
 BTSYNC=no
-ADDRESS=$(curl http://ipecho.net/plain; echo)
+ADDRESS=$(curl -s http://ipecho.net/plain || curl -s http://ifconfig.me/ip ; echo)
 
 if [ "$WIPEDEAD" == "yes" ]; then screen -wipe >/dev/null 2>&1; fi
 
@@ -1276,10 +1314,10 @@ function _askbtsync() {
   case $responce in
     [yY] | [yY][Ee][Ss] )
     echo -n "Installing BTSync ... "
-    wget -qq https://github.com/JMSDOnline/quick-box/raw/master/sources/btsync.tar.gz .
+    wget -qq https://github.com/JMSDOnline/quick-box/raw/master/sources/btsync_x64-2.2.7.tar.gz .
     tar xf btsync.tar.gz -C /home/${username}/
     sudo -u ${username} /home/${username}/btsync --webui.listen $ip:8888 >>"${OUTTO}" 2>&1
-    rm -rf btsync.tar.gz
+    rm -rf btsync_x64-2.2.7.tar.gz
     echo "${OK}"
     ;;
     [nN] | [nN][Oo] | "") echo "Skipping ... " ;;
