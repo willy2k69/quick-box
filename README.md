@@ -2,11 +2,11 @@
 |---|
 | **Quick Box - A Friendly, Fresh and Modernized Seedbox Script** |
 
-For Ubuntu 14.04, 15.04 & 15.10 installs.
+For Ubuntu 14.04, 15.04 & 15.10 | Debian 6 & 7 installs.
 
 ## Script status
 
-[![Version 1.4-production](https://img.shields.io/badge/version-1.4-674172.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
+[![Version 1.5-production](https://img.shields.io/badge/version-1.5-674172.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
 [![MIT License](https://img.shields.io/badge/license-MIT%20License-blue.svg?style=flat-square)](https://github.com/JMSDOnline/quick-box/blob/master/LICENSE)
 
 #### Ubuntu Builds
@@ -137,7 +137,7 @@ DO NOT use capital letters, all the usernames should be written in lowercase.
 
 DO NOT upgrade anything in the box, feel free to open an issue and ask before attempting this on a current (in production) server.
 
-DO NOT try to reconfigure packages using other tutorials - this script (AS IS) is designed to work with what's included.
+DO NOT try to reconfigure packages using other tutorials - this script (AS IS) is designed to work with what's included. In doing so, you understand that this is your own responsbility. Contributors to the Quick Box project repo may choose to help, or leave your issue as is and/or close on issue statement. 
 
 ---
 
@@ -146,7 +146,7 @@ DO NOT try to reconfigure packages using other tutorials - this script (AS IS) i
 
 ---
 
-### Ubuntu 14.04, 15.04, and 15.10
+### Ubuntu 14.04, 15.04, and 15.10 | Debian 6 | 7
 
 **Pre-Install Notice: Some servers it is a good idea to intially run the following command -**
 ```
