@@ -1250,7 +1250,7 @@ function _askplex() {
     echo -n "Installing Plex ... "
       #cp $REPOURL/sources/plexmediaserver_0.9.14.6.1620-e0b7243_amd64.deb .
       #dpkg -i plexmediaserver_0.9.14.6.1620-e0b7243_amd64.deb >/dev/null 2>&1
-      echo -ne "ServerName ${HOSTNAME1}" | sudo tee /etc/apache2/conf-available/fqdn.conf
+      echo -n "ServerName ${HOSTNAME1}" | sudo tee /etc/apache2/conf-available/fqdn.conf
       sudo a2enconf fqdn >>"${OUTTO}" 2>&1
       touch /etc/apache2/sites-enabled/plex.conf
       chown www-data: /etc/apache2/sites-enabled/plex.conf
@@ -1258,7 +1258,7 @@ function _askplex() {
       curl http://shell.ninthgate.se/packages/shell-ninthgate-se-keyring.key >>"${OUTTO}" 2>&1 | sudo apt-key add - >>"${OUTTO}" 2>&1
       apt-get update >>"${OUTTO}" 2>&1
       apt-get install -qq -y --force-yes plexmediaserver >>"${OUTTO}" 2>&1
-      echo " ... ${OK}"
+      echo -n " ... ${OK}"
       ;;
     [nN] | [nN][Oo] | "") echo "${cyan}Skipping Plex install${normal} ... " ;;
     *) echo "${cyan}Skipping Plex install${normal} ... " ;;
