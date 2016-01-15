@@ -19,5 +19,5 @@ cd /root/tmp/quick-box
 chmod +x *.sh
 
 # Start the Install
-./quickbox-ubuntu.sh
+./quickbox-master.sh
 
