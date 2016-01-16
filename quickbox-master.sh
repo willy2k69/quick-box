@@ -1304,6 +1304,7 @@ function _askplex() {
       echo -n "ServerName ${HOSTNAME1}" | sudo tee /etc/apache2/conf-available/fqdn.conf
       sudo a2enconf fqdn >>"${OUTTO}" 2>&1
       touch /srv/rutorrent/home/.plex
+      chown www-data: /srv/rutorrent/home/.plex
       touch /etc/apache2/sites-enabled/plex.conf
       chown www-data: /etc/apache2/sites-enabled/plex.conf
       echo "deb http://shell.ninthgate.se/packages/debian squeeze main" > /etc/apt/sources.list.d/plexmediaserver.list
