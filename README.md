@@ -146,7 +146,7 @@ DO NOT try to reconfigure packages using other tutorials - this script (AS IS) i
 
 ---
 
-### Ubuntu 14.04, 15.04, and 15.10
+### Ubuntu 14.04, 15.04, and 15.10 || Debian 7 & 8
 
 **Pre-Install Notice: Some servers it is a good idea to intially run the following command -**
 ```
