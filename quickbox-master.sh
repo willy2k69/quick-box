@@ -1319,10 +1319,10 @@ function _askbtsync() {
   case $responce in
     [yY] | [yY][Ee][Ss] )
     echo -n "Installing BTSync ... "
-    wget -qq https://github.com/JMSDOnline/quick-box/raw/master/sources/btsync_x64-2.2.7.tar.gz .
-    tar xf btsync.tar.gz -C /home/${username}/
+    wget -qq https://github.com/JMSDOnline/quick-box/raw/master/sources/btsync.latest.tar.gz .
+    tar xf btsync.latest.tar.gz -C /home/${username}/
     sudo -u ${username} /home/${username}/btsync --webui.listen $ip:8888 >>"${OUTTO}" 2>&1
-    rm -rf btsync_x64-2.2.7.tar.gz
+    rm -rf btsync.latest.tar.gz
     echo "${OK}"
     ;;
     [nN] | [nN][Oo] | "") echo "Skipping ... " ;;
