@@ -1070,6 +1070,9 @@ EOF
   chmod 775 /srv/rutorrent/plugins/fileupload/scripts/upload
   cp /srv/rutorrent/plugins/fileupload/conf.php /srv/rutorrent/conf/users/"${username}"/plugins/fileupload/conf.php
   chown -R www-data: /srv/rutorrent/conf/users/"${username}"
+
+  # Set proper permissions to filemanager so it may execute commands
+  find /srv/rutorrent/plugins/filemanager/scripts -type f -exec chmod 755 {} \;
 }
 
 # function autodl to install autodl irssi scripts (20)
