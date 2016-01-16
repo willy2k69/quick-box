@@ -31,6 +31,11 @@ fi
 
 function _string() { perl -le 'print map {(a..z,A..Z,0..9)[rand 62] } 0..pop' 15 ; }
 
+function _quickboxv() {
+  curl -o /usr/bin/quickbox https://raw.githubusercontent.com/JMSDOnline/quick-box-update/master/v1-6/quickbox >>"${OUTTO}" 2>&1
+  chmod +x /usr/bin/quickbox
+}
+
 function _bashrc() {
 cat >/root/.bashrc<<'EOF'
 case $- in
@@ -1394,6 +1399,7 @@ export DEBIAN_FRONTEND=noninteractive
 cd
 
 # QUICK BOX STRUCTURE
+_quickboxv
 _bashrc
 _intro
 _checkroot

@@ -219,6 +219,7 @@ chmod +x qb-pck-upgrades.sh
 ## Commands
 After installing you will have access to the following commands to be used directly in terminal
 
+* quickbox - tells you which version Quick Box you are running and shows commands list
 * createSeedboxUser - yup
 * deleteSeedboxUser - yup
 * setdisk - set your user disk quota
