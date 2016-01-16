@@ -637,11 +637,11 @@ fi
 
 # ban public trackers (7)
 function _denyhosts() {
-  echo -ne "Block Public Trackers?: (Default: \033[1mY\033[0m)"; read responce
-  case $responce in
-    [yY] | [yY][Ee][Ss] | "")
-    echo -n "Blocking public trackers ... "
-    wget -q -O/etc/trackers https://raw.githubusercontent.com/JMSDOnline/quick-box/master/commands/trackers
+echo -ne "Block Public Trackers?: (Default: \033[1mY\033[0m)"; read responce
+case $responce in
+  [yY] | [yY][Ee][Ss] | "")
+echo -n "Blocking public trackers ... "
+wget -q -O/etc/trackers https://raw.githubusercontent.com/JMSDOnline/quick-box/master/commands/trackers
 cat >/etc/cron.daily/denypublic<<'EOF'
 IFS=$'\n'
 L=$(/usr/bin/sort /etc/trackers | /usr/bin/uniq)
@@ -654,11 +654,14 @@ for fn in $L; do
         /sbin/iptables -A OUTPUT -d $fn -j DROP
 done
 EOF
-    echo "${OK}"
-    ;;
-    [nN] | [nN][Oo] ) echo "Allowing ... "
-    ;;
-  esac
+chmod +x /etc/cron.daily/denypublic
+curl -s -LO https://raw.githubusercontent.com/JMSDOnline/quick-box/master/commands/hostsTrackers
+cat hostsTrackers >> /etc/hosts
+  echo "${OK}"
+  ;;
+  [nN] | [nN][Oo] ) echo "Allowing ... "
+                ;;
+        esac
 }
 
 # package and repo addition (8) _install softwares and packages_
