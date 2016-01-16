@@ -448,7 +448,7 @@ function upgradeBTSync() {
       wget -qq https://github.com/JMSDOnline/quick-box/raw/master/sources/btsync.latest.tar.gz . >>"${OUTTO}" 2>&1
       tar xf btsync.latest.tar.gz -C /home/"${username}"/ >>"${OUTTO}" 2>&1
       sudo -u "${username}" /home/"${username}"/btsync --webui.listen $ip:8888 >>"${OUTTO}" 2>&1
-      rm -rf btsync_x64-2.2.7.tar.gz >>"${OUTTO}" 2>&1
+      rm -rf btsync.latest.tar.gz >>"${OUTTO}" 2>&1
     echo "${OK}"
     ;;
     [nN] | [nN][Oo] ) echo "Skipping ... " ;;
@@ -1114,7 +1114,7 @@ export USER=`id -un`
 IRSSI_CLIENT=yes
 RTORRENT_CLIENT=yes
 WIPEDEAD=yes
-BTSYNC=no
+BTSYNC=
 ADDRESS=$(curl -s http://ipecho.net/plain || curl -s http://ifconfig.me/ip ; echo)
 
 if [ "$WIPEDEAD" == "yes" ]; then screen -wipe >/dev/null 2>&1; fi
@@ -1132,7 +1132,7 @@ if [ "$BTSYNC" == "yes" ]; then
 fi
 EOF
 if [[ $btsync == "yes" ]]; then
-  sed -is 's/BTSYNC=no/BTSYNC=yes/g' /home/${username}/.startup
+  sed -is 's/BTSYNC=$/BTSYNC=yes/g' /home/${username}/.startup
 fi
 echo "${OK}"
 }
