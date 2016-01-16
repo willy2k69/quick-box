@@ -1418,7 +1418,7 @@ _updates
 # _locale
 _hostname
 _denyhosts
-echo -n "Installing building tools and all dependancies and perl modules, please wait ... ";_depends
+echo -n "Installing building tools and all dependencies and perl modules, please wait ... ";_depends
 _askffmpeg;if [[ ${ffmpeg} == "yes" ]]; then _ffmpeg; fi
 _askrtorrent;_xmlrpc;_libtorrent;_rtorrent
 echo -n "Installing rutorrent into /srv ... ";_rutorrent;_askshell;_adduser;_apachesudo
