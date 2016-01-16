@@ -1345,10 +1345,10 @@ function _finished() {
   echo -e "\033[0mCOMPLETED in ${FIN}/min\033[0m"
   echo "Valid Commands: "
   echo;echo;echo
+  echo -e "\033[1mquickbox\033[0m (shows current Quick Box version and additional commands)"
   echo -e "\033[1mreload\033[0m (restarts seedbox)"
   echo -e "\033[1mcreateSeedboxUser\033[0m (add seedboxuser)"
-  echo -e "\033[1mchangeUserpass\033[0m (change users SSH/FTP/ruTorrent password"
-  echo -e "\033[1mrestartSeedbox\033[0m (same as reload)"
+  echo -e "\033[1mchangeUserpass\033[0m (change users SSH/FTP/ruTorrent password)"
   echo -e "\033[1mdeleteSeedboxUser\033[0m (really?)"
   echo -e "\033[1msetdisk\033[0m (change the quota mount of a user) ... "
   echo;echo;echo
