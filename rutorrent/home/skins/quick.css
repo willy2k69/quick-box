@@ -9211,8 +9211,8 @@ blockquote {
 }
 .headerpanel .logopanel {
   position: absolute;
-  left: -220px;
-  width: 220px;
+  left: -280px;
+  width: 280px;
   height: 64px;
   padding: 6px 15px;
   background-color: #2a2a2a;
@@ -9241,7 +9241,7 @@ blockquote {
 }
 @media (min-width: 992px) {
   .headerbar {
-    margin-left: 220px;
+    margin-left: 280px;
     left: 0 !important;
   }
 }
@@ -9670,11 +9670,11 @@ blockquote {
 /************ LEFT PANEL ***********/
 .leftpanel {
   background-color: #2a2a2a;
-  width: 220px;
+  width: 280px;
   position: fixed;
   top: 64px;
   bottom: 0;
-  left: -220px;
+  left: -280px;
   z-index: 100;
   overflow-y: auto;
   overflow-x: hidden;
@@ -10166,7 +10166,7 @@ blockquote {
   right: 0;
 }
 .sidebar.email {
-  width: 220px;
+  width: 280px;
   background-color: #fff;
 }
 .sidebar-title {
@@ -11616,7 +11616,7 @@ blockquote {
 }
 @media (min-width: 992px) {
   .mainpanel {
-    margin-left: 220px;
+    margin-left: 280px;
   }
 }
 @media (max-width: 991px) {
@@ -12777,7 +12777,7 @@ fieldset[disabled] .btn-fb.active {
 }
 @media (min-width: 992px) {
   .email-options {
-    left: 220px;
+    left: 280px;
   }
 }
 @media (max-width: 768px) {
@@ -12843,7 +12843,7 @@ fieldset[disabled] .btn-fb.active {
 }
 @media (min-width: 992px) {
   .emailcontent {
-    left: 220px;
+    left: 280px;
   }
 }
 @media (max-width: 768px) {

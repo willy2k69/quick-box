@@ -11,10 +11,10 @@ $(document).ready(function() {
     var collapsedMargin = $('.mainpanel').css('margin-left');
     var collapsedLeft = $('.mainpanel').css('left');
 
-    if(collapsedMargin === '220px' || collapsedLeft === '220px') {
-      toggleMenu(-220,0);
+    if(collapsedMargin === '280px' || collapsedLeft === '280px') {
+      toggleMenu(-280,0);
     } else {
-      toggleMenu(0,220);
+      toggleMenu(0,280);
     }
 
   });

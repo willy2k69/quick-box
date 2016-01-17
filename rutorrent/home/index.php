@@ -3,6 +3,7 @@ session_destroy();
 include '/srv/rutorrent/php/util.php';
 include 'class.php';
 $interface = "eth0";
+$version = "1.6.0";
 error_reporting(E_ALL);
 $username = getUser();
 function session_start_timeout($timeout=5, $probability=100, $cookie_domain='/') {
@@ -23,6 +24,36 @@ function session_start_timeout($timeout=5, $probability=100, $cookie_domain='/')
     setcookie(session_name(), $_COOKIE[session_name()], time() + $timeout, $cookie_domain);
   }
 }
+
+    function formatSizeUnits($bytes)
+    {
+        if ($bytes >= 1073741824)
+        {
+            $bytes = number_format($bytes / 1073741824, 2) . ' GB';
+        }
+        elseif ($bytes >= 1048576)
+        {
+            $bytes = number_format($bytes / 1048576, 2) . ' MB';
+        }
+        elseif ($bytes >= 1024)
+        {
+            $bytes = number_format($bytes / 1024, 2) . ' KB';
+        }
+        elseif ($bytes > 1)
+        {
+            $bytes = $bytes . ' bytes';
+        }
+        elseif ($bytes == 1)
+        {
+            $bytes = $bytes . ' byte';
+        }
+        else
+        {
+            $bytes = '0 bytes';
+        }
+
+        return $bytes;
+    }
 
 session_start_timeout(5);
 $MSGFILE = session_id();
@@ -50,7 +81,28 @@ function isEnabled($search, $username){
   }
 }
 
+function writeMsg($message) {
+  $file = $GLOBALS['MSGFILE'];
+  $Handle = fopen("/tmp/" . $file, 'w');
+  fwrite($Handle, $message);
+  fclose($Handle);
+}
+
+function readMsg() {
+  $file = $GLOBALS['MSGFILE'];
+  $Handle = fopen("/tmp/" . $file, 'r');
+  $output = fgets($Handle);
+  fclose($Handle);
+  if (isset($output)) {
+    $data = $output;
+    echo $data;
+  } else {
+    echo "error";
+  }
+}
+
 function writePlex($ip) {
+  $username = getUser();
   if (file_exists('.plex')) {
     $myFile = "/etc/apache2/sites-enabled/plex.conf";
     $fh = fopen($myFile, 'w') or die("can't open file");
@@ -58,6 +110,8 @@ function writePlex($ip) {
     fwrite($fh, $stringData);
     fclose($fh);
     unlink('.plex');
+    writeMsg("Hello <b>$username</b>: Im going to disable public access for <b>Plex Media Server</b>. You may still access Plex privately on port <a href=\"http://62.210.195.87:32400/web/index.html\" target=\"_blank\">32400</a>. Note however, you will need to open an SSH Tunnel to use your servers Plex Media Server.<br><br>If you do not know how, read about setting up an SSH Tunnel <a href=\"https://github.com/JMSDOnline/quick-box/wiki/F.A.Q#how-do-i-create-an-ssh-tunnel-and-connect-to-plex\" rel=\"noindex, nofollow\" target=\"_blank\">HERE</a> ... <br>");
+    $message = "Hello <b>$username</b>: Im going to disable public access for <b>Plex Media Server</b>. You may still access Plex privately on port <a href=\"http://62.210.195.87:32400/web/index.html\" target=\"_blank\">32400</a>. Note however, you will need to open an SSH Tunnel to use your servers Plex Media Server.<br><br>If you do not know how, read about setting up an SSH Tunnel <a href=\"https://github.com/JMSDOnline/quick-box/wiki/F.A.Q#how-do-i-create-an-ssh-tunnel-and-connect-to-plex\" rel=\"noindex, nofollow\" target=\"_blank\">HERE</a> ... <br>";
     shell_exec('sudo service apache2 reload &');
     return 'Disabling inital setup connection for plex ... ';
   } else {
@@ -87,28 +141,10 @@ function writePlex($ip) {
     $stringData = "";
     fwrite($fh, $stringData);
     fclose($fh);
+    writeMsg("Hello <b>$username</b>: Im going to enable public access for your <b>Plex Media Server</b> ... </a><br>");
+    $message = "Hello <b>$username</b>: Im going to enable public access for your <b>Plex Media Server</b> ... </a><br>";
     shell_exec('sudo service apache2 reload & ');
     return 'Enabling inital setup connection for plex ... ';
-  }
-}
-
-function writeMsg($message) {
-  $file = $GLOBALS['MSGFILE'];
-  $Handle = fopen("/tmp/" . $file, 'w');
-  fwrite($Handle, $message);
-  fclose($Handle);
-}
-
-function readMsg() {
-  $file = $GLOBALS['MSGFILE'];
-  $Handle = fopen("/tmp/" . $file, 'r');
-  $output = fgets($Handle);
-  fclose($Handle);
-  if (isset($output)) {
-    $data = $output;
-    echo $data;
-  } else {
-    echo "error";
   }
 }
 
@@ -246,13 +282,13 @@ $message = "Hello <b>$username</b>: Im going to disable <b>$servicename</b> ... 
     shell_exec("sudo sed -i 's/$name/$thisname/g' /home/$username/.startup");
     shell_exec("sudo -u $username pkill -9 $servicename");
   } else {
-writeMsg("error locating .startup .. feel free to open a issue at the quick box repo");
-$message = "error locating .startup .. feel free to open a issue at the quick box repo";
+writeMsg("error locating .startup .. feel free to open an issue at the quick box repo");
+$message = "error locating .startup .. feel free to open an issue at the quick box repo";
   }
   header('Location: https://' . $_SERVER['HTTP_HOST'] . '/');
 break;
 
-/* disable plex */
+/* enable plex */
 case 88:
 //  $myip = getHostByName(getHostName());
   $myip = $_SERVER['HTTP_HOST'];
@@ -388,24 +424,43 @@ break;
         </div><!-- tab pane -->
 
         <div class="tab-pane" id="help">
-          <!--div class="sidebar-btn-wrapper">
-            <a href="#" class="btn btn-danger btn-block">testing-I-Am-Hidden</a>
-          </div-->
 
-          <h5 class="sidebar-title">Quick Tips</h5>
+          <h5 class="sidebar-title">Quick System Tips</h5>
+          <ul class="nav nav-pills nav-stacked nav-quirk nav-mail">
+            <li style="padding: 7px"><span style="font-size: 12px; color:#eee">disktest</span><br/>
+            <small>Type this command to perform a quick r/w test of your disk.</small></li>
+            <li style="padding: 7px"><span style="font-size: 12px; color:#eee">fixhome</span><br/>
+            <small>Type this command to quickly adjusts /home directory permissions.</small></li>
+          </ul>
+
+          <h5 class="sidebar-title">Admin Commands</h5>
           <ul class="nav nav-pills nav-stacked nav-quirk nav-mail">
             <li style="padding: 7px"><span style="font-size: 12px; color:#eee">createSeedboxUser</span><br/>
             <small>Type this command in ssh to create a new seedbox user on your server.</small></li>
-            <li style="padding: 7px"><span style="font-size: 12px; color:#eee">deleteSeedboxUser</span>
-            <br/>
+            <li style="padding: 7px"><span style="font-size: 12px; color:#eee">deleteSeedboxUser</span><br/>
             <small>Type this command in ssh to delete a seedbox user on your server. You will need to enter the users account name, you will be prompted.</small></li>
-            <li style="padding: 7px"><span style="font-size: 12px; color:#eee">setdisk</span><br/>
-            <small>During the install of your seedbox, a quota system was arranged. Type in the above command to allocate space to a users account.</small></li>
+            <li style="padding: 7px"><span style="font-size: 12px; color:#eee">changeUserpass</span><br/>
+            <small>Typing this command in ssh allows you to change a disired users password.</small></li>
             <li style="padding: 7px"><span style="font-size: 12px; color:#eee">reload</span><br/>
             <small>Type this command in ssh to reload all services on your seedbox. These services include rTorrent and IRSSI.</small></li>
-            <li style="padding: 7px"><span style="font-size: 12px; color:#eee">restartSeedbox</span><br/>
-            <small>Type this command in ssh to restart your seedbox services, ie; rTorrent and IRSSI.</small></li>
+            <li style="padding: 7px"><span style="font-size: 12px; color:#eee">upgradeBTSync</span><br/>
+            <small>Type this command in ssh to upgrade BTSync to newest version when available.</small></li>
           </ul>
+
+          <h5 class="sidebar-title">Essential User Commands</h5>
+          <ul class="nav nav-pills nav-stacked nav-quirk nav-mail">
+            <li style="padding: 7px"><span style="font-size: 12px; color:#eee">reload</span><br/>
+            <small>allows user to reload their services (rtorrent and irssi)</small></li>
+            <li style="padding: 7px"><span style="font-size: 12px; color:#eee">screen -fa -dmS rtorrent rtorrent</span><br/>
+            <small>allows user to restart/remount rtorrent from SSH</small></li>
+            <li style="padding: 7px"><span style="font-size: 12px; color:#eee">screen -fa -dmS irssi irssi</span><br/>
+            <small>allows user to restart/remount irssi from SSH</small></li>
+          </ul>
+
+          <div class="sidebar-btn-wrapper">
+            <a href="#" class="btn btn-success btn-block" style="font-size: 10px;">Quick Box v<?php echo "$version"; ?></a>
+          </div>
+
         </div><!-- tab-pane -->
 
       </div><!-- tab-content -->
