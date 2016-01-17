@@ -25,38 +25,192 @@ function session_start_timeout($timeout=5, $probability=100, $cookie_domain='/')
   }
 }
 
-    function formatSizeUnits($bytes)
-    {
-        if ($bytes >= 1073741824)
-        {
-            $bytes = number_format($bytes / 1073741824, 2) . ' GB';
-        }
-        elseif ($bytes >= 1048576)
-        {
-            $bytes = number_format($bytes / 1048576, 2) . ' MB';
-        }
-        elseif ($bytes >= 1024)
-        {
-            $bytes = number_format($bytes / 1024, 2) . ' KB';
-        }
-        elseif ($bytes > 1)
-        {
-            $bytes = $bytes . ' bytes';
-        }
-        elseif ($bytes == 1)
-        {
-            $bytes = $bytes . ' byte';
-        }
-        else
-        {
-            $bytes = '0 bytes';
-        }
-
-        return $bytes;
-    }
-
 session_start_timeout(5);
 $MSGFILE = session_id();
+
+require 'config.php';
+require 'localize.php';
+require 'vnstat.php';
+
+validate_input();
+
+function kbytes_to_string($kb) {
+
+  global $byte_notation;
+
+  $units = array('TB','GB','MB','KB');
+  $scale = 1024*1024*1024;
+  $ui = 0;
+
+  $custom_size = isset($byte_notation) && in_array($byte_notation, $units);
+
+  while ((($kb < $scale) && ($scale > 1)) || $custom_size) {
+    $ui++;
+    $scale = $scale / 1024;
+
+    if ($custom_size && $units[$ui] == $byte_notation) {
+      break;
+    }
+  }
+
+  return sprintf("%0.2f %s", ($kb/$scale),$units[$ui]);
+}
+
+function write_summary_s() {
+  global $summary,$day,$hour,$month;
+
+  $trx = $summary['totalrx']*1024+$summary['totalrxk'];
+  $ttx = $summary['totaltx']*1024+$summary['totaltxk'];
+
+  //
+  // let's build array for write_data_table
+  //
+
+  $sum = array();
+
+  if (count($day) > 0 && count($hour) > 0 && count($month) > 0) {
+    $sum[0]['act'] = 1;
+    $sum[0]['label'] = T('This hour');
+    $sum[0]['rx'] = $hour[0]['rx'];
+    $sum[0]['tx'] = $hour[0]['tx'];
+
+    $sum[1]['act'] = 1;
+    $sum[1]['label'] = T('This day');
+    $sum[1]['rx'] = $day[0]['rx'];
+    $sum[1]['tx'] = $day[0]['tx'];
+
+    $sum[2]['act'] = 1;
+    $sum[2]['label'] = T('This month');
+    $sum[2]['rx'] = $month[0]['rx'];
+    $sum[2]['tx'] = $month[0]['tx'];
+
+    $sum[3]['act'] = 1;
+    $sum[3]['label'] = T('All time');
+    $sum[3]['rx'] = $trx;
+    $sum[3]['tx'] = $ttx;
+  }
+
+write_data_table_s(T('Summary'), $sum);
+
+}
+
+function write_summary_t() {
+  global $top;
+
+  $trx = $summary['totalrx']*1024+$summary['totalrxk'];
+  $ttx = $summary['totaltx']*1024+$summary['totaltxk'];
+
+  //
+  // let's build array for write_data_table
+  //
+
+  $sum = array();
+
+  if (count($day) > 0 && count($hour) > 0 && count($month) > 0) {
+    $sum[0]['act'] = 1;
+    $sum[0]['label'] = T('This hour');
+    $sum[0]['rx'] = $hour[0]['rx'];
+    $sum[0]['tx'] = $hour[0]['tx'];
+
+    $sum[1]['act'] = 1;
+    $sum[1]['label'] = T('This day');
+    $sum[1]['rx'] = $day[0]['rx'];
+    $sum[1]['tx'] = $day[0]['tx'];
+
+    $sum[2]['act'] = 1;
+    $sum[2]['label'] = T('This month');
+    $sum[2]['rx'] = $month[0]['rx'];
+    $sum[2]['tx'] = $month[0]['tx'];
+
+    $sum[3]['act'] = 1;
+    $sum[3]['label'] = T('All time');
+    $sum[3]['rx'] = $trx;
+    $sum[3]['tx'] = $ttx;
+  }
+
+write_data_table_t(T('Top 10 days'), $top);
+
+}
+
+function write_data_table_s($caption, $tab) {
+  //print "<div class=\"panel panel-inverse\">";
+  //print "<div class=\"panel-heading\">";
+  //print "<h4 class=\"panel-title\">$caption</h4>";
+  //print "</div>";
+  print "<div class=\"panel-body text-center\"  style=\"padding: 0px 0px 2px;\">";
+  print "<table class=\"table table-bordered table-hover table-striped table-default nomargin\" width=\"100%\" cellspacing=\"0\">";
+  print "<thead>";
+  print "<tr>";
+  print "<th class=\"text-right\" style=\"width:auto;\">$caption</th>";
+  print "<th class=\"text-right\">".T('In')."</th>";
+  print "<th class=\"text-right\">".T('Out')."</th>";
+  print "<th class=\"text-right\">".T('Total')."</th>";
+  print "</tr>";
+  print "</thead>";
+  print "<tbody>\n";
+
+  for ($i=0; $i<count($tab); $i++) {
+    if ($tab[$i]['act'] == 1) {
+      $t = $tab[$i]['label'];
+      $rx = kbytes_to_string($tab[$i]['rx']);
+      $tx = kbytes_to_string($tab[$i]['tx']);
+      $total = kbytes_to_string($tab[$i]['rx']+$tab[$i]['tx']);
+      $id = ($i & 1) ? 'odd' : 'even';
+      print "<tr>";
+      print "<td class=\"label_$id\" style=\"font-size:12px;\"><b>$t</b></td>";
+      print "<td class=\"numeric_$id\" style=\"font-size:12px;\">$rx</td>";
+      print "<td class=\"numeric_$id\" style=\"font-size:12px;\">$tx</td>";
+      print "<td class=\"numeric_$id\" style=\"font-size:12px;\">$total</td>";
+      print "</tr>\n";
+    }
+  }
+
+  print "</tbody>";
+  print "</table>";
+  //print "</div>";
+  print "</div>\n";
+}
+
+function write_data_table_t($caption, $tab) {
+  //print "<div class=\"panel panel-inverse\">";
+  //print "<div class=\"panel-heading\">";
+  //print "<h4 class=\"panel-title\">$caption</h4>";
+  //print "</div>";
+  print "<div class=\"panel-body text-center\" style=\"padding: 0px 0px 2px;\">";
+  print "<table class=\"table table-bordered table-inverse table-hover table-striped-col table-default nomargin\" width=\"100%\" cellspacing=\"0\">";
+  print "<thead>";
+  print "<tr>";
+  print "<th class=\"text-right\" style=\"width:auto;\">$caption</th>";
+  print "<th class=\"text-right\">".T('In')."</th>";
+  print "<th class=\"text-right\">".T('Out')."</th>";
+  print "<th class=\"text-right\">".T('Total')."</th>";
+  print "</tr>";
+  print "</thead>";
+  print "<tbody>\n";
+
+  for ($i=0; $i<count($tab); $i++) {
+    if ($tab[$i]['act'] == 1) {
+      $t = $tab[$i]['label'];
+      $rx = kbytes_to_string($tab[$i]['rx']);
+      $tx = kbytes_to_string($tab[$i]['tx']);
+      $total = kbytes_to_string($tab[$i]['rx']+$tab[$i]['tx']);
+      $id = ($i & 1) ? 'odd' : 'even';
+      print "<tr>";
+      print "<td class=\"label_$id\" style=\"font-size:12px;\"><b>$t</b></td>";
+      print "<td class=\"numeric_$id\" style=\"font-size:12px;\" style=\"font-size:12px;\" style=\"font-size:12px;\">$rx</td>";
+      print "<td class=\"numeric_$id\" style=\"font-size:12px;\" style=\"font-size:12px;\">$tx</td>";
+      print "<td class=\"numeric_$id\" style=\"font-size:12px;\">$total</td>";
+      print "</tr>\n";
+    }
+  }
+
+  print "</tbody>";
+  print "</table>";
+  //print "</div>";
+  print "</div>\n";
+}
+
+get_vnstat_data();
 
 function processExists($processName, $username) {
   $exists= false;
@@ -615,6 +769,38 @@ break;
                   </div>
                 </div><!-- panel -->
               </div><!-- col-sm-6 -->
+
+            <div class="col-sm-12">
+              <div class="table-responsive">
+                <?php $graph_params = "if=$iface&amp;page=$page&amp;style=$style";
+                  if ($page == 's') {
+                    write_summary_s();
+                  } else if ($page == 'h') {
+                    write_data_table_s(T('Last 24 hours'), $hour);
+                  } else if ($page == 'd') {
+                    write_data_table_s(T('Last 30 days'), $day);
+                  } else if ($page == 'm') {
+                    write_data_table_s(T('Last 12 months'), $month);
+                  }
+                ?>
+              </div>
+            </div>
+
+            <div class="col-sm-12">
+              <div class="table-responsive">
+                <?php $graph_params = "if=$iface&amp;page=$page&amp;style=$style";
+                  if ($page == 's') {
+                    write_summary_t();
+                  } else if ($page == 'h') {
+                    write_data_table_t(T('Last 24 hours'), $hour);
+                  } else if ($page == 'd') {
+                    write_data_table_t(T('Last 30 days'), $day);
+                  } else if ($page == 'm') {
+                    write_data_table_t(T('Last 12 months'), $month);
+                  }
+                ?>
+              </div>
+            </div>
 
             </div>
           </div>
