@@ -15,8 +15,6 @@
 
     $page_list  = array('s','h','d','m');
 
-    $graph_list = array('large','small','none');
-
     $page_title['s'] = T('summary');
     $page_title['h'] = T('hours');
     $page_title['d'] = T('days');

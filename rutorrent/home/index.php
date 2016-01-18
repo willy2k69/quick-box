@@ -1,9 +1,9 @@
 <?php
 session_destroy();
 include '/srv/rutorrent/php/util.php';
-include 'class.php';
+include 'req/class.php';
 $interface = "eth0";
-$version = "1.6.0";
+$version = "1.6.5";
 error_reporting(E_ALL);
 $username = getUser();
 function session_start_timeout($timeout=5, $probability=100, $cookie_domain='/') {
@@ -27,190 +27,6 @@ function session_start_timeout($timeout=5, $probability=100, $cookie_domain='/')
 
 session_start_timeout(5);
 $MSGFILE = session_id();
-
-require 'config.php';
-require 'localize.php';
-require 'vnstat.php';
-
-validate_input();
-
-function kbytes_to_string($kb) {
-
-  global $byte_notation;
-
-  $units = array('TB','GB','MB','KB');
-  $scale = 1024*1024*1024;
-  $ui = 0;
-
-  $custom_size = isset($byte_notation) && in_array($byte_notation, $units);
-
-  while ((($kb < $scale) && ($scale > 1)) || $custom_size) {
-    $ui++;
-    $scale = $scale / 1024;
-
-    if ($custom_size && $units[$ui] == $byte_notation) {
-      break;
-    }
-  }
-
-  return sprintf("%0.2f %s", ($kb/$scale),$units[$ui]);
-}
-
-function write_summary_s() {
-  global $summary,$day,$hour,$month;
-
-  $trx = $summary['totalrx']*1024+$summary['totalrxk'];
-  $ttx = $summary['totaltx']*1024+$summary['totaltxk'];
-
-  //
-  // let's build array for write_data_table
-  //
-
-  $sum = array();
-
-  if (count($day) > 0 && count($hour) > 0 && count($month) > 0) {
-    $sum[0]['act'] = 1;
-    $sum[0]['label'] = T('This hour');
-    $sum[0]['rx'] = $hour[0]['rx'];
-    $sum[0]['tx'] = $hour[0]['tx'];
-
-    $sum[1]['act'] = 1;
-    $sum[1]['label'] = T('This day');
-    $sum[1]['rx'] = $day[0]['rx'];
-    $sum[1]['tx'] = $day[0]['tx'];
-
-    $sum[2]['act'] = 1;
-    $sum[2]['label'] = T('This month');
-    $sum[2]['rx'] = $month[0]['rx'];
-    $sum[2]['tx'] = $month[0]['tx'];
-
-    $sum[3]['act'] = 1;
-    $sum[3]['label'] = T('All time');
-    $sum[3]['rx'] = $trx;
-    $sum[3]['tx'] = $ttx;
-  }
-
-write_data_table_s(T('Summary'), $sum);
-
-}
-
-function write_summary_t() {
-  global $top;
-
-  $trx = $summary['totalrx']*1024+$summary['totalrxk'];
-  $ttx = $summary['totaltx']*1024+$summary['totaltxk'];
-
-  //
-  // let's build array for write_data_table
-  //
-
-  $sum = array();
-
-  if (count($day) > 0 && count($hour) > 0 && count($month) > 0) {
-    $sum[0]['act'] = 1;
-    $sum[0]['label'] = T('This hour');
-    $sum[0]['rx'] = $hour[0]['rx'];
-    $sum[0]['tx'] = $hour[0]['tx'];
-
-    $sum[1]['act'] = 1;
-    $sum[1]['label'] = T('This day');
-    $sum[1]['rx'] = $day[0]['rx'];
-    $sum[1]['tx'] = $day[0]['tx'];
-
-    $sum[2]['act'] = 1;
-    $sum[2]['label'] = T('This month');
-    $sum[2]['rx'] = $month[0]['rx'];
-    $sum[2]['tx'] = $month[0]['tx'];
-
-    $sum[3]['act'] = 1;
-    $sum[3]['label'] = T('All time');
-    $sum[3]['rx'] = $trx;
-    $sum[3]['tx'] = $ttx;
-  }
-
-write_data_table_t(T('Top 10 days'), $top);
-
-}
-
-function write_data_table_s($caption, $tab) {
-  //print "<div class=\"panel panel-inverse\">";
-  //print "<div class=\"panel-heading\">";
-  //print "<h4 class=\"panel-title\">$caption</h4>";
-  //print "</div>";
-  print "<div class=\"panel-body text-center\"  style=\"padding: 0px 0px 2px;\">";
-  print "<table class=\"table table-bordered table-hover table-striped table-default nomargin\" width=\"100%\" cellspacing=\"0\">";
-  print "<thead>";
-  print "<tr>";
-  print "<th class=\"text-right\" style=\"width:auto;\">$caption</th>";
-  print "<th class=\"text-right\">".T('In')."</th>";
-  print "<th class=\"text-right\">".T('Out')."</th>";
-  print "<th class=\"text-right\">".T('Total')."</th>";
-  print "</tr>";
-  print "</thead>";
-  print "<tbody>\n";
-
-  for ($i=0; $i<count($tab); $i++) {
-    if ($tab[$i]['act'] == 1) {
-      $t = $tab[$i]['label'];
-      $rx = kbytes_to_string($tab[$i]['rx']);
-      $tx = kbytes_to_string($tab[$i]['tx']);
-      $total = kbytes_to_string($tab[$i]['rx']+$tab[$i]['tx']);
-      $id = ($i & 1) ? 'odd' : 'even';
-      print "<tr>";
-      print "<td class=\"label_$id\" style=\"font-size:12px;\"><b>$t</b></td>";
-      print "<td class=\"numeric_$id\" style=\"font-size:12px;\">$rx</td>";
-      print "<td class=\"numeric_$id\" style=\"font-size:12px;\">$tx</td>";
-      print "<td class=\"numeric_$id\" style=\"font-size:12px;\">$total</td>";
-      print "</tr>\n";
-    }
-  }
-
-  print "</tbody>";
-  print "</table>";
-  //print "</div>";
-  print "</div>\n";
-}
-
-function write_data_table_t($caption, $tab) {
-  //print "<div class=\"panel panel-inverse\">";
-  //print "<div class=\"panel-heading\">";
-  //print "<h4 class=\"panel-title\">$caption</h4>";
-  //print "</div>";
-  print "<div class=\"panel-body text-center\" style=\"padding: 0px 0px 2px;\">";
-  print "<table class=\"table table-bordered table-inverse table-hover table-striped-col table-default nomargin\" width=\"100%\" cellspacing=\"0\">";
-  print "<thead>";
-  print "<tr>";
-  print "<th class=\"text-right\" style=\"width:auto;\">$caption</th>";
-  print "<th class=\"text-right\">".T('In')."</th>";
-  print "<th class=\"text-right\">".T('Out')."</th>";
-  print "<th class=\"text-right\">".T('Total')."</th>";
-  print "</tr>";
-  print "</thead>";
-  print "<tbody>\n";
-
-  for ($i=0; $i<count($tab); $i++) {
-    if ($tab[$i]['act'] == 1) {
-      $t = $tab[$i]['label'];
-      $rx = kbytes_to_string($tab[$i]['rx']);
-      $tx = kbytes_to_string($tab[$i]['tx']);
-      $total = kbytes_to_string($tab[$i]['rx']+$tab[$i]['tx']);
-      $id = ($i & 1) ? 'odd' : 'even';
-      print "<tr>";
-      print "<td class=\"label_$id\" style=\"font-size:12px;\"><b>$t</b></td>";
-      print "<td class=\"numeric_$id\" style=\"font-size:12px;\" style=\"font-size:12px;\" style=\"font-size:12px;\">$rx</td>";
-      print "<td class=\"numeric_$id\" style=\"font-size:12px;\" style=\"font-size:12px;\">$tx</td>";
-      print "<td class=\"numeric_$id\" style=\"font-size:12px;\">$total</td>";
-      print "</tr>\n";
-    }
-  }
-
-  print "</tbody>";
-  print "</table>";
-  //print "</div>";
-  print "</div>\n";
-}
-
-get_vnstat_data();
 
 function processExists($processName, $username) {
   $exists= false;
@@ -264,8 +80,8 @@ function writePlex($ip) {
     fwrite($fh, $stringData);
     fclose($fh);
     unlink('.plex');
-    writeMsg("Hello <b>$username</b>: Im going to disable public access for <b>Plex Media Server</b>. You may still access Plex privately on port <a href=\"http://62.210.195.87:32400/web/index.html\" target=\"_blank\">32400</a>. Note however, you will need to open an SSH Tunnel to use your servers Plex Media Server.<br><br>If you do not know how, read about setting up an SSH Tunnel <a href=\"https://github.com/JMSDOnline/quick-box/wiki/F.A.Q#how-do-i-create-an-ssh-tunnel-and-connect-to-plex\" rel=\"noindex, nofollow\" target=\"_blank\">HERE</a> ... <br>");
-    $message = "Hello <b>$username</b>: Im going to disable public access for <b>Plex Media Server</b>. You may still access Plex privately on port <a href=\"http://62.210.195.87:32400/web/index.html\" target=\"_blank\">32400</a>. Note however, you will need to open an SSH Tunnel to use your servers Plex Media Server.<br><br>If you do not know how, read about setting up an SSH Tunnel <a href=\"https://github.com/JMSDOnline/quick-box/wiki/F.A.Q#how-do-i-create-an-ssh-tunnel-and-connect-to-plex\" rel=\"noindex, nofollow\" target=\"_blank\">HERE</a> ... <br>";
+    writeMsg("Hello <b>$username</b>: Im going to disable public access for <b>Plex Media Server</b>. You may still access Plex privately on port <a href=\"http://ip:32400/web/index.html\" target=\"_blank\">32400</a>. Note however, you will need to open an SSH Tunnel to use your servers Plex Media Server.<br><br>If you do not know how, read about setting up an SSH Tunnel <a href=\"https://github.com/JMSDOnline/quick-box/wiki/F.A.Q#how-do-i-create-an-ssh-tunnel-and-connect-to-plex\" rel=\"noindex, nofollow\" target=\"_blank\">HERE</a> ... <br>");
+    $message = "Hello <b>$username</b>: Im going to disable public access for <b>Plex Media Server</b>. You may still access Plex privately on port <a href=\"http://ip:32400/web/index.html\" target=\"_blank\">32400</a>. Note however, you will need to open an SSH Tunnel to use your servers Plex Media Server.<br><br>If you do not know how, read about setting up an SSH Tunnel <a href=\"https://github.com/JMSDOnline/quick-box/wiki/F.A.Q#how-do-i-create-an-ssh-tunnel-and-connect-to-plex\" rel=\"noindex, nofollow\" target=\"_blank\">HERE</a> ... <br>";
     shell_exec('sudo service apache2 reload &');
     return 'Disabling inital setup connection for plex ... ';
   } else {
@@ -282,8 +98,8 @@ function writePlex($ip) {
     $stringData .= " Order deny,allow\n";
     $stringData .= " Allow from all\n";
     $stringData .= "</Proxy>\n";
-    $stringData .= "ProxyPass / http://$ip:32400/\n";
-    $stringData .= "ProxyPassReverse / http://$ip:32400/\n";
+    $stringData .= "ProxyPass / http://ip:32400/\n";
+    $stringData .= "ProxyPassReverse / http://ip:32400/\n";
     $stringData .= "</VirtualHost>\n";
     $stringData .= "<IfModule mod_proxy.c>\n";
     $stringData .= "        Listen 31400\n";
@@ -348,12 +164,6 @@ if ($_GET['reload']) {
 }
 $base = 1024;
 $location = "/home";
-$si_prefix = array( 'B', 'KB', 'MB', 'GB', 'TB', 'EB', 'ZB', 'YB' );
-$torrents = shell_exec("ls /home/".$username."/.sessions/*.torrent|wc -l");
-$php_self = $_SERVER['PHP_SELF'];
-$web_path = substr($php_self, 0, strrpos($php_self, '/')+1);
-$time = microtime(); $time = explode(" ", $time);
-$time = $time[1] + $time[0]; $start = $time;
 
 /* check for services */
 switch (intval($_GET['id'])) {
@@ -372,38 +182,6 @@ if (file_exists('/home/'.$username.'/.startup')) {
     $cbodyerr .= "error locating start up script .. feel free to open a issue at the quick box repo"; 
 }
 
-if (file_exists('/usr/sbin/repquota')) {
-      $dftotal = shell_exec("sudo /usr/sbin/repquota /|/bin/grep ^".$username."|/usr/bin/awk '{printf \$4/1024/1024}'");
-      $dffree = shell_exec("sudo /usr/sbin/repquota /|/bin/grep ^".$username."|/usr/bin/awk '{printf (\$4-\$3)/1024/1024}'");
-      $dfused = shell_exec("sudo /usr/sbin/repquota /|/bin/grep ^".$username."|/usr/bin/awk '{printf \$3/1024/1024}'");
-      $perused = sprintf('%1.0f', $dfused / $dftotal * 100);
-
-  } else {
-
-      $bytesfree = disk_free_space('/home');
-      $class = min((int)log($bytesfree,$base),count($si_prefix) - 1); $bytestotal = disk_total_space($location);
-      $class = min((int)log($bytesfree,$base),count($si_prefix) - 1); $bytesused = $bytestotal - $bytesfree;
-        try {
-          $diskStatus = new DiskStatus('/home');
-          $freeSpace = $diskStatus->freeSpace();
-          $totalSpace = $diskStatus->totalSpace();
-          $barWidth = ($diskStatus->usedSpace()/500) * 500;
-        } catch (Exception $e) {
-          $spacebodyerr .= 'Error ('.$e-getMessage().')';
-        exit();
-          }
-      $dffree .= ''.sprintf('%1.2f',$bytesfree / pow($base,$class)) //.'<b>'.$si_prefix[$class].'</b> Free<br/>'
-      ;
-      $dfused .= ''.sprintf('%1.2f',$bytesused / pow($base,$class)) //.'<b>'.$si_prefix[$class].'</b> Used<br/>'
-      ;
-      $dftotal .= ''.sprintf('%1.2f',$bytestotal / pow($base,$class)) //.'<b>'.$si_prefix[$class].'</b> Total<br/>'
-      ;
-      $perused = sprintf('%1.0f', $bytesused / $bytestotal * 100);
-}
-
-if (file_exists('/home/'.$username.'/.sessions/rtorrent.lock')) {
-      $rtorrents = shell_exec("ls /home/".$username."/.sessions/*.torrent|wc -l");
-}
 break;
 
 /* start services */
@@ -499,7 +277,7 @@ break;
               fetchData(); 
           } 
           $.ajax({ 
-              url: "data.php", 
+              url: "req/data.php", 
               method: 'GET', 
               dataType: 'json', 
               success: onDataReceived 
@@ -508,7 +286,42 @@ break;
       setTimeout(fetchData, 1000); 
   }); 
   </script> 
+  <script language="javascript" type="text/javascript"> 
+  $(document).ready(function() {
+  function uptime() {
+    $.ajax({url: "req/up.php", cache:true, success: function (result) {
+      $('#uptime').html(result);
+      setTimeout(function(){uptime()}, 1000);
+    }});
+  }
+  uptime();
 
+  function sload() {
+    $.ajax({url: "req/load.php", cache:true, success: function (result) {
+      $('#cpuload').html(result);
+      setTimeout(function(){sload()}, 1000);
+    }});
+  }
+  sload();
+
+  function bwtables() {
+    $.ajax({url: "req/bw_tables.php", cache:false, success: function (result) {
+      $('#bw_tables').html(result);
+      setTimeout(function(){bwtables()}, 1000);
+    }});
+  }
+  bwtables();
+
+  function diskstats() {
+    $.ajax({url: "req/disk_data.php", cache:false, success: function (result) {
+      $('#disk_data').html(result);
+      setTimeout(function(){diskstats()}, 1000);
+    }});
+  }
+  diskstats();
+  }); 
+  //success: function (result)
+</script> 
   <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!--[if lt IE 9]>
   <script src="../lib/html5shiv/html5shiv.js"></script>
@@ -516,20 +329,14 @@ break;
   <![endif]-->
 
 </head>
-
 <body>
-
 <header>
   <div class="headerpanel">
-
     <div class="logopanel">
       <h2><a href="#"><img src="/img/logo.png" alt="Quick Box Seedbox" class="logo-image" height="50" /></a></h2>
     </div><!-- logopanel -->
-
     <div class="headerbar">
-
       <a id="menuToggle" class="menutoggle"><i class="fa fa-bars"></i></a>
-
       <div class="header-right">
         <ul class="headermenu">
           <li>
@@ -544,22 +351,16 @@ break;
     </div><!-- headerbar -->
   </div><!-- header-->
 </header>
-
 <section>
-
   <div class="leftpanel">
     <div class="leftpanelinner">
-
       <ul class="nav nav-tabs nav-justified nav-sidebar">
         <li class="tooltips active" data-toggle="tooltip" title="Main Menu" data-placement="bottom"><a data-toggle="tab" data-target="#mainmenu"><i class="tooltips fa fa-ellipsis-h"></i></a></li>
         <li class="tooltips" data-toggle="tooltip" title="Help" data-placement="bottom"><a data-toggle="tab" data-target="#help"><i class="tooltips fa fa-question-circle"></i></a></li>
         <li class="tooltips" data-toggle="tooltip" title="Found a bug? Report it here!" data-placement="bottom"><a href="https://github.com/JMSDOnline/quick-box/issues" target="_blank"><i class="fa fa-warning"></i></a></li>
       </ul>
-
       <div class="tab-content">
-
         <!-- ################# MAIN MENU ################### -->
-
         <div class="tab-pane active" id="mainmenu">
           <h5 class="sidebar-title">Main Menu</h5>
           <ul class="nav nav-pills nav-stacked nav-quirk">
@@ -576,9 +377,7 @@ break;
             <li><a href="?reload=true"><i class="fa fa-refresh"></i> <span>Reload Services</span></a></li>
           </ul>
         </div><!-- tab pane -->
-
         <div class="tab-pane" id="help">
-
           <h5 class="sidebar-title">Quick System Tips</h5>
           <ul class="nav nav-pills nav-stacked nav-quirk nav-mail">
             <li style="padding: 7px"><span style="font-size: 12px; color:#eee">disktest</span><br/>
@@ -586,7 +385,6 @@ break;
             <li style="padding: 7px"><span style="font-size: 12px; color:#eee">fixhome</span><br/>
             <small>Type this command to quickly adjusts /home directory permissions.</small></li>
           </ul>
-
           <h5 class="sidebar-title">Admin Commands</h5>
           <ul class="nav nav-pills nav-stacked nav-quirk nav-mail">
             <li style="padding: 7px"><span style="font-size: 12px; color:#eee">createSeedboxUser</span><br/>
@@ -600,7 +398,6 @@ break;
             <li style="padding: 7px"><span style="font-size: 12px; color:#eee">upgradeBTSync</span><br/>
             <small>Type this command in ssh to upgrade BTSync to newest version when available.</small></li>
           </ul>
-
           <h5 class="sidebar-title">Essential User Commands</h5>
           <ul class="nav nav-pills nav-stacked nav-quirk nav-mail">
             <li style="padding: 7px"><span style="font-size: 12px; color:#eee">reload</span><br/>
@@ -610,29 +407,21 @@ break;
             <li style="padding: 7px"><span style="font-size: 12px; color:#eee">screen -fa -dmS irssi irssi</span><br/>
             <small>allows user to restart/remount irssi from SSH</small></li>
           </ul>
-
           <div class="sidebar-btn-wrapper">
             <a href="#" class="btn btn-success btn-block" style="font-size: 10px;">Quick Box v<?php echo "$version"; ?></a>
           </div>
-
         </div><!-- tab-pane -->
-
       </div><!-- tab-content -->
-
     </div><!-- leftpanelinner -->
   </div><!-- leftpanel -->
-
   <div class="mainpanel">
-
     <!--<div class="pageheader">
       <h2><i class="fa fa-home"></i> Dashboard</h2>
     </div>-->
-
     <div class="contentpanel">
-
       <div class="row">
-        <div class="col-sm-8 col-md-8 dash-left">
-          <div class="col-sm-7 col-md-7">
+        <div class="col-sm-12 col-md-8 dash-left">
+          <div class="col-sm-12 col-md-7">
             <div class="panel panel-default list-announcement">
               <div class="panel-heading">
                 <h4 class="panel-title">Service Status</h4>
@@ -656,7 +445,7 @@ break;
               <div class="panel-footer"></div>
             </div>
           </div>
-          <div class="col-sm-5 col-md-5">
+          <div class="col-sm-12 col-md-5">
             <div class="panel panel-default list-announcement">
               <div class="panel-heading">
                 <h4 class="panel-title">Service Controller</h4>
@@ -680,28 +469,10 @@ break;
               <div class="panel-footer"></div>
             </div>
           </div>
-
-          <!--div class="row">
-            <div class="col-sm-12 col-md-12">
-              <div class="panel panel-default">
-                <div class="panel-heading">
-                  <h4 class="panel-title">Graph</h4>
-                </div>
-                <div class="panel-body text-center">
-                    <div id="snd_result"></div>
-                    <canvas id="snd_graph" height="100" width="500"></canvas>
-                    <br><br>
-                    <div id="rec_result"></div>
-                    <canvas id="rec_graph" height="100" width="500"></canvas>
-                    </div>
-              </div>
-            </div>
-          </div-->
         </div><!-- col-md-8 -->
-
-        <div class="col-md-4 col-lg-4 dash-right">
+        <div class="col-sm-12 col-md-4 dash-right">
           <div class="row">
-            <div class="col-sm-4 col-md-12 col-lg-6">
+            <div class="col-sm-12">
               <div class="panel panel-danger panel-weather">
                 <div class="panel-heading">
                   <h4 class="panel-title">System Response</h4>
@@ -719,15 +490,12 @@ break;
                   ?>
                 </div>
               </div>
-            </div><!-- col-md-12 -->
+            </div><!-- col-sm-12 -->
           </div><!-- row -->
-
         </div><!-- col-md-4 -->
       </div><!-- row -->
-
-
       <div class="row">
-        <div class="col-sm-8 col-md-8">
+        <div class="col-sm-12 col-md-8">
           <div class="panel panel-inverse">
             <div class="panel-heading">
               <h4 class="panel-title">Bandwidth Data</h4>
@@ -740,191 +508,87 @@ break;
                 <div class="panel panel-success-full panel-updates">
                   <div class="panel-body">
                     <div class="row">
-                      <div class="col-xs-7 col-lg-8">
+                      <div class="col-sm-7 col-md-8">
                         <h4 class="panel-title text-success">Data Sent</h4>
                         <h3><div id="snd_result"></div></h3>
                         <p>This is your upload speed</p>
                       </div>
-                      <div class="col-xs-5 col-lg-4 text-right">
+                      <div class="col-sm-5 col-md-4 text-right">
                         <i class="fa fa-cloud-upload" style="font-size: 90px"></i>
                       </div>
                     </div>
                   </div>
                 </div><!-- panel -->
               </div><!-- col-sm-6 -->
-
               <div class="col-sm-6">
                 <div class="panel panel-primary-full panel-updates">
                   <div class="panel-body">
                     <div class="row">
-                      <div class="col-xs-7 col-lg-8">
+                      <div class="col-sm-7 col-md-8">
                         <h4 class="panel-title text-success">Data Received</h4>
                         <h3><div id="rec_result"></div></h3>
                         <p style="color: #fff">This is your download speed</p>
                       </div>
-                      <div class="col-xs-5 col-lg-4 text-right">
+                      <div class="col-sm-5 col-md-4 text-right">
                         <i class="fa fa-cloud-download" style="font-size: 90px"></i>
                       </div>
                     </div>
                   </div>
                 </div><!-- panel -->
               </div><!-- col-sm-6 -->
-
-            <div class="col-sm-12">
-              <div class="table-responsive">
-                <?php $graph_params = "if=$iface&amp;page=$page&amp;style=$style";
-                  if ($page == 's') {
-                    write_summary_s();
-                  } else if ($page == 'h') {
-                    write_data_table_s(T('Last 24 hours'), $hour);
-                  } else if ($page == 'd') {
-                    write_data_table_s(T('Last 30 days'), $day);
-                  } else if ($page == 'm') {
-                    write_data_table_s(T('Last 12 months'), $month);
-                  }
-                ?>
-              </div>
-            </div>
-
-            <div class="col-sm-12">
-              <div class="table-responsive">
-                <?php $graph_params = "if=$iface&amp;page=$page&amp;style=$style";
-                  if ($page == 's') {
-                    write_summary_t();
-                  } else if ($page == 'h') {
-                    write_data_table_t(T('Last 24 hours'), $hour);
-                  } else if ($page == 'd') {
-                    write_data_table_t(T('Last 30 days'), $day);
-                  } else if ($page == 'm') {
-                    write_data_table_t(T('Last 12 months'), $month);
-                  }
-                ?>
-              </div>
-            </div>
-
+              <div id="bw_tables" style="padding:0;margin:0;"></div>
             </div>
           </div>
         </div>
-
-        <div class="col-md-4 col-lg-4 dash-right">
+        <div class="col-sm-12 col-md-4 dash-right">
           <div class="row">
-            <div class="col-sm-4 col-md-12 col-lg-6">
-              <div class="panel panel-inverse">
-                <div class="panel-heading">
-                  <h4 class="panel-title">Your Disk Status</h4>
-                </div>
-                <div class="panel-body">
-                  <p class="nomargin">Free: <span style="font-weight: 700; position: absolute; left: 70px;"><?php echo "$dffree"; ?></span></p>
-                  <p class="nomargin">Used: <span style="font-weight: 700; position: absolute; left: 70px;"><?php echo "$dfused"; ?></span></p>
-                  <p class="nomargin">Size: <span style="font-weight: 700; position: absolute; left: 70px;"><?php echo "$dftotal"; ?></span></p>
-                  <div class="row">
-                    <div class="col-xs-7 col-lg-8">
-                      <!--h4 class="panel-title text-success">Disk Space</h4-->
-                      <h3>Disk Space</h3>
-                      <div class="progress">
-                        <?php
-                          if ($perused < "70") { $diskcolor="progress-bar-success"; }
-                          if ($perused > "70") { $diskcolor="progress-bar-warning"; }
-                          if ($perused > "90") { $diskcolor="progress-bar-danger"; }
-                        ?>
-                        <div style="width:<?php echo "$perused"; ?>%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="<?php echo "$perused"; ?>" role="progressbar" class="progress-bar <?php echo $diskcolor ?>">
-                          <span class="sr-only"><?php echo "$perused"; ?>% Used</span>
+            <div id="disk_data"></div>
+            <div class="col-sm-12">
+              <div class="panel panel-inverse-full panel-updates">
+                  <div class="panel-body">
+                    <div class="row">
+                      <div class="col-sm-9">
+                        <h4 class="panel-title text-success">Server Load</h4>
+                        <h3><span id="cpuload"></span></h3>
+                        <p>This is your servers current load average</p>
+                      </div>
+                      <div class="col-sm-3 text-right">
+                        <i class="fa fa-heartbeat text-danger" style="font-size: 90px"></i>
+                      </div>
+                      <div class="row">
+                        <div class="col-sm-12 mt20 text-center">
+                          <strong>Uptime:</strong> <span id="uptime"></span>
                         </div>
                       </div>
-                      <p style="font-size:10px">You have used <?php echo "$perused"; ?>% of your total disk space</p>
-                    </div>
-                    <div class="col-xs-5 col-lg-4 text-right">
-                        <?php
-                          if ($perused < "70") { $dialcolor="dial-success"; }
-                          if ($perused > "70") { $dialcolor="dial-warning"; }
-                          if ($perused > "90") { $dialcolor="dial-danger"; }
-                        ?>
-                      <input type="text" value="<?php echo "$perused"; ?>%" class="<?php echo $dialcolor ?>">
                     </div>
                   </div>
-                  <hr />
-                  <h4>Torrents in rtorrent</h4>
-                  <p class="nomargin">There are <b><?php echo "$rtorrents"; ?></b> torrents loaded.</p>
-                </div>
-              </div><!-- col-md-12 -->
-            
-            </div><!-- row -->
-
-          </div><!-- col-md-4 -->
-
+                </div><!-- panel -->
+              </div>
+          </div><!-- row -->
         </div>
-
       </div>
-
     </div><!-- contentpanel -->
-
   </div><!-- mainpanel -->
-
 </section>
-
 <!--script src="js/graph.js"></script-->
 <script src="js/script.js"></script>
-
 <script src="lib/jquery-ui/jquery-ui.js"></script>
 <script src="lib/bootstrap/js/bootstrap.js"></script>
 <script src="lib/jquery-toggles/toggles.js"></script>
 <script src="lib/jquery-knob/jquery.knob.js"></script>
-
-<script src="js/quirk.js"></script>
-<!--script src="js/charts.js"></script-->
-
+<script src="js/quick.js"></script>
+<!--script src="js/charts.js"></script--> 
 <script>
 $(function() {
-
   // Toggles
   $('.toggle-en').toggles({
     on: true,
     height: 26
   });
-
   $('.toggle-dis').toggles({
     on: false,
     height: 26
   });
-
-});
-</script>
-<script type="text/javascript">
-$(function() {
-
-  // Knob
-  $('.dial-success').knob({
-    readOnly: true,
-    width: '70px',
-    bgColor: '#E7E9EE',
-    fgColor: '#4daf7c',
-    inputColor: '#262B36'
-  });
-
-  $('.dial-warning').knob({
-    readOnly: true,
-    width: '70px',
-    bgColor: '#E7E9EE',
-    fgColor: '#e6ad5c',
-    inputColor: '#262B36'
-  });
-
-  $('.dial-danger').knob({
-    readOnly: true,
-    width: '70px',
-    bgColor: '#E7E9EE',
-    fgColor: '#D9534F',
-    inputColor: '#262B36'
-  });
-
-  $('.dial-info').knob({
-    readOnly: true,
-    width: '70px',
-    bgColor: '#66BAC4',
-    fgColor: '#fff',
-    inputColor: '#fff'
-  });
-
 });
 </script>
 </body>

@@ -1,7 +1,7 @@
 <?php
     // setup locale and translation
     setlocale(LC_ALL, $locale);
-    require "lang/$language.php";
+    require "../lang/$language.php";
 
     function T($str)
     {

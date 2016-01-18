@@ -10,6 +10,8 @@
 #################################################################################
 HOSTNAME1=$(hostname -s);
 REPOURL="/root/tmp/quick-box"
+INETFACE=$(ifconfig | grep "Link encap" | sed 's/[ \t].*//;/^\(lo\|\)$/d' | awk '{ print $1 '});
+QBVERSION="1.6.5"
 #################################################################################
 #Script Console Colors
 black=$(tput setaf 0); red=$(tput setaf 1); green=$(tput setaf 2); yellow=$(tput setaf 3); 
@@ -669,17 +671,17 @@ function _depends() {
 if [[ $DISTRO == Debian ]]; then
 yes '' | apt-get install --force-yes build-essential fail2ban bc sudo screen zip irssi unzip nano bwm-ng htop git subversion \
   dstat automake make mktorrent libtool libsigc++-2.0-0v5 libcppunit-dev libssl-dev pkg-config libxml2-dev libcurl3 libcurl4-openssl-dev libsigc++-2.0-dev \
-  apache2-utils autoconf cron curl libxslt-dev libncurses5-dev yasm apache2 php5 php5-cli php-net-socket libdbd-mysql-perl libdbi-perl \
+  apache2-utils autoconf cron curl libxslt-dev libncurses5-dev yasm pcregrep apache2 php5 php5-cli php-net-socket libdbd-mysql-perl libdbi-perl \
   fontconfig comerr-dev ca-certificates libfontconfig1-dev libfontconfig1 rar unrar mediainfo php5-curl ifstat libapache2-mod-php5 \
   ttf-mscorefonts-installer checkinstall dtach cfv libarchive-zip-perl libnet-ssleay-perl php5-geoip openjdk-7-jre-headless openjdk-7-jre openjdk-7-jdk \
-  libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl libxml-libxslt-perl libapache2-mod-scgi lshell openvpn >>"${OUTTO}" 2>&1
+  libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl libxml-libxslt-perl libapache2-mod-scgi lshell vnstat vnstati openvpn >>"${OUTTO}" 2>&1
 elif [[ $DISTRO == Ubuntu ]]; then
 apt-get install -qq --yes --force-yes build-essential fail2ban bc sudo screen zip irssi unzip nano bwm-ng htop git subversion \
   dstat automake make mktorrent libtool libcppunit-dev libssl-dev pkg-config libxml2-dev libcurl3 libcurl4-openssl-dev libsigc++-2.0-dev \
-  apache2-utils autoconf cron curl libxslt-dev libncurses5-dev yasm apache2 php5 php5-cli php-net-socket libdbd-mysql-perl libdbi-perl \
+  apache2-utils autoconf cron curl libxslt-dev libncurses5-dev yasm pcregrep apache2 php5 php5-cli php-net-socket libdbd-mysql-perl libdbi-perl \
   fontconfig comerr-dev ca-certificates libfontconfig1-dev libfontconfig1 rar unrar mediainfo php5-curl ifstat libapache2-mod-php5 \
   ttf-mscorefonts-installer checkinstall dtach cfv libarchive-zip-perl libnet-ssleay-perl php5-geoip openjdk-7-jre-headless openjdk-7-jre openjdk-7-jdk \
-  libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl libxml-libxslt-perl libapache2-mod-scgi lshell openvpn >>"${OUTTO}" 2>&1
+  libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl libxml-libxslt-perl libapache2-mod-scgi lshell vnstat vnstati openvpn >>"${OUTTO}" 2>&1
 fi
   cd
   rm -rf /etc/skel
@@ -1345,6 +1347,25 @@ function _pureftpcert() {
   /bin/true
 }
 
+# The following function makes necessary changes to Network and TZ settings needed for 
+# the proper functionality of the Quick Box Dashboard.
+function _quickstats() {
+  # Dynamically adjust to use the servers active network adapter
+  sed -i "s/eth0/${INETFACE}/g" /srv/rutorrent/home/req/stat.php
+  sed -i "s/eth0/${INETFACE}/g" /srv/rutorrent/home/req/data.php
+  sed -i "s/eth0/${INETFACE}/g" /srv/rutorrent/home/req/config.php
+  sed -i "s/eth0/${INETFACE}/g" /srv/rutorrent/home/index.php
+  sed -i "s/qb-version/${QBVERSION}/g" /srv/rutorrent/home/index.php
+  sed -i "s/ip/${ip}/g" /srv/rutorrent/home/index.php
+  # Use server timezone
+  cd /usr/share/zoneinfo
+  find * -type f -exec sh -c "diff -q /etc/localtime '{}' > /dev/null && echo {}" \; > ~/tz.txt
+  cd ~
+  echo "    date_default_timezone_set('$(cat tz.txt)');" >> /srv/rutorrent/home/req/config.php
+  echo "" >> /srv/rutorrent/home/req/config.php
+  echo "?>" >> /srv/rutorrent/home/req/config.php
+}
+
 # function to show finished data (33)
 function _finished() {
   echo -e "\033[0mCOMPLETED in ${FIN}/min\033[0m"
@@ -1404,7 +1425,7 @@ rutorrent="/srv/rutorrent/"
 REALM="rutorrent"
 IRSSI_PASS=$(_string)
 IRSSI_PORT=$(shuf -i 2000-61000 -n 1)
-ip=$(curl http://ipecho.net/plain; echo)
+$(curl -s http://ipecho.net/plain || curl -s http://ifconfig.me/ip ; echo)
 export DEBIAN_FRONTEND=noninteractive
 cd
 
@@ -1432,7 +1453,7 @@ echo -n "Writing ${username} rutorrent config.php file ... ";_ruconf;_askquota
 echo -n "Writing seedbox reload script ... ";_reloadscript
 echo -n "Installing VSFTPd ... ";_installpureftpd
 echo -n "Setting up VSFTPd ... ";_pureftpdconfig
-_askplex;_askbtsync
+_askplex;_askbtsync;_quickstats
 echo -n "Setting irssi/rtorrent to start on boot ... ";_boot
 echo -n "Setting permissions on ${username} ... ";_perms
 
