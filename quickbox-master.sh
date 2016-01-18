@@ -34,7 +34,7 @@ fi
 function _string() { perl -le 'print map {(a..z,A..Z,0..9)[rand 62] } 0..pop' 15 ; }
 
 function _quickboxv() {
-  curl -s -o /usr/bin/quickbox https://raw.githubusercontent.com/JMSDOnline/quick-box-update/master/v1-6/quickbox
+  curl -s -o /usr/bin/quickbox https://raw.githubusercontent.com/JMSDOnline/quick-box-update/master/v1-6/5/quickbox
   chmod +x /usr/bin/quickbox
 }
 
@@ -1389,10 +1389,10 @@ cat >/root/information.info<<EOF
   http://${username}:${passwd}@$ip (Also works for FTP:5757/SSH:4747)
 EOF
 
-  if ! $(ifconfig venet0 >/dev/null 2>&1);then
-  sed -i 's/venet0/eth0/g' /srv/rutorrent/home/stat.php
-  sed -i 's/venet0/eth0/g' /srv/rutorrent/home/data.php
-  fi
+  #if ! $(ifconfig venet0 >/dev/null 2>&1);then
+  #sed -i 's/venet0/eth0/g' /srv/rutorrent/home/stat.php
+  #sed -i 's/venet0/eth0/g' /srv/rutorrent/home/data.php
+  #fi
   rm -rf "$0" >>"${OUTTO}" 2>&1
   if [[ $DISTRO == Debian ]]; then
     for i in ssh apache2 pure-ftpd vsftpd fail2ban quota plexmediaserver; do
