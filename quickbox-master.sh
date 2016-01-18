@@ -1425,7 +1425,7 @@ rutorrent="/srv/rutorrent/"
 REALM="rutorrent"
 IRSSI_PASS=$(_string)
 IRSSI_PORT=$(shuf -i 2000-61000 -n 1)
-$(curl -s http://ipecho.net/plain || curl -s http://ifconfig.me/ip ; echo)
+ip=$(curl -s http://ipecho.net/plain || curl -s http://ifconfig.me/ip ; echo)
 export DEBIAN_FRONTEND=noninteractive
 cd
 
