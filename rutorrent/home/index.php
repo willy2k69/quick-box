@@ -3,7 +3,7 @@ session_destroy();
 include '/srv/rutorrent/php/util.php';
 include 'req/class.php';
 $interface = "eth0";
-$version = "1.6.5";
+$version = "qb-version";
 error_reporting(E_ALL);
 $username = getUser();
 function session_start_timeout($timeout=5, $probability=100, $cookie_domain='/') {
@@ -80,8 +80,8 @@ function writePlex($ip) {
     fwrite($fh, $stringData);
     fclose($fh);
     unlink('.plex');
-    writeMsg("Hello <b>$username</b>: Im going to disable public access for <b>Plex Media Server</b>. You may still access Plex privately on port <a href=\"http://ip:32400/web/index.html\" target=\"_blank\">32400</a>. Note however, you will need to open an SSH Tunnel to use your servers Plex Media Server.<br><br>If you do not know how, read about setting up an SSH Tunnel <a href=\"https://github.com/JMSDOnline/quick-box/wiki/F.A.Q#how-do-i-create-an-ssh-tunnel-and-connect-to-plex\" rel=\"noindex, nofollow\" target=\"_blank\">HERE</a> ... <br>");
-    $message = "Hello <b>$username</b>: Im going to disable public access for <b>Plex Media Server</b>. You may still access Plex privately on port <a href=\"http://ip:32400/web/index.html\" target=\"_blank\">32400</a>. Note however, you will need to open an SSH Tunnel to use your servers Plex Media Server.<br><br>If you do not know how, read about setting up an SSH Tunnel <a href=\"https://github.com/JMSDOnline/quick-box/wiki/F.A.Q#how-do-i-create-an-ssh-tunnel-and-connect-to-plex\" rel=\"noindex, nofollow\" target=\"_blank\">HERE</a> ... <br>";
+    writeMsg("Hello <b>$username</b>: Im going to disable public access for <b>Plex Media Server</b>. You may still access Plex privately on port <a href=\"http://ipaccess:32400/web/index.html\" target=\"_blank\">32400</a>. Note however, you will need to open an SSH Tunnel to use your servers Plex Media Server.<br><br>If you do not know how, read about setting up an SSH Tunnel <a href=\"https://github.com/JMSDOnline/quick-box/wiki/F.A.Q#how-do-i-create-an-ssh-tunnel-and-connect-to-plex\" rel=\"noindex, nofollow\" target=\"_blank\">HERE</a> ... <br>");
+    $message = "Hello <b>$username</b>: Im going to disable public access for <b>Plex Media Server</b>. You may still access Plex privately on port <a href=\"http://ipaccess:32400/web/index.html\" target=\"_blank\">32400</a>. Note however, you will need to open an SSH Tunnel to use your servers Plex Media Server.<br><br>If you do not know how, read about setting up an SSH Tunnel <a href=\"https://github.com/JMSDOnline/quick-box/wiki/F.A.Q#how-do-i-create-an-ssh-tunnel-and-connect-to-plex\" rel=\"noindex, nofollow\" target=\"_blank\">HERE</a> ... <br>";
     shell_exec('sudo service apache2 reload &');
     return 'Disabling inital setup connection for plex ... ';
   } else {
@@ -98,8 +98,8 @@ function writePlex($ip) {
     $stringData .= " Order deny,allow\n";
     $stringData .= " Allow from all\n";
     $stringData .= "</Proxy>\n";
-    $stringData .= "ProxyPass / http://ip:32400/\n";
-    $stringData .= "ProxyPassReverse / http://ip:32400/\n";
+    $stringData .= "ProxyPass / http://$ip:32400/\n";
+    $stringData .= "ProxyPassReverse / http://$ip:32400/\n";
     $stringData .= "</VirtualHost>\n";
     $stringData .= "<IfModule mod_proxy.c>\n";
     $stringData .= "        Listen 31400\n";
