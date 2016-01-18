@@ -47,8 +47,8 @@ This script has the following features
 * BTSync
 * LShell
 
-### Quick Box Seedbox Dashboard
-![Modern & Simple Seedbox Dashboard](https://github.com/JMSDOnline/quick-box/blob/master/img/quickbox-dashboard.png "Quick Box Modern & Simple Seedbox Dashboard")
+### Quick Box Seedbox Dashboard - Video Preview
+[![Quick Box v1.6.5 Dashboard](https://raw.githubusercontent.com/JMSDOnline/quick-box-update/master/assets/quickbox-dasboard-youtube-preview.png)](http://www.youtube.com/watch?v=Nui3Gicc0mI)
 
 ### Quick Box Seedbox Custom ruTorrent Theme by JMSolo Designs
 ![New and Custom Theme by JMSolo Designs](https://github.com/JMSDOnline/quick-box/blob/master/img/quick-box-theme.png "Quick Box - New and Custom Theme by JMSolo Designs")
