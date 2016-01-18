@@ -5,7 +5,7 @@ var range_snd = 1024;  // KBps
 
 if(typeof(EventSource) !== "undefined") 
 {
-	var stat_source = new EventSource("stat.php");
+	var stat_source = new EventSource("req/stat.php");
 	var rate_rec = 0;
 	var rate_snd = 0;
 	stat_source.onmessage = function(e)
