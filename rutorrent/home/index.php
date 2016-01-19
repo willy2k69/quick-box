@@ -341,7 +341,7 @@ break;
   <![endif]-->
 
 </head>
-<body>
+<body class="body ps-container">
 <header>
   <div class="headerpanel">
     <div class="logopanel">
@@ -364,7 +364,7 @@ break;
   </div><!-- header-->
 </header>
 <section>
-  <div class="leftpanel">
+  <div class="leftpanel ps-container">
     <div class="leftpanelinner">
       <ul class="nav nav-tabs nav-justified nav-sidebar">
         <li class="tooltips active" data-toggle="tooltip" title="Main Menu" data-placement="bottom"><a data-toggle="tab" data-target="#mainmenu"><i class="tooltips fa fa-ellipsis-h"></i></a></li>
@@ -582,14 +582,24 @@ break;
     </div><!-- contentpanel -->
   </div><!-- mainpanel -->
 </section>
-<!--script src="js/graph.js"></script-->
 <script src="js/script.js"></script>
 <script src="lib/jquery-ui/jquery-ui.js"></script>
 <script src="lib/bootstrap/js/bootstrap.js"></script>
 <script src="lib/jquery-toggles/toggles.js"></script>
 <script src="lib/jquery-knob/jquery.knob.js"></script>
 <script src="js/quick.js"></script>
-<!--script src="js/charts.js"></script--> 
+<script src="js/jquery.scrollbar.js"></script>
+<script>
+$(function() {
+  $('.leftpanel').perfectScrollbar();
+  $('.leftpanel').perfectScrollbar({ wheelSpeed: 1, wheelPropagation: true, minScrollbarLength: 20 });
+  $('.leftpanel').perfectScrollbar('update');
+  //$('.leftpanel').perfectScrollbar('destroy');
+  $('.body').perfectScrollbar();
+  $('.body').perfectScrollbar({ wheelSpeed: 1, wheelPropagation: true, minScrollbarLength: 20 });
+  $('.body').perfectScrollbar('update');
+});
+</script>
 <script>
 $(function() {
   // Toggles
