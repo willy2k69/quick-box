@@ -701,10 +701,10 @@ fi
   (echo y;echo o conf prerequisites_policy follow;echo o conf commit)>/dev/null 2>&1|cpan Digest::SHA1 >>"${OUTTO}" 2>&1
   (echo y;echo o conf prerequisites_policy follow;echo o conf commit)>/dev/null 2>&1|cpan Digest::SHA >>"${OUTTO}" 2>&1
   sed -i 's/errors=remount-ro/usrquota,errors=remount-ro/g' /etc/fstab
-  mount -o remount / >>"${OUTTO}" 2>&1 || mount -o remount /home >>"${OUTTO}" 2>&1
-  quotacheck -auMF vfsv1 >>"${OUTTO}" 2>&1
-  quotaon -uv / >>"${OUTTO}" 2>&1
-  service quota start >>"${OUTTO}" 2>&1
+  mount -o remount / || mount -o remount /home >>"${OUTTO}" 2>&1
+  quotacheck -auMF vfsv1
+  quotaon -uv /
+  service quota start
 cat >/etc/lshell.conf<<'LS'
 [global]
 logpath         : /var/log/lshell/
@@ -1198,7 +1198,7 @@ function _askquota() {
 echo -ne "${yellow}Are you going to use a quota disk system?${normal} (If your unsure, hit N) (Default: ${red}N${normal}) "; read responce
   case $responce in
     [yY] | [yY][Ee][Ss] )
-    apt-get -yy -q install quota >/dev/null 2>&1
+    apt-get -y -q install quota >/dev/null 2>&1
     sed -i "/diskuser/c\$diskuser = \"\/\";" /srv/rutorrent/conf/users/${username}/config.php
     sed -i "/quotaUser/c\$quotaUser = \"${username}\";" /srv/rutorrent/conf/users/${username}/config.php
     ;;
