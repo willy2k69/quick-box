@@ -48,6 +48,7 @@ This script has the following features
 * LShell
 
 ### Quick Box Seedbox Dashboard - Video Preview
+> As of version 1.6.5 (latest) the stuttering issues with server load average and uptime on refresh are fixed. These stats are updated every 1/sec. Additionally, all stats you see on the dashboard are dynamically updated via ajax. Example - add a torrent - the torrents number will update as will diskspace etc... this is done without needing to refresh the page.
 [![Quick Box v1.6.5 Dashboard](https://raw.githubusercontent.com/JMSDOnline/quick-box-update/master/assets/quickbox-dasboard-youtube-preview.png)](http://www.youtube.com/watch?v=Nui3Gicc0mI)
 
 ### Quick Box Seedbox Custom ruTorrent Theme by JMSolo Designs

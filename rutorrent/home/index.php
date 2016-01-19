@@ -234,27 +234,39 @@ break;
 
 <html lang="en">
 <head>
+  <!-- META -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
   <meta name="description" content="">
   <meta name="author" content="">
-  <!--<link rel="shortcut icon" href="../images/favicon.png" type="image/png">-->
-
   <title>Your Seedbox Dashboard</title>
-
+  <!-- CSS STYLESHEETS AND ASSETTS -->
+  <link rel="shortcut icon" href="../images/favicon-16x16.png" type="image/png">
   <link rel="stylesheet" href="lib/jquery-ui/jquery-ui.css">
   <link rel="stylesheet" href="lib/Hover/hover.css">
   <link rel="stylesheet" href="lib/jquery-toggles/toggles-full.css">
   <link rel="stylesheet" href="lib/font-awesome/font-awesome.css">
   <link rel="stylesheet" href="lib/ionicons/css/ionicons.css">
   <link rel="stylesheet" href="skins/quick.css">
-
+  <!-- JAVASCRIPT -->
   <script src="lib/modernizr/modernizr.js"></script>
   <script src="lib/jquery/jquery.js"></script>
   <script type="text/javascript" src="lib/flot/jquery.flot.js"></script>
   <script type="text/javascript" src="lib/flot/jquery.flot.time.js"></script>
   <script type="text/javascript" src="lib/flot/jquery.flot.resize.js"></script>
   <script type="text/javascript" src="lib/flot/jquery.flot.canvas.js"></script>
+  <script src="https://rawgit.com/hippich/bower-semver/master/semver.min.js"></script>
+  <script>
+  var gitHubPath = 'JMSDOnline/quick-box';  // quick-box repo
+  var url = 'https://api.github.com/repos/' + gitHubPath + '/tags';
+
+  $.get(url).done(function (data) {
+    var versions = data.sort(function (v1, v2) {
+      return semver.compare(v2.name, v1.name)
+    });
+    $('#version-result').html(versions[0].name);
+  });
+  </script>
   <script id="source" language="javascript" type="text/javascript"> 
   $(document).ready(function() { 
       var options = { 
@@ -407,9 +419,9 @@ break;
             <li style="padding: 7px"><span style="font-size: 12px; color:#eee">screen -fa -dmS irssi irssi</span><br/>
             <small>allows user to restart/remount irssi from SSH</small></li>
           </ul>
-          <div class="sidebar-btn-wrapper">
-            <a href="#" class="btn btn-success btn-block" style="font-size: 10px;">Quick Box v<?php echo "$version"; ?></a>
-          </div>
+          <h5 class="sidebar-title text-center">Quick Box Status</h5>
+            <p class="text-center" style="font-size:11px;color:#eee;padding:7px">You are running Quick Box <b>v<?php echo "$version"; ?></b><br/>
+            Latest Quick Box Release: <b><span style="color:#87D37C" id="version-result"></span></b></p>
         </div><!-- tab-pane -->
       </div><!-- tab-content -->
     </div><!-- leftpanelinner -->
