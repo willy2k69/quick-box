@@ -9,9 +9,9 @@
 # find server hostname and repo location for quick-box configuration
 #################################################################################
 HOSTNAME1=$(hostname -s);
-REPOURL="/root/tmp/quick-box"
+REPOURL="/root/tmp/quick-box-2.0.0"
 INETFACE=$(ifconfig | grep "Link encap" | sed 's/[ \t].*//;/^\(lo\|\)$/d' | awk '{ print $1 '});
-QBVERSION="1.6.5"
+QBVERSION="2.0.0"
 #################################################################################
 #Script Console Colors
 black=$(tput setaf 0); red=$(tput setaf 1); green=$(tput setaf 2); yellow=$(tput setaf 3); 
@@ -401,9 +401,26 @@ Alias /${username}.downloads "/home/${username}/torrents/"
   </Directory>
 AS
 
+cat >/etc/apache2/sites-enabled/alias.${username}.console.conf<<CS
+Alias /${username}.console "/home/${username}/.console/"
+<Directory "/home/${username}/.console/">
+  Options Indexes FollowSymLinks MultiViews
+  AuthType Digest
+  AuthName "rutorrent"
+  AuthUserFile '/etc/htpasswd'
+  Require valid-user
+  AllowOverride None
+  Order allow,deny
+  allow from all
+</Directory>
+CS
+
 cat >>/etc/apache2/sites-enabled/scgimount.conf<<SC
 SCGIMount /${username} 127.0.0.1:$RPORT
 SC
+
+sed -i 's/console-username/${username}/g' /home/${username}/.console/index.php
+sed -i 's/console-password/${password}/g' /home/${username}/.console/index.php
 
 }
 function deleteSeedboxUser() {
@@ -460,6 +477,11 @@ function upgradeBTSync() {
   echo "${green}Congrats! Upgrade is complete - Enjoy${normal}"
   echo
   echo
+}
+
+function upgradePlex() {
+  apt-get install -yqq --force-yes --only-upgrade plexmediaserver
+  service plexmediaserver restart
 }
 
 EOF
@@ -669,17 +691,17 @@ cat hostsTrackers >> /etc/hosts
 # package and repo addition (8) _install softwares and packages_
 function _depends() {
 if [[ $DISTRO == Debian ]]; then
-yes '' | apt-get install --force-yes build-essential fail2ban bc sudo screen zip irssi unzip nano bwm-ng htop git subversion \
+yes '' | apt-get install --force-yes build-essential fail2ban bc sudo screen zip irssi unzip nano bwm-ng htop git dos2unix subversion \
   dstat automake make mktorrent libtool libsigc++-2.0-0v5 libcppunit-dev libssl-dev pkg-config libxml2-dev libcurl3 libcurl4-openssl-dev libsigc++-2.0-dev \
   apache2-utils autoconf cron curl libxslt-dev libncurses5-dev yasm pcregrep apache2 php5 php5-cli php-net-socket libdbd-mysql-perl libdbi-perl \
-  fontconfig comerr-dev ca-certificates libfontconfig1-dev libfontconfig1 rar unrar mediainfo php5-curl ifstat libapache2-mod-php5 \
+  fontconfig quota comerr-dev ca-certificates libfontconfig1-dev libfontconfig1 rar unrar mediainfo php5-curl ifstat libapache2-mod-php5 \
   ttf-mscorefonts-installer checkinstall dtach cfv libarchive-zip-perl libnet-ssleay-perl php5-geoip openjdk-7-jre-headless openjdk-7-jre openjdk-7-jdk \
   libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl libxml-libxslt-perl libapache2-mod-scgi lshell vnstat vnstati openvpn >>"${OUTTO}" 2>&1
 elif [[ $DISTRO == Ubuntu ]]; then
-apt-get install -qq --yes --force-yes build-essential fail2ban bc sudo screen zip irssi unzip nano bwm-ng htop git subversion \
+apt-get install -qq --yes --force-yes build-essential fail2ban bc sudo screen zip irssi unzip nano bwm-ng htop git dos2unix subversion \
   dstat automake make mktorrent libtool libcppunit-dev libssl-dev pkg-config libxml2-dev libcurl3 libcurl4-openssl-dev libsigc++-2.0-dev \
   apache2-utils autoconf cron curl libxslt-dev libncurses5-dev yasm pcregrep apache2 php5 php5-cli php-net-socket libdbd-mysql-perl libdbi-perl \
-  fontconfig comerr-dev ca-certificates libfontconfig1-dev libfontconfig1 rar unrar mediainfo php5-curl ifstat libapache2-mod-php5 \
+  fontconfig quota comerr-dev ca-certificates libfontconfig1-dev libfontconfig1 rar unrar mediainfo php5-curl ifstat libapache2-mod-php5 \
   ttf-mscorefonts-installer checkinstall dtach cfv libarchive-zip-perl libnet-ssleay-perl php5-geoip openjdk-7-jre-headless openjdk-7-jre openjdk-7-jdk \
   libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl libxml-libxslt-perl libapache2-mod-scgi lshell vnstat vnstati openvpn >>"${OUTTO}" 2>&1
 fi
@@ -704,7 +726,7 @@ fi
   mount -o remount / || mount -o remount /home >>"${OUTTO}" 2>&1
   quotacheck -auMF vfsv1
   quotaon -uv /
-  service quota start
+  service quota start>>"${OUTTO}" 2>&1
 cat >/etc/lshell.conf<<'LS'
 [global]
 logpath         : /var/log/lshell/
@@ -886,6 +908,7 @@ function _adduser() {
   fi
   if [[ $sudoers == "yes" ]]; then
   awk -v username=${username} '/^root/ && !x {print username    " ALL=(ALL:ALL) NOPASSWD: ALL"; x=1} 1' /etc/sudoers > /tmp/sudoers;mv /tmp/sudoers /etc
+  echo "${username}" > /root/master.txt
   fi
 }
 
@@ -911,6 +934,17 @@ Alias /rutorrent "/srv/rutorrent"
 </Directory>
 Alias /${username}.downloads "/home/${username}/torrents/"
 <Directory "/home/${username}/torrents/">
+  Options Indexes FollowSymLinks MultiViews
+  AuthType Digest
+  AuthName "rutorrent"
+  AuthUserFile '/etc/htpasswd'
+  Require valid-user
+  AllowOverride None
+  Order allow,deny
+  allow from all
+</Directory>
+Alias /${username}.console "/home/${username}/.console/"
+<Directory "/home/${username}/.console/">
   Options Indexes FollowSymLinks MultiViews
   AuthType Digest
   AuthName "rutorrent"
@@ -1022,11 +1056,14 @@ EOF
 
 # function to install rutorrent plugins (19)
 function _plugins() {
+  mkdir -p /etc/quickbox/rutorrent/plugins/
+  mv "${REPOURL}/plugins/" /etc/quickbox/rutorrent/
+  PLUGINVAULT="/etc/quickbox/rutorrent/plugins/"; cd "${rutorrent}plugins"
   mkdir -p "${rutorrent}plugins"; cd "${rutorrent}plugins"
   LIST="_getdir _noty _noty2 _task autodl-irssi autotools check_port chunks cookies cpuload create data datadir diskspace edit erasedata extratio extsearch feeds filedrop filemanager fileshare fileupload geoip history httprpc loginmgr logoff lookat mediainfo mobile pausewebui ratio ratiocolor retrackers rpc rss rssurlrewrite rutracker_check scheduler screenshots seedingtime show_peers_like_wtorrent source stream theme throttle tracklabels trafic unpack xmpp"
   for i in $LIST; do
   echo -ne "Installing Plugin: ${green}${i}${normal} ... "
-  cp -R "${REPOURL}/plugins/$i" .
+  cp -R "${PLUGINVAULT}$i" .
   echo "${OK}"
   done
 
@@ -1102,6 +1139,21 @@ ADC
   echo "${OK}"
 }
 
+function _plugincommands() {
+  mkdir -p /etc/quickbox/rutorrent/plugins/commands
+  mv "${REPOURL}/commands/rutorrent/plugins/" /etc/quickbox/rutorrent/plugins/
+  PLUGINCOMMANDS="/etc/quickbox/rutorrent/plugins/commands/"; cd "/usr/bin"
+  LIST="installplugin-getdir removeplugin-getdir installplugin-task removeplugin-task installplugin-autodl removeplugin-autodl installplugin-autotools removeplugin-autotools installplugin-checkport removeplugin-checkport installplugin-chunks removeplugin-chunks installplugin-cookies removeplugin-cookies installplugin-cpuload removeplugin-cpuload installplugin-create removeplugin-create installplugin-data removeplugin-data installplugin-datadir removeplugin-datadir installplugin-diskspace removeplugin-diskspace installplugin-edit removeplugin-edit installplugin-erasedata removeplugin-erasedata installplugin-extratio removeplugin-extratio installplugin-extsearch removeplugin-extsearch installplugin-feeds removeplugin-feeds installplugin-filedrop removeplugin-filedrop installplugin-filemanager removeplugin-filemanager installplugin-fileshare removeplugin-fileshare installplugin-fileupload removeplugin-fileupload installplugin-history removeplugin-history installplugin-httprpc removeplugin-httprpc installplugin-ipad removeplugin-ipad installplugin-loginmgr removeplugin-loginmgr installplugin-logoff removeplugin-logoff installplugin-lookat removeplugin-lookat installplugin-mediainfo removeplugin-mediainfo installplugin-mobile removeplugin-mobile installplugin-noty removeplugin-noty installplugin-pausewebui removeplugin-pausewebui installplugin-ratio removeplugin-ratio installplugin-ratiocolor removeplugin-ratiocolor installplugin-retrackers removeplugin-retrackers installplugin-rpc removeplugin-rpc installplugin-rss removeplugin-rss installplugin-rssurlrewrite removeplugin-rssurlrewrite installplugin-rutracker_check removeplugin-rutracker_check installplugin-scheduler removeplugin-scheduler installplugin-screenshots removeplugin-screenshots installplugin-seedingtime removeplugin-seedingtime installplugin-show_peers_like_wtorrent removeplugin-show_peers_like_wtorrent installplugin-source removeplugin-source installplugin-stream removeplugin-stream installplugin-theme removeplugin-theme installplugin-throttle removeplugin-throttle installplugin-tracklabels removeplugin-tracklabels installplugin-trafic removeplugin-trafic installplugin-unpack removeplugin-unpack installplugin-xmpp removeplugin-xmpp"
+  for i in $LIST; do
+  #echo -ne "Setting Up and Initializing Plugin Command: ${green}${i}${normal} "
+  cp -R "${PLUGINCOMMANDS}$i" .
+  dos2unix installplugin* >>"${OUTTO}" 2>&1; dos2unix removeplugin* >>"${OUTTO}" 2>&1
+  chmod +x installplugin*; chmod +x removeplugin*
+  echo "${OK}"
+  done
+}
+
+
 # function to make dirs for first user (21)
 function _makedirs() {
   mkdir /home/"${username}"/{torrents,.sessions,watch} >>"${OUTTO}" 2>&1
@@ -1116,10 +1168,10 @@ function _cronfile() {
 cat >"/home/${username}/.startup"<<'EOF'
 #!/bin/bash
 export USER=`id -un`
-IRSSI_CLIENT=yes
+IRSSI_CLIENT= 
 RTORRENT_CLIENT=yes
 WIPEDEAD=yes
-BTSYNC=
+BTSYNC= 
 ADDRESS=$(curl -s http://ipecho.net/plain || curl -s http://ifconfig.me/ip ; echo)
 
 if [ "$WIPEDEAD" == "yes" ]; then screen -wipe >/dev/null 2>&1; fi
@@ -1137,7 +1189,10 @@ if [ "$BTSYNC" == "yes" ]; then
 fi
 EOF
 if [[ $btsync == "yes" ]]; then
-  sed -is 's/BTSYNC=$/BTSYNC=yes/g' /home/${username}/.startup
+  sed -is 's/BTSYNC=/BTSYNC=yes/g' /home/${username}/.startup
+fi
+if [[ $irssi == "yes" ]]; then
+  sed -is 's/IRSSI_CLIENT=/IRSSI_CLIENT=yes/g' /home/${username}/.startup
 fi
 echo "${OK}"
 }
@@ -1190,25 +1245,12 @@ cat >"${rutorrent}conf/users/${username}/config.php"<<EOF
 EOF
 
   chown -R www-data.www-data "${rutorrent}conf/users/" >>"${OUTTO}" 2>&1
+  sed -i "/diskuser/c\$diskuser = \"\/\";" /srv/rutorrent/conf/users/${username}/config.php
+  sed -i "/quotaUser/c\$quotaUser = \"${username}\";" /srv/rutorrent/conf/users/${username}/config.php
   echo "${OK}"
 }
 
-# function to set first user quota (25)
-function _askquota() {
-echo -ne "${yellow}Are you going to use a quota disk system?${normal} (If your unsure, hit N) (Default: ${red}N${normal}) "; read responce
-  case $responce in
-    [yY] | [yY][Ee][Ss] )
-    apt-get -y -q install quota >/dev/null 2>&1
-    sed -i "/diskuser/c\$diskuser = \"\/\";" /srv/rutorrent/conf/users/${username}/config.php
-    sed -i "/quotaUser/c\$quotaUser = \"${username}\";" /srv/rutorrent/conf/users/${username}/config.php
-    ;;
-    [nN] | [nN][Oo] | "" )
-    ;;
-    *) ;;
-  esac
-}
-
-# create reload script (26) 
+# create reload script (25) 
 function _reloadscript() {
 cat >/usr/bin/reload<<'EOF'
 #!/bin/bash
@@ -1223,21 +1265,21 @@ chmod +x /usr/bin/reload
 echo "${OK}"
 }
 
-# seedbox boot for first user (27)
+# seedbox boot for first user (26)
 function _boot() {
         command1="*/1 * * * * /home/${username}/.startup"
         cat <(fgrep -iv "${command1}" <(sh -c 'sudo -u ${username} crontab -l' >/dev/null 2>&1)) <(echo "${command1}") | sudo -u ${username} crontab -
   echo "${OK}"
 }
 
-# function to install pure-ftpd (28)
+# function to install pure-ftpd (27)
 function _installpureftpd() {
   apt-get purge -y -q --force-yes vsftpd pure-ftpd >>"${OUTTO}" 2>&1
   apt-get install -q -y --force-yes vsftpd >>"${OUTTO}" 2>&1
   echo "${OK}"
 }
 
-# function to configure pure-ftpd (29)
+# function to configure pure-ftpd (28)
 function _pureftpdconfig() {
 cat >/root/.openssl.cnf <<EOF
 [ req ]
@@ -1298,7 +1340,7 @@ VSD
   echo "${OK}"
 }
 
-# function to ask for plexmediaserver (30)
+# function to ask for plexmediaserver (29)
 function _askplex() {
   echo -ne "${yellow}Would you like to install Plex Media Server${normal} (Y/n): (Default: ${red}N${normal}) "; read responce
   case $responce in
@@ -1323,7 +1365,7 @@ function _askplex() {
   esac
 }
 
-# function to ask for btsync (31)
+# function to ask for btsync (30)
 function _askbtsync() {
   echo -ne "${yellow}Would you like to install BTSync?${normal} (Y/n): (Default: ${red}N${normal}) "; read responce
   case $responce in
@@ -1335,12 +1377,26 @@ function _askbtsync() {
     rm -rf btsync.latest.tar.gz
     echo "${OK}"
     ;;
-    [nN] | [nN][Oo] | "") echo "Skipping ... " ;;
+    [nN] | [nN][Oo] | "") echo "${cyan}Skipping BTSync install${normal} ... " ;;
     *) echo "${cyan}Skipping BTSync install${normal} ... " ;;
   esac
 }
 
-# function to create ssl cert for pure-ftpd (32)
+function _packagecommands() {
+  mkdir -p /etc/quickbox/system/packages/commands
+  mv "${REPOURL}/commands/system/packages/" /etc/quickbox/system/packages/
+  PACKAGECOMMANDS="/etc/quickbox/system/packages/commands/"; cd "/usr/bin"
+  LIST="installpackage-plex removepackage-plex installpackage-btsync removepackage-btsync"
+  for i in $LIST; do
+  #echo -ne "Setting Up and Initializing Plugin Command: ${green}${i}${normal} "
+  cp -R "${PACKAGECOMMANDS}$i" .
+  dos2unix installpackage* >>"${OUTTO}" 2>&1; dos2unix removepackage* >>"${OUTTO}" 2>&1
+  chmod +x installpackage*; chmod +x removepackage*
+  echo "${OK}"
+  done
+}
+
+# function to create ssl cert for pure-ftpd (31)
 function _pureftpcert() {
   /bin/true
 }
@@ -1364,7 +1420,7 @@ function _quickstats() {
   echo "?>" >> /srv/rutorrent/home/req/config.php
 }
 
-# function to show finished data (33)
+# function to show finished data (32)
 function _finished() {
   echo -e "\033[0mCOMPLETED in ${FIN}/min\033[0m"
   echo "Valid Commands: "
@@ -1387,10 +1443,6 @@ cat >/root/information.info<<EOF
   http://${username}:${passwd}@$ip (Also works for FTP:5757/SSH:4747)
 EOF
 
-  #if ! $(ifconfig venet0 >/dev/null 2>&1);then
-  #sed -i 's/venet0/eth0/g' /srv/rutorrent/home/stat.php
-  #sed -i 's/venet0/eth0/g' /srv/rutorrent/home/data.php
-  #fi
   rm -rf "$0" >>"${OUTTO}" 2>&1
   if [[ $DISTRO == Debian ]]; then
     for i in ssh apache2 pure-ftpd vsftpd fail2ban quota plexmediaserver; do
@@ -1444,14 +1496,15 @@ echo -n "Installing rutorrent into /srv ... ";_rutorrent;_askshell;_adduser;_apa
 echo -n "Setting up seedbox.conf for apache ... ";_apacheconf
 echo -n "Installing .rtorrent.rc for ${username} ... ";_rconf
 echo "Installing rutorrent plugins ... ";_plugins
-echo -n "Installing autodl-irssi ... ";_autodl
+echo -n "Installing autodl-irssi ... ";_autodl;_plugincommands
 echo -n "Making ${username} directory structure ... ";_makedirs
 echo -n "Writing ${username} system crontab script ... ";_cronfile
-echo -n "Writing ${username} rutorrent config.php file ... ";_ruconf;_askquota
+echo -n "Writing ${username} rutorrent config.php file ... ";_ruconf;
+#_askquota
 echo -n "Writing seedbox reload script ... ";_reloadscript
 echo -n "Installing VSFTPd ... ";_installpureftpd
 echo -n "Setting up VSFTPd ... ";_pureftpdconfig
-_askplex;_askbtsync;_quickstats
+_askplex;_askbtsync;_packagecommands;_quickstats
 echo -n "Setting irssi/rtorrent to start on boot ... ";_boot
 echo -n "Setting permissions on ${username} ... ";_perms
 

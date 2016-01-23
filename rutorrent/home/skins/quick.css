@@ -1,10 +1,10 @@
 /*!
  * Quick Box UI
- * Last compiled on Thursday, December 23rd, 2015
+ * Last compiled on Friday, January 22nd, 2016
  */
  
-@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,600,600italic,700,700italic,300italic,300);
-@import url(https://fonts.googleapis.com/css?family=Raleway:400,100,200,300,500,600,700,800);
+@import url(//fonts.googleapis.com/css?family=Open+Sans:400,400italic,600,600italic,700,700italic,300italic,300);
+/*!@import url(https://fonts.googleapis.com/css?family=Raleway:400,100,200,300,500,600,700,800);*/
 /*!
  * Bootstrap v3.3.5 (http://getbootstrap.com)
  * Copyright 2011-2015 Twitter, Inc.
@@ -1293,6 +1293,39 @@ p {
   font-weight: 300;
   line-height: 1.4;
 }
+.fs10 {
+  font-size: 10px;
+}
+.fs12 {
+  font-size: 12px;
+}
+.fs14 {
+  font-size: 14px;
+}
+.fs16 {
+  font-size: 16px;
+}
+.fs18 {
+  font-size: 18px;
+}
+.fs21 {
+  font-size: 21px;
+}
+.fs24 {
+  font-size: 24px;
+}
+.fs26 {
+  font-size: 26px;
+}
+.fs28 {
+  font-size: 28px;
+}
+.fs32 {
+  font-size: 32px;
+}
+.fs36 {
+  font-size: 36px;
+}
 @media (min-width: 768px) {
   .lead {
     font-size: 18px;
@@ -1368,6 +1401,13 @@ a.text-warning:focus {
 a.text-danger:hover,
 a.text-danger:focus {
   color: #c9302c;
+}
+.text-inverted {
+  color: #555;
+}
+a.text-inverted:hover,
+a.text-inverted:focus {
+  color: #777;
 }
 .bg-primary {
   color: #fff;
@@ -4958,6 +4998,21 @@ a.label:focus {
   background-color: #777777;
   border-radius: 10px;
 }
+.badge-info {
+  background-color: #777777;
+  border-radius: 50%;
+  color: #ffffff;
+  display: inline-block;
+  font-size: 11px;
+  font-weight: normal;
+  height: 15px;
+  line-height: 5px;
+  min-width: 5px;
+  padding: 5px;
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+}
 .badge:empty {
   display: none;
 }
@@ -5274,8 +5329,8 @@ a.thumbnail.active {
   display: block;
   padding: 10px 15px;
   margin-bottom: -1px;
-  background-color: #ffffff;
-  border: 1px solid #dddddd;
+  background-color: transparent;
+  border: 0px solid #dddddd;
 }
 .list-group-item:first-child {
   border-top-right-radius: 2px;
@@ -5932,7 +5987,7 @@ button.close {
   background-color: #ffffff;
   border: 1px solid #999999;
   border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 2px;
+  border-radius: 4px;
   -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
   box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
   background-clip: padding-box;
@@ -5968,8 +6023,10 @@ button.close {
   line-height: 1.42857143;
 }
 .modal-body {
-  position: relative;
+  font-size: 14px;
+  font-weight: 300;
   padding: 15px;
+  position: relative;
 }
 .modal-footer {
   padding: 15px;
@@ -5995,7 +6052,7 @@ button.close {
 }
 @media (min-width: 768px) {
   .modal-dialog {
-    width: 600px;
+    width: 350px;
     margin: 30px auto;
   }
   .modal-content {
@@ -8315,12 +8372,12 @@ a.text-danger:focus {
 .toggle-modern .toggle-slide {
   background: none;
   text-shadow: none;
-  border-radius: 2px;
+  border-radius: 0px;
   -webkit-box-shadow: none;
   box-shadow: none;
 }
 .toggle-modern .toggle-blob {
-  border-radius: 2px;
+  border-radius: 0px;
   background-color: #fff;
   background-image: none;
   -webkit-box-shadow: none;
@@ -8968,13 +9025,13 @@ ul.wysihtml5-toolbar a.btn.wysihtml5-command-active {
   background-color: rgba(37, 116, 171, 0.9);
 }
 .gritter-item-wrapper.success > .gritter-item {
-  background-color: rgba(37, 157, 171, 0.9);
+  background-color: rgba(77, 175, 124, 1);
 }
 .gritter-item-wrapper.warning > .gritter-item {
   background-color: rgba(230, 173, 92, 0.9);
 }
 .gritter-item-wrapper.danger > .gritter-item {
-  background-color: rgba(217, 83, 79, 0.9);
+  background-color: rgba(217, 83, 79, 1);
 }
 .gritter-item-wrapper.info > .gritter-item {
   background-color: rgba(91, 192, 222, 0.9);
@@ -9376,6 +9433,7 @@ blockquote {
 }
 .headermenu > li > .btn-group > .btn-logged {
   padding: 5px 12px 3px;
+  font-size: 14px;
   border: 0;
 }
 .headermenu > li > .btn-group > .btn-logged img {
@@ -9393,12 +9451,12 @@ blockquote {
 }
 .headermenu > li > .btn-group > .btn-logged + .dropdown-menu > li > a {
   padding: 8px 10px;
-  color: #505b72;
+  color: #ccc;
 }
 .headermenu > li > .btn-group > .btn-logged + .dropdown-menu > li > a:hover,
 .headermenu > li > .btn-group > .btn-logged + .dropdown-menu > li > a:focus {
   background-color: #262b36;
-  color: #9fa8bc;
+  color: #efefef;
 }
 .headermenu > li > .btn-group > .btn-logged + .dropdown-menu > li > a > i {
   width: 16px;
@@ -9413,7 +9471,7 @@ blockquote {
   margin-top: 0;
   margin-right: -8px;
   padding: 5px;
-  background-color: #fff;
+  background-color: #222;
   border-top-right-radius: 0;
   border-top-left-radius: 0;
   border-bottom-right-radius: 2px;
@@ -9422,7 +9480,7 @@ blockquote {
   box-shadow: none;
 }
 .headermenu .dropdown-menu:after {
-  border-bottom: 8px solid #fff;
+  border-bottom: 8px solid #222;
   border-left: 8px solid transparent;
   border-right: 8px solid transparent;
   content: "";
@@ -9907,7 +9965,7 @@ blockquote {
 .nav-quirk .children > li {
   margin-left: 21px;
   border-left: 1px solid #444;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif;
   text-transform: none;
   letter-spacing: normal;
   display: block;
@@ -9921,13 +9979,13 @@ blockquote {
 }
 .nav-quirk .children > li > a {
   display: block;
-  font-size: 14px;
-  font-weight: 300;
-  padding: 5px 0 5px 18px;
+  font-size: 12px;
+  font-weight: 400;
+  padding: 5px 0 5px 12px;
   color: #909090;
   position: relative;
   height: 30px;
-  line-height: 14px;
+  line-height: 16px;
   -webkit-transition: all 0.2s ease-out 0s;
   -o-transition: all 0.2s ease-out 0s;
   transition: all 0.2s ease-out 0s;
@@ -14521,7 +14579,8 @@ fieldset[disabled] .btn-fb.active {
   padding-top: 20px;
 }
 
-/* scrollbar */
+
+/* perfect-scrollbar v0.6.8 */
 .ps-container {
   -ms-touch-action: none;
   overflow: hidden !important; }
@@ -14627,3 +14686,40 @@ fieldset[disabled] .btn-fb.active {
     opacity: 0.9; }
     .ps-container:hover > .ps-scrollbar-y-rail:hover > .ps-scrollbar-y {
       background-color: #999; }
+
+li.info-quote {
+  border: 0 !important;
+}
+li p.info-quote {
+  background-color: rgba(103, 128, 159, 0.1);
+  border-left: 6px solid #4b77be;
+  color: #fff;
+  font-size: 12px;
+  margin-left: -21px;
+  margin-top: -7px;
+  padding: 6px;
+}
+li.warning-quote {
+  border: 0 !important;
+}
+li p.warning-quote {
+background-color: rgba(214, 69, 65, 0.1);
+border-left: 6px solid #d9534f;
+color: #fff;
+font-size: 12px;
+margin-left: -21px;
+margin-top: -7px;
+padding: 6px;
+}
+
+.plgin-center-switch {
+  margin-right: 5px; 
+  margin-top: 2px;
+}
+
+.usermenu-div {
+  padding-top: 5px;
+  border-top: 1px solid #3a3a3a;
+  margin-top: 15px
+}
+

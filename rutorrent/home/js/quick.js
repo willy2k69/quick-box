@@ -102,9 +102,9 @@ $(document).ready(function() {
    // Left Panel Toggles
    $('.leftpanel-toggle').toggles({
      on: true,
-     height: 22
+     height: 11
    });
-   $('.leftpanel-toggle-off').toggles({ height: 22 });
+   $('.leftpanel-toggle-off').toggles({ height: 11 });
 
 
    // Tooltip
