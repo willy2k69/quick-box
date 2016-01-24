@@ -5,8 +5,8 @@ include 'req/class.php';
 $interface = "eth0";
 $version = "qb-version";
 error_reporting(E_ALL);
-$username = getUser();
 $master = shell_exec('sudo -u root cat /root/master.txt');
+$username = getUser();
 function session_start_timeout($timeout=5, $probability=100, $cookie_domain='/') {
   ini_set("session.gc_maxlifetime", $timeout);
   ini_set("session.cookie_lifetime", $timeout);
@@ -262,7 +262,7 @@ break;
   <script type="text/javascript" src="lib/flot/jquery.flot.canvas.js"></script>
   <script src="https://rawgit.com/hippich/bower-semver/master/semver.min.js"></script>
   <script>
-  var gitHubPath = 'JMSDOnline/quick-box';  // quick-box repo
+  var gitHubPath = 'JMSDOnline/QuickBox';  // quick-box repo
   var url = 'https://api.github.com/repos/' + gitHubPath + '/tags';
 
   $.get(url).done(function (data) {
@@ -336,14 +336,6 @@ break;
     }});
   }
   diskstats();
-
-  //function plugindata() {
-  //  $.ajax({url: "req/plugin_data.php", cache:false, success: function (result) {
-  //    $('#plugin_data').html(result);
-  //    setTimeout(function(){plugindata()}, 1000);
-  //  }});
-  //}
-  //plugindata();
 
   }); 
   //success: function (result)
@@ -428,7 +420,7 @@ break;
                 } 
                 echo "</li>";
                 echo "<li>";
-                if (processExists("btsync",$username)) {
+                if (file_exists("/home/$username/.sync/sync.pid")) {
                   echo "<a href=\"javascript:void()\" data-toggle=\"modal\" data-target=\"#btsyncRemovalConfirm\">BTSync : <span class=\"pull-right plgin-center-switch\"><img src=\"img/switch-installed.png\"></span></a>";
                 } else {
                   echo "<a href=\"?installpackage-btsync=true\" id=\"btsyncInstall\">BTSync : <span class=\"pull-right plgin-center-switch\"><img src=\"img/switch-notinstalled.png\"></span></a>";
