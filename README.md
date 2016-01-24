@@ -6,7 +6,7 @@ For Ubuntu == 14.04, 15.04 & 15.10 || Debian == 7 & 8 installs.
 
 ## Script status
 
-[![Version 2.0.5-production](https://img.shields.io/badge/version-2.0.5-674172.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
+[![Version 2.0.9-production](https://img.shields.io/badge/version-2.0.9-674172.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
 [![MIT License](https://img.shields.io/badge/license-MIT%20License-blue.svg?style=flat-square)](https://github.com/JMSDOnline/quick-box/blob/master/LICENSE)
 
 #### Ubuntu Builds
@@ -152,7 +152,7 @@ DO NOT try to reconfigure packages using other tutorials - this script (AS IS) i
 **Run the following command to grab our latest release and install the goodies ...**
 ```
 apt-get -yqq update; apt-get -yqq install curl; \
-wget -qO quickbox.tar.gz https://github.com/JMSDOnline/QuickBox/archive/v2.0.5.tar.gz; \
+wget -qO quickbox.tar.gz https://github.com/JMSDOnline/QuickBox/archive/v2.0.9.tar.gz; \
 mkdir -p /root/tmp; tar -xf quickbox.tar.gz -C /root/tmp; rm quickbox*; cd /root/tmp/QuickBox*; \
 bash quickbox.sh
 
@@ -166,17 +166,17 @@ bash quickbox.sh
 ---
 
 ## NOTE:
-It is highly recommended that if you are a few versions behind that you update per version at a time. You can view the release versions [HERE](https://raw.githubusercontent.com/JMSDOnline/quick-box-update/master/releases). To apply a previous update, simply adjust the '**v2.0.8.tar.gz**' in the install command below with the version you need to bump to.
+It is highly recommended that if you are a few versions behind that you update per version at a time. You can view the release versions [HERE](https://raw.githubusercontent.com/JMSDOnline/quick-box-update/master/releases). To apply a previous update, simply adjust the '**v2.0.9.tar.gz**' in the install command below with the version you need to bump to.
 
 
-## VERSION 2.0.8 Update Notice:
-> It is advisable and recommended to update from v2.0.5 to v2.0.8
+## VERSION 2.0.9 Update Notice:
+> It is advisable and recommended to update from v2.0.5 to v2.0.9
 
 ### Update for Quick Box on Ubuntu 14.04, 15.04, and 15.10 - Debian 7 and 8
 
 **Run the following command to grab our prep script and setup for update ...**
 ```
-wget -qO quickbox.tar.gz https://github.com/JMSDOnline/quick-box-update/archive/v2.0.8.tar.gz; \
+wget -qO quickbox.tar.gz https://github.com/JMSDOnline/quick-box-update/archive/v2.0.9.tar.gz; \
 mkdir -p /root/tmp; tar -xf quickbox.tar.gz -C /root/tmp; rm quickbox*; cd /root/tmp/quick-box-update*; \
 bash qbupdate.sh
 
