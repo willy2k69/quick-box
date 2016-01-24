@@ -166,14 +166,18 @@ bash quickbox.sh
 ---
 
 ## NOTE:
-It is highly recommended that if you are a few versions behind that you update per version at a time. You can view the release versions [HERE](https://raw.githubusercontent.com/JMSDOnline/quick-box-update/master/releases). To apply a previous update, simply adjust the '**v2.0.7.tar.gz**' in the install command below with the version you need to bump to.
+It is highly recommended that if you are a few versions behind that you update per version at a time. You can view the release versions [HERE](https://raw.githubusercontent.com/JMSDOnline/quick-box-update/master/releases). To apply a previous update, simply adjust the '**v2.0.8.tar.gz**' in the install command below with the version you need to bump to.
+
+
+## VERSION 2.0.8 Update Notice:
+> It is advisable and recommended to update from v2.0.5 to v2.0.8
 
 ### Update for Quick Box on Ubuntu 14.04, 15.04, and 15.10 - Debian 7 and 8
 
-**Run the following command to grab our prep script and setup for install ...**
+**Run the following command to grab our prep script and setup for update ...**
 ```
-wget -qO quickbox.tar.gz https://github.com/JMSDOnline/quick-box-update/archive/v2.0.7.tar.gz; \
-mkdir -p /root/tmp/update; tar -xf quickbox.tar.gz -C /root/tmp; rm quickbox*; cd /root/tmp/update/quick-box-update*; \
+wget -qO quickbox.tar.gz https://github.com/JMSDOnline/quick-box-update/archive/v2.0.8.tar.gz; \
+mkdir -p /root/tmp; tar -xf quickbox.tar.gz -C /root/tmp; rm quickbox*; cd /root/tmp/quick-box-update*; \
 bash qbupdate.sh
 
 ```
