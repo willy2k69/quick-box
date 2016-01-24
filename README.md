@@ -170,7 +170,7 @@ It is highly recommended that if you are a few versions behind that you update p
 
 
 ## VERSION 2.0.9 Update Notice:
-> It is advisable and recommended to update from v2.0.5 to v2.0.9
+> It is advisable and recommended to update from v2.0.5 to v2.0.9. Furthermore, due to the nature of the update enhancing your .bashrc file, a system reboot will be necessary to make these changes reflect.
 
 ### Update for Quick Box on Ubuntu 14.04, 15.04, and 15.10 - Debian 7 and 8
 
